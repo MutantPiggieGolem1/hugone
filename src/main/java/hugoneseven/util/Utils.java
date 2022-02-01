@@ -1,22 +1,19 @@
 package hugoneseven.util;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import org.json.JSONArray;
-import org.json.JSONException;
-
+import java.awt.event.KeyEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
-import java.awt.event.*;
-import java.awt.image.BufferedImage;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 import hugoneseven.enums.Direction;
 
@@ -65,20 +62,21 @@ public class Utils {
     return out;
   }
   
-  public static int[] getChange(Direction dir) {
+  public static int[] getChange(Direction dir) {return getChange(dir,10);};
+  public static int[] getChange(Direction dir, int d) {
     int[] pos = new int[]{0,0};
     switch (dir) {
       case UP:
-        pos[1] -= 10;
+        pos[1] -= d;
       break;
       case DOWN:
-        pos[1] += 10;
+        pos[1] += d;
       break;
       case LEFT:
-        pos[0] -= 10;
+        pos[0] -= d;
       break;
       case RIGHT:
-        pos[0] += 10;
+        pos[0] += d;
       break;
     }
     return pos;

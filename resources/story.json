@@ -75,7 +75,7 @@
     "BOTTOM_FLOOR": {
       "image": "BOTTOM_FLOOR.png",
       "find": ["wallet","ring"],
-      "dimensions": [640,480],
+      "dimensions": [1200,700],
       "furniture": [
         {
           "objectid": "closet1",

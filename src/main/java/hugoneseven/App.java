@@ -2,6 +2,7 @@ package hugoneseven;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.MouseEvent;
 import java.util.HashSet;
 import java.util.List;
 import java.util.concurrent.Executors;
@@ -9,6 +10,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
+import javax.swing.event.MouseInputAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -20,7 +22,7 @@ import hugoneseven.util.Utils;
  * Add Battles
  * Implement video
 
- * Location coords are in bottom LEFT
+ * Location coords are in TOP LEFT
 */
 
 enum GameState {
@@ -95,6 +97,12 @@ class App {
     f.setSize(framewidth,frameheight);
     dc.requestFocus();
     dc.setBackground(Color.GRAY);
+    dc.addMouseListener(new MouseInputAdapter() {
+      @Override
+      public void mousePressed(MouseEvent e) {
+        System.out.println("("+e.getX()+","+e.getY()+") - ["+f.getWidth()+","+f.getHeight()+"]");
+      }
+    });
     f.add(dc);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.addKeyListener(player);
@@ -109,12 +117,9 @@ class App {
           if (cur.update()) story.next(); // on completion, advance story
           cur = story.getCurrent();
           if (story.currentState().equals(GameState.EXPLORATION) && !((Area)cur).renderingDialogue()) {
+            Area a = (Area)cur;
             player.moveLoop();
-            if (player.spaceDown()) {
-              ((Area)cur).getFurniture().forEach((InteractableObject f) -> {
-                if (player.facingTowards(f.getCoords())) f.onInteraction();
-              });
-            }
+            a.checkInteracts(player);
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -149,5 +154,9 @@ class App {
       default:
         System.out.println("!WARNING! Unrecognized GameState!");
     }
+  }
+
+  public static void postRender(Graphics2D g) {
+
   }
 }

@@ -30,10 +30,10 @@ public class Furniture implements InteractableObject {
     this.dialogue = App.story.getDialogue(data.getString("dialogue"));
     this.dialogue.setParent(area);
 
-    JSONArray location= data.getJSONArray("location");
+    JSONArray location= data.getJSONArray("location"); // top left
     JSONArray dimension= data.getJSONArray("dimensions");
     for (int x = location.getInt(0); x <= location.getInt(0)+dimension.getInt(0); x++) {
-      for (int y = location.getInt(1); y >= location.getInt(1)-dimension.getInt(1); y--) {
+      for (int y = location.getInt(1); y <= location.getInt(1)+dimension.getInt(1); y++) {
         this.allcoords.add(Arrays.asList(x,y));
       }
     }
@@ -41,13 +41,13 @@ public class Furniture implements InteractableObject {
     this.location   = Utils.toArray(Utils.toArray(location));
 
     this.image = new Image(data.getString("image"));
-    double scale = (double)this.dimensions[0]/(double)this.image.getWidth();
+    double scale = this.dimensions[0]/this.image.getImage().getWidth();
     this.image.setScale(scale);
     this.dimensions[1] = (int)Math.ceil(scale*this.image.getHeight()); // auto rescale height bound
   }
 
   public HashSet<List<Integer>> getCoords() {
-    return this.allcoords; // top left, bottom right 
+    return this.allcoords;
   }
 
   public void onInteraction() {
@@ -57,6 +57,7 @@ public class Furniture implements InteractableObject {
   }
 
   public void render(Graphics2D g){
+    g.drawRect(this.location[0],this.location[1],this.location[0]+this.dimensions[0],this.location[1]+this.dimensions[1]);
     this.image.draw(this.location[0],this.location[1],g);
   }
 }

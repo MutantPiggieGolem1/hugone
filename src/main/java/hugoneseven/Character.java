@@ -81,7 +81,7 @@ public class Character {
 
   public void render(Emotion emotion,Graphics2D g){
     Image eimg = this.emotions.get(emotion);
-    if (eimg != null) {eimg.draw(20,20,g);} // placeholder coords
+    if (eimg != null) {eimg.draw(50,App.f.getHeight()-(200+eimg.getImage().getHeight()),g);} // placeholder coords
     else {System.out.println("!WARNING! Emotion image failed to draw! Character: "+this.id+" Emotion: "+emotion.toString());}
   }
   

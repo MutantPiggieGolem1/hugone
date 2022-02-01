@@ -26,11 +26,11 @@ public class DrawingCanvas extends JComponent {
 
   @Override
   public void paintComponent(Graphics g) {
-    g.setColor(Color.BLUE);
-    g.drawString("yeet", 20, 20);
-    g.drawLine(0,0,App.f.getWidth(),App.f.getHeight());
-
     App.render((Graphics2D)g);
+
+    // postrender here
+    App.postRender((Graphics2D)g);
+
     g.dispose();
   }
 }

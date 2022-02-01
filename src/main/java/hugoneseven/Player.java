@@ -69,7 +69,6 @@ public class Player extends Character implements KeyListener {
   }
 
   public void render(Graphics2D g) {
-    System.out.println("Quadrant 1/2 - 3/4: "+(pos[0]>=0)+" | Quadrant 1/4 - 2/3 "+(pos[1]>=0));
     super.render(this.direction,this.movestate,g);
   }
 
@@ -77,7 +76,7 @@ public class Player extends Character implements KeyListener {
     return this.spacedown;
   }
   public boolean facingTowards(HashSet<List<Integer>> coords) {
-    int[] delta = Utils.getChange(this.direction);
+    int[] delta = Utils.getChange(this.direction,5);
     List<Integer> target = Arrays.asList(pos[0]+delta[0],pos[1]+delta[1]);
     return coords.contains(target);
   }
@@ -93,6 +92,6 @@ public class Player extends Character implements KeyListener {
 
     int[] delta = Utils.getChange(this.direction); // not performant but seems to be no other way. perhaps undo this
     int[] target= new int[]{pos[0]+delta[0],pos[1]+delta[1]};
-    if (!this.facingTowards(a.getCollisions()) && !a.checkCollisions(target)) this.pos = target;
+    if (!a.checkCollisions(target)) this.pos = target;
   }
 }

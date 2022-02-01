@@ -12,13 +12,12 @@ import java.util.List;
 
 @SuppressWarnings("unused")
 class Area implements Feature {
-  private String id;
-  private Image image;
+  private final String id;
+  private final Image image;
   private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
   private RenderState renderstate;
   private ArrayList<String> find;
   private Dialogues dialogue;
-  private HashSet<List<Integer>> collisions = new HashSet<List<Integer>>();
   private int[] dimensions = new int[2];
 
   public Area(String id) throws JSONException {
@@ -29,6 +28,7 @@ class Area implements Feature {
     this.image = new Image(data.getString("image"));
     this.dimensions[0] = dims.getInt(0);
     this.dimensions[1] = dims.getInt(1);
+    this.image.setScale(this.dimensions[0]/this.image.getImage().getWidth());
 
     // setup furniture
     JSONArray furnituredata = data.getJSONArray("furniture");
@@ -36,7 +36,6 @@ class Area implements Feature {
       JSONObject furn = furnituredata.getJSONObject(i);
       Furniture furni = new Furniture(furn,this);
       this.furniture.add(furni);
-      this.collisions.addAll(furni.getCoords());
     }
 
     // misc vars
@@ -58,33 +57,40 @@ class Area implements Feature {
   }
 
   public void render(Graphics2D g) {
-    switch (this.renderstate) {
-      case DIALOGUE:
-        if (this.dialogue.update() || App.player.spaceDown()) {
-          this.renderstate = RenderState.DEFAULT; // once done / skipped, return to normal state
-          this.dialogue.reset();
-        } else {
-          this.dialogue.render(g);
-        }
-      case DEFAULT:
-      default:
-        this.image.draw(0,0,g);
-        for (Furniture furniture : this.furniture) {
-          furniture.render(g);
-        }
+    this.image.draw(0,0,g);
+    for (Furniture furniture : this.furniture) {
+      furniture.render(g);
+    }
+    if (this.renderstate.equals(RenderState.DIALOGUE)) {
+      if (this.dialogue.update() || App.player.spaceDown()) {
+        this.renderstate = RenderState.DEFAULT; // once done / skipped, return to normal state
+        this.dialogue.reset();
+      } else {
+        this.dialogue.render(g);
+      }
     }
   }
+  public void checkInteracts(Player p) {
+    if (!p.spaceDown()) return;
+    this.furniture.forEach((InteractableObject f) -> {
+      if (p.facingTowards(f.getCoords())) f.onInteraction();
+    });
+  }
 
-  public HashSet<List<Integer>> getCollisions() {
-    return this.collisions;
+  private boolean collideFurniture(List<Integer> coords) {
+    for (Furniture f : this.furniture) {
+      if (f.getCoords().contains(coords)) {
+        return true;
+      };
+    }
+    return false;
   }
   public boolean checkCollisions(int[] coords) {
     return this.checkCollisions(Arrays.asList(coords[0],coords[1]));
   }
   public boolean checkCollisions(List<Integer> coords) {
-    return false;
-    //return (coords.get(0) < 0 || coords.get(1) > 0 || coords.get(0) > this.dimensions[0] || coords.get(1) < -this.dimensions[1]) || this.collisions.contains(coords);
-  } // out of bounds check + furniture check for redundancy - its O(1) anywways
+    return (coords.get(0) < 0 || coords.get(1) < 0 || coords.get(0) > this.dimensions[0] || coords.get(1) > this.dimensions[1]) || this.collideFurniture(coords);
+  }
 
   public boolean renderingDialogue() {
     return this.renderstate.equals(RenderState.DIALOGUE);
