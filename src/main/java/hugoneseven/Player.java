@@ -15,11 +15,13 @@ import hugoneseven.util.Utils;
 
 public class Player extends Character implements KeyListener {
   public ArrayList<String> inventory = new ArrayList<String>();
-  private Direction direction = Direction.UP;
+  private Direction direction = Direction.DOWN;
   private MoveState movestate = MoveState.STOP;
   private int framenum = 0;
   public int money;
-  private boolean interacting = false;
+  private boolean spacedown = false;
+  private MoveState tomove;
+  private Direction todir;
   
   public Player(String name) throws JSONException {
     super("PLAYER");
@@ -44,11 +46,11 @@ public class Player extends Character implements KeyListener {
       case KeyEvent.VK_A:
       case KeyEvent.VK_S:
       case KeyEvent.VK_D:
-        this.direction = Utils.dirkeys.get(kc);
-        if (this.movestate.equals(MoveState.STOP)) this.movestate = MoveState.MOVE1;
+        this.todir = Utils.dirkeys.get(kc);
+        this.tomove = MoveState.MOVE1;
       break;
       case KeyEvent.VK_SPACE:
-        this.interacting = true;
+        this.spacedown = true;
       break;
     }
   }
@@ -58,10 +60,10 @@ public class Player extends Character implements KeyListener {
       case KeyEvent.VK_A:
       case KeyEvent.VK_S:
       case KeyEvent.VK_D:
-        this.movestate = MoveState.STOP;
+        this.tomove = MoveState.STOP;
       break;
       case KeyEvent.VK_SPACE:
-        this.interacting = false;
+        this.spacedown = false;
       break;
     }
   }
@@ -71,18 +73,22 @@ public class Player extends Character implements KeyListener {
   }
 
   public boolean spaceDown() {
-    return this.interacting;
+    return this.spacedown;
   }
   public boolean facingTowards(HashSet<List<Integer>> coords) {
     int[] delta = Utils.getChange(this.direction);
     List<Integer> target = Arrays.asList(pos[0]+delta[0],pos[1]+delta[1]);
     return coords.contains(target);
   }
-  public void moveLoop() {    
+  public void moveLoop() {
+    Area a = (Area)App.story.getCurrent();
+    if (a.renderingDialogue()) {this.movestate = MoveState.STOP;return;}
+    if (this.tomove != null && (this.movestate.equals(MoveState.STOP) || this.tomove.equals(MoveState.STOP))) this.movestate = this.tomove;
+    if (this.todir != null) this.direction = this.todir;
     if (this.movestate.equals(MoveState.STOP)) {this.framenum=0;return;} // dont move while stopped
+    
     if (Math.round(this.framenum%3) == 0L) this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
-    Area a = ((Area)App.story.getCurrent());
 
     int[] delta = Utils.getChange(this.direction); // not performant but seems to be no other way. perhaps undo this
     int[] target= new int[]{pos[0]+delta[0],pos[1]+delta[1]};

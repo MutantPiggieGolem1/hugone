@@ -16,7 +16,6 @@ import hugoneseven.util.Utils;
  *  - Area, but other view
 */
 
-@SuppressWarnings("unused")
 public class Character {
   private String name;
   private String id;
@@ -81,7 +80,9 @@ public class Character {
   }
 
   public void render(Emotion emotion,Graphics2D g){
-    this.emotions.get(emotion).draw(20,20,g); // placeholder coords
+    Image eimg = this.emotions.get(emotion);
+    if (eimg != null) {eimg.draw(20,20,g);} // placeholder coords
+    else {System.out.println("!WARNING! Emotion image failed to draw! Character: "+this.id+" Emotion: "+emotion.toString());}
   }
   
   public void render(Direction dir,Graphics2D g){

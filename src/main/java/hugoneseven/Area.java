@@ -15,7 +15,7 @@ class Area implements Feature {
   private String id;
   private Image image;
   private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
-  public RenderState renderstate;
+  private RenderState renderstate;
   private ArrayList<String> find;
   private Dialogues dialogue;
   private HashSet<List<Integer>> collisions = new HashSet<List<Integer>>();
@@ -68,7 +68,7 @@ class Area implements Feature {
         }
       case DEFAULT:
       default:
-        this.image.draw(0,0,g); // may have to be fixed later
+        this.image.draw(0,0,g);
         for (Furniture furniture : this.furniture) {
           furniture.render(g);
         }
@@ -85,4 +85,8 @@ class Area implements Feature {
     return false;
     //return (coords.get(0) < 0 || coords.get(1) > 0 || coords.get(0) > this.dimensions[0] || coords.get(1) < -this.dimensions[1]) || this.collisions.contains(coords);
   } // out of bounds check + furniture check for redundancy - its O(1) anywways
+
+  public boolean renderingDialogue() {
+    return this.renderstate.equals(RenderState.DIALOGUE);
+  }
 }

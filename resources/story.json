@@ -57,13 +57,7 @@
       "emotions": {
         "MAD": "NOMMA_MAD.png"
       },
-      "directions": {
-        "UP": {
-          "STOP": "NOMMA_UP_STOP.png" ,
-          "MOVE1":"NOMMA_UP_MOVE1.png",
-          "MOVE2":"NOMMA_UP_MOVE2.png"
-        }
-      }
+      "directions": {}
     },
     "KYLE": {
       "name": "Kyle",

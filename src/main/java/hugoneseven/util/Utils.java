@@ -13,6 +13,8 @@ import java.util.Scanner;
 
 import javax.imageio.ImageIO;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.*;
 import java.awt.image.BufferedImage;
 
@@ -25,13 +27,17 @@ public class Utils {
 
   public static final Image NULLIMG = new Image("null.png");
 
-  public static final HashMap<Integer,Direction> dirkeys
-    = new HashMap<Integer,Direction>();
-  static {
-    dirkeys.put(KeyEvent.VK_W,Direction.UP);
-    dirkeys.put(KeyEvent.VK_S,Direction.DOWN);
-    dirkeys.put(KeyEvent.VK_A,Direction.LEFT);
-    dirkeys.put(KeyEvent.VK_D,Direction.RIGHT);
+  public static final HashMap<Integer,Direction> dirkeys = new HashMap<Integer,Direction>();
+  static {dirkeys.put(KeyEvent.VK_W,Direction.UP);dirkeys.put(KeyEvent.VK_S,Direction.DOWN);dirkeys.put(KeyEvent.VK_A,Direction.LEFT);dirkeys.put(KeyEvent.VK_D,Direction.RIGHT);}
+
+  public static void drawPoint(Graphics2D g, int x, int y) {
+    drawPoint(g, x, y, Color.RED);
+  }
+  public static void drawPoint(Graphics2D g, int x, int y, Color c) {
+    Color b4 = g.getColor();
+    g.setColor(c);
+    g.drawLine(x, y, x, y);
+    g.setColor(b4);
   }
 
   public static <T> String toString(T[] arr) {
@@ -69,7 +75,6 @@ public class Utils {
     return out;
   }
   
-
   public static int[] getChange(Direction dir) {
     int[] pos = new int[]{0,0};
     switch (dir) {

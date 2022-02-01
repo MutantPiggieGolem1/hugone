@@ -13,6 +13,7 @@ import org.json.JSONObject;
 
 import hugoneseven.util.Audio;
 import hugoneseven.util.Image;
+import hugoneseven.util.Utils;
 
 @SuppressWarnings("unused")
 class Dialogues implements Feature {
@@ -31,7 +32,7 @@ class Dialogues implements Feature {
     for (int i = 0; i<lines.length(); i++) {
       try {
         this.dialogues.add(new Dialogue(lines.getJSONObject(i)));
-      } catch (JSONException e) {
+      } catch (Exception e) {
         System.out.println("!WARNING! Subdialogue failed to load for "+id+".");
       }
     };
@@ -96,5 +97,6 @@ class Dialogue {
     this.textbox.draw(20,-App.frameheight+20,g);
     g.drawString(line,-App.frameheight+30,30);
     this.character.render(this.emotion,g);
+    System.out.println("rendering dialogue");
   }
 }

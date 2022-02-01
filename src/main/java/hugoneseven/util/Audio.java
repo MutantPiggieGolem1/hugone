@@ -18,8 +18,10 @@ public class Audio {
   };
   public void reset() {
     try {
+      this.stop();
       this.clip = AudioSystem.getClip();
       this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
+      clip.setMicrosecondPosition(0);
     } catch (Exception e) {
       System.out.println("!WARNING! Audio file failed to reset!");
     }

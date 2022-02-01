@@ -109,7 +109,7 @@ class App {
           Feature cur = story.getCurrent();
           if (cur.update()) story.next(); // on completion, advance story
           cur = story.getCurrent();
-          if (story.currentState().equals(GameState.EXPLORATION) && !((Area)cur).renderstate.equals(RenderState.DIALOGUE)) {
+          if (story.currentState().equals(GameState.EXPLORATION) && !((Area)cur).renderingDialogue()) {
             player.moveLoop();
             if (player.spaceDown()) {
               ((Area)cur).getFurniture().forEach((InteractableObject f) -> {

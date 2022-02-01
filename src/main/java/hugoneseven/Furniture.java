@@ -53,11 +53,11 @@ public class Furniture implements InteractableObject {
   public void onInteraction() {
     if (!this.interacted && item != null) App.player.addItem(item);
     this.interacted = true;
-    this.area.setDialogue(this.dialogue); // tell area to render our dialogue
+    this.area.setDialogue(this.dialogue);
   }
 
   public void render(Graphics2D g){
     this.image.draw(this.location[0],this.location[1],g);
-    System.out.println("Drawing Furniture @"+Utils.toString(this.location));
+    //System.out.println("Drawing Furniture @"+Utils.toString(this.location));
   }
 }
