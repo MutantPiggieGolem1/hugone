@@ -42,7 +42,7 @@ public class Furniture implements InteractableObject {
 
     this.image = new Image(data.getString("image"));
     double scale = (double)this.dimensions[0]/(double)this.image.getWidth();
-    this.image.scale(scale);
+    this.image.setScale(scale);
     this.dimensions[1] = (int)Math.ceil(scale*this.image.getHeight()); // auto rescale height bound
   }
 
@@ -51,14 +51,13 @@ public class Furniture implements InteractableObject {
   }
 
   public void onInteraction() {
-    if (this.interacted) return;
+    if (!this.interacted && item != null) App.player.addItem(item);
     this.interacted = true;
-    if (item != null) {App.player.addItem(item);};
     this.area.setDialogue(this.dialogue); // tell area to render our dialogue
   }
 
   public void render(Graphics2D g){
-    System.out.println("Drawing Furniture @"+Utils.toString(this.location));
     this.image.draw(this.location[0],this.location[1],g);
+    System.out.println("Drawing Furniture @"+Utils.toString(this.location));
   }
 }

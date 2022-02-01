@@ -5,15 +5,25 @@ import javax.sound.sampled.*;
 
 public class Audio {
   private Clip clip;
+  private File inpfile;
 
   public Audio(String filepath) {
     try {
+      this.inpfile = new File(Utils.RESOURCEDIR+filepath);
       this.clip = AudioSystem.getClip();
-      this.clip.open(AudioSystem.getAudioInputStream(new File(Utils.RESOURCEDIR+filepath).getAbsoluteFile()));
+      this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
     } catch (Exception e) {
       System.out.println("!WARNING! Audio file failed to load @"+filepath);
     }
   };
+  public void reset() {
+    try {
+      this.clip = AudioSystem.getClip();
+      this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
+    } catch (Exception e) {
+      System.out.println("!WARNING! Audio file failed to reset!");
+    }
+  }
   public void play(){
     this.clip.start();
   };

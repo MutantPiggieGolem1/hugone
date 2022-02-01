@@ -16,7 +16,7 @@ public class Image extends JPanel {
     }
   }
 
-  public void scale(double scale){
+  public void setScale(double scale){
     this.scale = scale;
   }
   public BufferedImage getImage() {
@@ -24,6 +24,6 @@ public class Image extends JPanel {
   }
 
   public void draw(int x, int y, Graphics2D g) {
-    g.drawImage(this.image, x, y, this.image.getWidth()*this.scale, this.image.getHeight()*this.scale, x, y, x+this.image.getWidth(), y+this.image.getHeight(), null); //(int)Math.ceil(this.image.getWidth()*this.scale), (int)Math.ceil(this.image.getHeight()*this.scale)
+    g.drawImage(this.image, x, y, (int)Math.round(this.image.getWidth()*this.scale), (int)Math.round(this.image.getHeight()*this.scale), null);
   }
 }

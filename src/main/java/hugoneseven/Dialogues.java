@@ -30,7 +30,7 @@ class Dialogues implements Feature {
     JSONArray lines = data.getJSONArray("lines");
     for (int i = 0; i<lines.length(); i++) {
       try {
-        dialogues.add(new Dialogue(lines.getJSONObject(i)));
+        this.dialogues.add(new Dialogue(lines.getJSONObject(i)));
       } catch (JSONException e) {
         System.out.println("!WARNING! Subdialogue failed to load for "+id+".");
       }
@@ -40,6 +40,13 @@ class Dialogues implements Feature {
 
   public void setParent(Area p) {
     this.area = p;
+  }
+
+  public void reset() {
+    this.index = 0;
+    for (Dialogue d : this.dialogues) {
+      d.audio.reset();
+    }
   }
 
   public boolean update() {
@@ -58,11 +65,11 @@ class Dialogues implements Feature {
 }
 
 class Dialogue {
-  Character character;
-  Emotion emotion;
-  String line;
-  Audio audio;
-  Image textbox;
+  private Character character;
+  private Emotion emotion;
+  private String line;
+  protected Audio audio;
+  private Image textbox;
 
   public Dialogue(JSONObject data) throws JSONException {
     this.character = App.story.getCharacter(data.getString("character"));

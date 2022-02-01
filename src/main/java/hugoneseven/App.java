@@ -16,10 +16,9 @@ import org.json.JSONObject;
 import hugoneseven.util.Utils;
 
 /*
- * Check seqentialism
- * Make everything render at correct coordinates
- * Implement Interacting system
+ * Prevent audio overlap
  * Add Battles
+ * Implement video
 
  * Location coords are in bottom LEFT
 */
@@ -71,10 +70,10 @@ class App {
   public static Player player;
   public static GameState gamestate;
 
-  public static final int framewidth = 640;
-  public static final int frameheight = 480;
+  public static final int framewidth = 1366;
+  public static final int frameheight = 768;
 
-  public static final JFrame f = new JFrame();
+  public static final JFrame f = new JFrame("Hugone Seven - Alpha v0.0.1b");
   private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
   public static void main(String[] args) {
@@ -94,12 +93,11 @@ class App {
      
     DrawingCanvas dc = new DrawingCanvas(framewidth,frameheight);
     f.setSize(framewidth,frameheight);
-    f.setTitle("Hugone Seven - Alpha v0.0.1b");
     dc.requestFocus();
-    dc.setBackground(Color.BLACK);
+    dc.setBackground(Color.GRAY);
     f.add(dc);
-    //f.add(fxp);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setResizable(false);
     f.addKeyListener(player);
     f.setVisible(true);
 
@@ -127,9 +125,11 @@ class App {
 
     // Draw Loop
     while (true) {
-      if (System.currentTimeMillis()-dc.prevtime >= 1000.0/Utils.FPS) {
-        dc.repaint();
-        dc.prevtime = System.currentTimeMillis();
+      while (f.isShowing()) { // dont render in background
+        if (System.currentTimeMillis()-dc.prevtime >= 1000.0/Utils.FPS) {
+          dc.repaint();
+          dc.prevtime = System.currentTimeMillis();
+        }
       }
     }
   }

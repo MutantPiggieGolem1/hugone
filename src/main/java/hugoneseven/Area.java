@@ -60,8 +60,9 @@ class Area implements Feature {
   public void render(Graphics2D g) {
     switch (this.renderstate) {
       case DIALOGUE:
-        if (this.dialogue.update()) {
-          this.renderstate = RenderState.DEFAULT; // once done, return to normal state
+        if (this.dialogue.update() || App.player.spaceDown()) {
+          this.renderstate = RenderState.DEFAULT; // once done / skipped, return to normal state
+          this.dialogue.reset();
         } else {
           this.dialogue.render(g);
         }
