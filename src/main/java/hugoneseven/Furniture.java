@@ -58,6 +58,5 @@ public class Furniture implements InteractableObject {
 
   public void render(Graphics2D g){
     this.image.draw(this.location[0],this.location[1],g);
-    //System.out.println("Drawing Furniture @"+Utils.toString(this.location));
   }
 }

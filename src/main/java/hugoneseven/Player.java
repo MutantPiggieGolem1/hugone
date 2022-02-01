@@ -69,6 +69,7 @@ public class Player extends Character implements KeyListener {
   }
 
   public void render(Graphics2D g) {
+    System.out.println("Quadrant 1/2 - 3/4: "+(pos[0]>=0)+" | Quadrant 1/4 - 2/3 "+(pos[1]>=0));
     super.render(this.direction,this.movestate,g);
   }
 

@@ -30,16 +30,6 @@ public class Utils {
   public static final HashMap<Integer,Direction> dirkeys = new HashMap<Integer,Direction>();
   static {dirkeys.put(KeyEvent.VK_W,Direction.UP);dirkeys.put(KeyEvent.VK_S,Direction.DOWN);dirkeys.put(KeyEvent.VK_A,Direction.LEFT);dirkeys.put(KeyEvent.VK_D,Direction.RIGHT);}
 
-  public static void drawPoint(Graphics2D g, int x, int y) {
-    drawPoint(g, x, y, Color.RED);
-  }
-  public static void drawPoint(Graphics2D g, int x, int y, Color c) {
-    Color b4 = g.getColor();
-    g.setColor(c);
-    g.drawLine(x, y, x, y);
-    g.setColor(b4);
-  }
-
   public static <T> String toString(T[] arr) {
     String o = arr[0].toString();
     for (T i : Arrays.copyOfRange(arr,1,arr.length)) {

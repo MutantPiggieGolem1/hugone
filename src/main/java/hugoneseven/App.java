@@ -97,7 +97,6 @@ class App {
     dc.setBackground(Color.GRAY);
     f.add(dc);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    f.setResizable(false);
     f.addKeyListener(player);
     f.setVisible(true);
 

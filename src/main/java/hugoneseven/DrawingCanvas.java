@@ -3,6 +3,8 @@ package hugoneseven;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Color;
+import java.awt.BasicStroke;
 
 import javax.swing.JComponent;
 
@@ -24,6 +26,10 @@ public class DrawingCanvas extends JComponent {
 
   @Override
   public void paintComponent(Graphics g) {
+    g.setColor(Color.BLUE);
+    g.drawString("yeet", 20, 20);
+    g.drawLine(0,0,App.f.getWidth(),App.f.getHeight());
+
     App.render((Graphics2D)g);
     g.dispose();
   }
