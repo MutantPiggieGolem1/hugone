@@ -54,7 +54,9 @@ public class Character {
             String mov = movestate.toString();
 
             if (dirmovs.has(mov)) {
-              this.directions.get(direction).put(movestate,new Image(dirmovs.getString(mov)));
+              Image img = new Image(dirmovs.getString(mov));
+              img.setScale(64/img.getWidth());
+              this.directions.get(direction).put(movestate,img);
             } else {
               this.directions.get(direction).put(movestate,Utils.NULLIMG);
             }

@@ -18,7 +18,7 @@ import org.json.JSONException;
 import hugoneseven.enums.Direction;
 
 public class Utils {
-  public static final String RESOURCEDIR = "./resources/";
+  public static final String RESOURCEDIR = "./src/main/resources/";
   public static final double FPS = 60.0;
   public static final double TPS = 20.0;
 

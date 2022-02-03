@@ -5,7 +5,7 @@ import javax.swing.*;
 
 public class Image extends JPanel {
   private BufferedImage image; 
-  protected double scale = 4.0;
+  protected double scale = 1.0;
 
   public Image(String filepath) {
     try {
@@ -22,6 +22,8 @@ public class Image extends JPanel {
   public BufferedImage getImage() {
     return this.image;
   }
+  public int getWidth() {return this.image.getWidth();};
+  public int getHeight() {return this.image.getHeight();};
 
   public void draw(int x, int y, Graphics2D g) {
     g.drawImage(this.image, x, y, (int)Math.round(this.image.getWidth()*this.scale), (int)Math.round(this.image.getHeight()*this.scale), null);

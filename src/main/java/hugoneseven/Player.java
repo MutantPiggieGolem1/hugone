@@ -73,7 +73,9 @@ public class Player extends Character implements KeyListener {
   }
 
   public boolean spaceDown() {
-    return this.spacedown;
+    if (!this.spacedown) return false;
+    this.spacedown = false;
+    return true;
   }
   public boolean facingTowards(HashSet<List<Integer>> coords) {
     int[] delta = Utils.getChange(this.direction,5);

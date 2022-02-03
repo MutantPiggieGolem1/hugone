@@ -17,8 +17,7 @@ import org.json.JSONObject;
 
 import hugoneseven.util.Utils;
 
-/*
- * Prevent audio overlap
+/* Fix furniture collisions & rendering
  * Add Battles
  * Implement video
 
@@ -92,7 +91,7 @@ class App {
     }
     player = story.player;
     gamestate = story.currentState();
-     
+    
     DrawingCanvas dc = new DrawingCanvas(framewidth,frameheight);
     f.setSize(framewidth,frameheight);
     dc.requestFocus();
@@ -129,11 +128,10 @@ class App {
 
     // Draw Loop
     while (true) {
-      while (f.isShowing()) { // dont render in background
-        if (System.currentTimeMillis()-dc.prevtime >= 1000.0/Utils.FPS) {
-          dc.repaint();
-          dc.prevtime = System.currentTimeMillis();
-        }
+      if (!f.isShowing()) continue;// dont render in background
+      if (System.currentTimeMillis()-dc.prevtime >= 1000.0/Utils.FPS) {
+        dc.repaint();
+        dc.prevtime = System.currentTimeMillis();
       }
     }
   }

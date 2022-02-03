@@ -83,7 +83,7 @@ class Dialogue {
     }
     try {
       this.textbox = new Image(data.getString("textbox"));
-      this.textbox.setScale((App.f.getWidth()-100)/this.textbox.getImage().getWidth());
+      //this.textbox.setScale((App.f.getWidth()-100)/this.textbox.getImage().getWidth());
     } catch (Exception e) {
       System.out.println("!WARNING! Textbox image failed to load for dialogue. "+e.getMessage());
     }
@@ -97,6 +97,6 @@ class Dialogue {
     if (!this.audio.isPlaying() && !this.audio.isPlayed()) {this.audio.play();};
     this.character.render(this.emotion,g);
     this.textbox.draw(20, App.f.getHeight()-150,g);
-    g.drawString(line,30, App.f.getHeight()-120);
+    g.drawString(line,30, App.f.getHeight()-100);
   }
 }

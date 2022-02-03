@@ -1,0 +1,110 @@
+
+{
+  "scenes": {
+    "intro": {
+      "type": "CUTSCENE",
+      "id": "intro",
+      "video": "intro.mp4",
+      "next": "bottomfloor"
+    },
+    "bottomfloor": {
+      "type": "EXPLORATION",
+      "id": "BOTTOM_FLOOR",
+      "next": "nommabattle"
+    },
+    "nommabattle": {
+      "type": "BATTLE",
+      "id": "NOMMA_BATTLE",
+      "maxdeaths": 7,
+      "savior": "KYLE",
+      "next": ""
+    }
+  },
+  "characters": {
+    "PLAYER": {
+      "name": "mc",
+      "health": 100,
+      "emotions": {
+        "HAPPY": "PLAYER_HAPPY.png",
+        "SAD": "PLAYER_SAD.png"
+      },
+      "directions": {
+        "UP": {
+          "STOP": "PLAYER_UP_STOP.png",
+          "MOVE1":"PLAYER_UP_MOVE1.png",
+          "MOVE2":"PLAYER_UP_MOVE2.png"
+        },
+        "DOWN": {
+          "STOP": "PLAYER_DOWN_STOP.png",
+          "MOVE1":"PLAYER_DOWN_MOVE1.png",
+          "MOVE2":"PLAYER_DOWN_MOVE2.png"
+        },
+        "LEFT": {
+          "STOP": "PLAYER_LEFT_STOP.png",
+          "MOVE1":"PLAYER_LEFT_MOVE1.png",
+          "MOVE2":"PLAYER_LEFT_MOVE2.png"
+        },
+        "RIGHT": {
+          "STOP": "PLAYER_RIGHT_STOP.png",
+          "MOVE1":"PLAYER_RIGHT_MOVE1.png",
+          "MOVE2":"PLAYER_RIGHT_MOVE2.png"
+        }
+      }
+    },
+    "ENEMY_1": {
+      "name": "Nomma",
+      "health": 60,
+      "emotions": {
+        "MAD": "NOMMA_MAD.png"
+      },
+      "directions": {}
+    },
+    "KYLE": {
+      "name": "Kyle",
+      "emotions": {
+        "HAPPY": "KYLE_HAPPY.png"
+      },
+      "directions": {
+        "LEFT": {
+          "STOP": "KYLE_LEFT_STOP.png"
+        }
+      }
+    }
+  },
+  "areas": {
+    "BOTTOM_FLOOR": {
+      "image": "BOTTOM_FLOOR.png",
+      "find": ["wallet","ring"],
+      "dimensions": [1200,700],
+      "furniture": [
+        {
+          "objectid": "closet1",
+          "image": "closet_1.png",
+          "location": [32,32],
+          "dimensions": [32,32],
+          "collide": true,
+          "dialogue": "explore_closet_1",
+          "item": "wallet"
+        }
+      ]
+    }
+  },
+  "battles": {
+    "NOMMA_BATTLE": {
+      "enemy": "ENEMY_1"
+    }
+  },
+  "dialogue": {
+    "explore_closet_1": {
+      "lines": [
+        {
+          "character": "KYLE",
+          "emotion": "HAPPY",
+          "line": "There's still lots of clothes in here... Oh sick! There's a wallet in one of the pockets.",
+          "audio": "explore_closet_1.wav",
+          "textbox": "textbox.png"
+        }
+      ]
+    }
+  }
+}
