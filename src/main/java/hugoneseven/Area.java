@@ -51,7 +51,7 @@ class Area implements Feature {
   }
 
   public boolean update() {
-    return App.player.inventory.containsAll(find);
+    return App.player.inventory.containsAll(find) && this.renderstate.equals(RenderState.DEFAULT); // all required items, and not rendering dialogue
   }
 
   public void setDialogue(Dialogues dg) {

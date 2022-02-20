@@ -113,4 +113,7 @@ public class Player extends Character implements KeyListener {
     if (!a.checkCollisions(target))
       this.pos = target;
   }
+
+public void renderHealth(Graphics2D g) {
+}
 }

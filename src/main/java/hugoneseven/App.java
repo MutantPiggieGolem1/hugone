@@ -3,8 +3,6 @@ package hugoneseven;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
-import java.util.HashSet;
-import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -72,10 +70,20 @@ class App {
           if (cur.update())
             story.next(); // on completion, advance story
           cur = story.getCurrent();
-          if (story.currentState().equals(GameState.EXPLORATION) && !((Area) cur).renderingDialogue()) {
-            Area a = (Area) cur;
-            player.moveLoop();
-            a.checkInteracts(player);
+          switch (story.currentState()) {
+            case CUTSCENE:
+            
+            case EXPLORATION:
+              Area a = (Area) cur;
+              if(!a.renderingDialogue()) {
+                player.moveLoop();
+                a.checkInteracts(player);
+              }
+              break;
+            case BATTLE:
+              Battle b = (Battle) cur;
+              b.beat();
+              break;
           }
         } catch (Exception e) {
           e.printStackTrace();
@@ -104,9 +112,9 @@ class App {
         cur.render(g);
         player.render(g);
         break;
-      // case BATTLE:
-      // TODO: implement battles
-      // break;
+      case BATTLE:
+        cur.render(g);
+      break;
       default:
         System.out.println("!WARNING! Unrecognized GameState!");
     }

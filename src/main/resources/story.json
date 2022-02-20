@@ -74,7 +74,7 @@
   "areas": {
     "BOTTOM_FLOOR": {
       "image": "BOTTOM_FLOOR.png",
-      "find": ["wallet","ring"],
+      "find": ["wallet"],
       "dimensions": [1200,700],
       "furniture": [
         {
@@ -91,7 +91,10 @@
   },
   "battles": {
     "NOMMA_BATTLE": {
-      "enemy": "ENEMY_1"
+      "enemy": "ENEMY_1",
+      "damage": 25,
+      "background": "nomma_battle_bg.png",
+      "notes": "nomma_battle_notes.json"
     }
   },
   "dialogue": {
