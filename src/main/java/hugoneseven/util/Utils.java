@@ -80,6 +80,9 @@ public class Utils {
       case RIGHT:
         pos[0] += d;
         break;
+      case NONE:
+      default:
+        break;
     }
     return pos;
   }
