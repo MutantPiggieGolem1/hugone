@@ -15,58 +15,13 @@ import javax.swing.event.MouseInputAdapter;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hugoneseven.Constants.Feature;
+import hugoneseven.Constants.GameState;
 import hugoneseven.util.Utils;
 
-/*
- * Prevent audio overlap
- * Add Battles
- * Implement video
-
+/* Fix furniture collisions & rendering
  * Location coords are in TOP LEFT
 */
-
-enum GameState {
-  CUTSCENE,
-  EXPLORATION,
-  DIALOGUE,
-  BATTLE
-}
-enum Emotion {
-  IDLE,
-  HAPPY,
-  EXCITED,
-  SAD,
-  MAD,
-  BOP // for music battles
-  // etc.
-}
-enum MoveState {
-  STOP,
-  MOVE1,
-  MOVE2
-}
-enum RenderState {
-  DEFAULT,
-  DIALOGUE
-}
-enum BattleState {
-  DIALOGUE, // enemy/player is saying something
-  DEMO,     // enemy is doing preview (like fnf)
-  FIGHT,    // player is hitting notes
-  LOSE,     // <play death theme>, so sad
-  WIN       // u win pog
-}
-interface InteractableObject {
-  public abstract void onInteraction();
-  //public void onInteraction(int count);
-  public abstract HashSet<List<Integer>> getCoords();
-}
-interface Feature {
-  public abstract boolean update(); // check for completion
-  public abstract void render(Graphics2D g); // draw this feature
-}
-
-
 class App {
   public static Story story;
   public static Player player;
@@ -80,27 +35,27 @@ class App {
 
   public static void main(String[] args) {
     try {
-      story = new Story(new JSONObject(Utils.readFile(Utils.RESOURCEDIR+"story.json")));
+      story = new Story(new JSONObject(Utils.readFile(Constants.RESOURCEDIR + "story.json")));
     } catch (Exception e) {
-      throw new RuntimeException("Couldn't load story json data.\nDetais: "+e.toString());
+      throw new RuntimeException("Couldn't load story json data.\nDetais: " + e.toString());
     }
     try {
       story.init();
     } catch (JSONException e) {
       e.printStackTrace();
-      throw new RuntimeException("Couldn't initalize story.\nDetais: "+e.toString());
+      throw new RuntimeException("Couldn't initalize story.\nDetais: " + e.toString());
     }
     player = story.player;
     gamestate = story.currentState();
-     
-    DrawingCanvas dc = new DrawingCanvas(framewidth,frameheight);
-    f.setSize(framewidth,frameheight);
+
+    DrawingCanvas dc = new DrawingCanvas(framewidth, frameheight);
+    f.setSize(framewidth, frameheight);
     dc.requestFocus();
     dc.setBackground(Color.GRAY);
     dc.addMouseListener(new MouseInputAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
-        System.out.println("("+e.getX()+","+e.getY()+") - ["+f.getWidth()+","+f.getHeight()+"]");
+        System.out.println("(" + e.getX() + "," + e.getY() + ") - [" + f.getWidth() + "," + f.getHeight() + "]");
       }
     });
     f.add(dc);
@@ -114,10 +69,11 @@ class App {
       public void run() {
         try {
           Feature cur = story.getCurrent();
-          if (cur.update()) story.next(); // on completion, advance story
+          if (cur.update())
+            story.next(); // on completion, advance story
           cur = story.getCurrent();
-          if (story.currentState().equals(GameState.EXPLORATION) && !((Area)cur).renderingDialogue()) {
-            Area a = (Area)cur;
+          if (story.currentState().equals(GameState.EXPLORATION) && !((Area) cur).renderingDialogue()) {
+            Area a = (Area) cur;
             player.moveLoop();
             a.checkInteracts(player);
           }
@@ -125,15 +81,15 @@ class App {
           e.printStackTrace();
         }
       }
-    }, 0, (long)(1000/Utils.TPS), TimeUnit.MILLISECONDS);
+    }, 0, (long) (1000 / Constants.TPS), TimeUnit.MILLISECONDS);
 
     // Draw Loop
     while (true) {
-      while (f.isShowing()) { // dont render in background
-        if (System.currentTimeMillis()-dc.prevtime >= 1000.0/Utils.FPS) {
-          dc.repaint();
-          dc.prevtime = System.currentTimeMillis();
-        }
+      if (!f.isShowing())
+        continue;// dont render in background
+      if (System.currentTimeMillis() - dc.prevtime >= 1000.0 / Constants.FPS) {
+        dc.repaint();
+        dc.prevtime = System.currentTimeMillis();
       }
     }
   }
@@ -143,13 +99,13 @@ class App {
     switch (story.currentState()) {
       case CUTSCENE:
         cur.render(g);
-      break;
+        break;
       case EXPLORATION:
         cur.render(g);
         player.render(g);
-      break;
+        break;
       // case BATTLE:
-      //   TODO: implement battles
+      // TODO: implement battles
       // break;
       default:
         System.out.println("!WARNING! Unrecognized GameState!");

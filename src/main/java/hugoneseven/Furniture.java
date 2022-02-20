@@ -9,6 +9,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hugoneseven.Constants.InteractableObject;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
 
@@ -30,20 +31,20 @@ public class Furniture implements InteractableObject {
     this.dialogue = App.story.getDialogue(data.getString("dialogue"));
     this.dialogue.setParent(area);
 
-    JSONArray location= data.getJSONArray("location"); // top left
-    JSONArray dimension= data.getJSONArray("dimensions");
-    for (int x = location.getInt(0); x <= location.getInt(0)+dimension.getInt(0); x++) {
-      for (int y = location.getInt(1); y <= location.getInt(1)+dimension.getInt(1); y++) {
-        this.allcoords.add(Arrays.asList(x,y));
+    JSONArray location = data.getJSONArray("location"); // top left
+    JSONArray dimension = data.getJSONArray("dimensions");
+    for (int x = location.getInt(0); x <= location.getInt(0) + dimension.getInt(0); x++) {
+      for (int y = location.getInt(1); y <= location.getInt(1) + dimension.getInt(1); y++) {
+        this.allcoords.add(Arrays.asList(x, y));
       }
     }
-    this.dimensions = Utils.toArray(Utils.toArray(dimension));
-    this.location   = Utils.toArray(Utils.toArray(location));
+    this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
+    this.location = Utils.toArray(location).toArray(new Integer[location.length()]);;
 
     this.image = new Image(data.getString("image"));
-    double scale = this.dimensions[0]/this.image.getImage().getWidth();
+    double scale = this.dimensions[0] / this.image.getWidth();
     this.image.setScale(scale);
-    this.dimensions[1] = (int)Math.ceil(scale*this.image.getHeight()); // auto rescale height bound
+    this.dimensions[1] = (int) Math.ceil(scale * this.image.getHeight()); // auto rescale height bound
   }
 
   public HashSet<List<Integer>> getCoords() {
@@ -51,13 +52,15 @@ public class Furniture implements InteractableObject {
   }
 
   public void onInteraction() {
-    if (!this.interacted && item != null) App.player.addItem(item);
+    if (!this.interacted && item != null)
+      App.player.addItem(item);
     this.interacted = true;
     this.area.setDialogue(this.dialogue);
   }
 
-  public void render(Graphics2D g){
-    g.drawRect(this.location[0],this.location[1],this.location[0]+this.dimensions[0],this.location[1]+this.dimensions[1]);
-    this.image.draw(this.location[0],this.location[1],g);
+  public void render(Graphics2D g) {
+    g.drawRect(this.location[0], this.location[1], this.location[0] + this.dimensions[0],
+        this.location[1] + this.dimensions[1]);
+    this.image.draw(this.location[0], this.location[1], g);
   }
 }
