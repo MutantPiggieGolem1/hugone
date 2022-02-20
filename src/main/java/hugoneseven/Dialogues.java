@@ -11,6 +11,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hugoneseven.Constants.Emotion;
+import hugoneseven.Constants.Feature;
 import hugoneseven.util.Audio;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
@@ -24,18 +26,19 @@ class Dialogues implements Feature {
 
   public Dialogues(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("dialogue").getJSONObject(id);
-    
+
     this.id = id;
-    
+
     // load individual lines
     JSONArray lines = data.getJSONArray("lines");
-    for (int i = 0; i<lines.length(); i++) {
+    for (int i = 0; i < lines.length(); i++) {
       try {
         this.dialogues.add(new Dialogue(lines.getJSONObject(i)));
       } catch (Exception e) {
-        System.out.println("!WARNING! Subdialogue failed to load for "+id+".");
+        System.out.println("!WARNING! Subdialogue failed to load for " + id + ".");
       }
-    };
+    }
+    ;
     this.index = 0;
   }
 
@@ -58,9 +61,12 @@ class Dialogues implements Feature {
     Dialogue dialogue = this.dialogues.get(this.index);
     if (dialogue.update()) { // advance the dialogue
       this.index++;
-      if (this.update()) {return;}; // make sure its not overflowing
+      if (this.update()) {
+        return;
+      } // make sure its not overflowing
       dialogue = this.dialogues.get(this.index);
-    };
+    }
+
     dialogue.render(g);
   }
 }
@@ -79,13 +85,14 @@ class Dialogue {
     try {
       this.audio = new Audio(data.getString("audio"));
     } catch (Exception e) {
-      System.out.println("!WARNING! Audio file failed to load for dialogue. "+e.getMessage());
+      System.out.println("!WARNING! Audio file failed to load for dialogue. " + e.getMessage());
     }
     try {
-      this.textbox = new Image(data.getString("textbox"));
-      //this.textbox.setScale((App.f.getWidth()-100)/this.textbox.getImage().getWidth());
+      Image img = new Image(data.getString("textbox"));
+      // img.setScale((App.f.getWidth())/img.getWidth());
+      this.textbox = img;
     } catch (Exception e) {
-      System.out.println("!WARNING! Textbox image failed to load for dialogue. "+e.getMessage());
+      System.out.println("!WARNING! Textbox image failed to load for dialogue. " + e.getMessage());
     }
   }
 
@@ -94,9 +101,12 @@ class Dialogue {
   }
 
   public void render(Graphics2D g) {
-    if (!this.audio.isPlaying() && !this.audio.isPlayed()) {this.audio.play();};
-    this.character.render(this.emotion,g);
-    this.textbox.draw(20, App.f.getHeight()-150,g);
-    g.drawString(line,30, App.f.getHeight()-100);
+    if (!this.audio.isPlaying() && !this.audio.isPlayed()) {
+      this.audio.play();
+    }
+
+    this.character.render(this.emotion, g);
+    this.textbox.draw(20, App.f.getHeight() - 150, g);
+    g.drawString(line, 30, App.f.getHeight() - 100);
   }
 }

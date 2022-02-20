@@ -5,6 +5,9 @@ import org.json.JSONObject;
 
 import java.awt.Graphics2D;
 
+import hugoneseven.Constants.BattleState;
+import hugoneseven.Constants.Emotion;
+import hugoneseven.Constants.Feature;
 import hugoneseven.util.Audio;
 
 @SuppressWarnings("unused")
@@ -14,7 +17,7 @@ class Battle implements Feature {
   private BattleState state;
   private Dialogues dialogue;
   private Audio losetrack;
-  
+
   public Battle(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("battles").getJSONObject(id);
 
@@ -36,24 +39,24 @@ class Battle implements Feature {
       case DIALOGUE:
         this.dialogue.render(g);
       case DEMO:
-        this.enemy.render(Emotion.BOP,g); // possibly change to an animation
-        App.player.render(Emotion.MAD,g);
+        this.enemy.render(Emotion.BOP, g); // possibly change to an animation
+        App.player.render(Emotion.MAD, g);
         // play the notes perfectly
-      break;
+        break;
       case FIGHT:
-        App.player.render(Emotion.BOP,g); // probably change
-        this.enemy.render(Emotion.MAD,g);
+        App.player.render(Emotion.BOP, g); // probably change
+        this.enemy.render(Emotion.MAD, g);
         // show notes
-      break;
+        break;
       case LOSE:
         this.losetrack.play();
         if (this.losetrack.isPlayed()) {
           // death happens here
         }
-      break;
+        break;
       case WIN:
         // uh idk
-      break;
-    } 
+        break;
+    }
   }
 }

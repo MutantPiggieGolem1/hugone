@@ -2,6 +2,9 @@ package hugoneseven;
 
 import org.json.*;
 
+import hugoneseven.Constants.Feature;
+import hugoneseven.Constants.InteractableObject;
+import hugoneseven.Constants.RenderState;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
 import java.awt.Graphics2D;
@@ -28,13 +31,13 @@ class Area implements Feature {
     this.image = new Image(data.getString("image"));
     this.dimensions[0] = dims.getInt(0);
     this.dimensions[1] = dims.getInt(1);
-    this.image.setScale(this.dimensions[0]/this.image.getImage().getWidth());
+    this.image.setScale(this.dimensions[0] / this.image.getImage().getWidth());
 
     // setup furniture
     JSONArray furnituredata = data.getJSONArray("furniture");
-    for (int i = 0; i<furnituredata.length(); i++) {
+    for (int i = 0; i < furnituredata.length(); i++) {
       JSONObject furn = furnituredata.getJSONObject(i);
-      Furniture furni = new Furniture(furn,this);
+      Furniture furni = new Furniture(furn, this);
       this.furniture.add(furni);
     }
 
@@ -57,7 +60,7 @@ class Area implements Feature {
   }
 
   public void render(Graphics2D g) {
-    this.image.draw(0,0,g);
+    this.image.draw(0, 0, g);
     for (Furniture furniture : this.furniture) {
       furniture.render(g);
     }
@@ -70,10 +73,13 @@ class Area implements Feature {
       }
     }
   }
+
   public void checkInteracts(Player p) {
-    if (!p.spaceDown()) return;
+    if (!p.spaceDown())
+      return;
     this.furniture.forEach((InteractableObject f) -> {
-      if (p.facingTowards(f.getCoords())) f.onInteraction();
+      if (p.facingTowards(f.getCoords()))
+        f.onInteraction();
     });
   }
 
@@ -81,15 +87,19 @@ class Area implements Feature {
     for (Furniture f : this.furniture) {
       if (f.getCoords().contains(coords)) {
         return true;
-      };
+      }
+      ;
     }
     return false;
   }
+
   public boolean checkCollisions(int[] coords) {
-    return this.checkCollisions(Arrays.asList(coords[0],coords[1]));
+    return this.checkCollisions(Arrays.asList(coords[0], coords[1]));
   }
+
   public boolean checkCollisions(List<Integer> coords) {
-    return (coords.get(0) < 0 || coords.get(1) < 0 || coords.get(0) > this.dimensions[0] || coords.get(1) > this.dimensions[1]) || this.collideFurniture(coords);
+    return (coords.get(0) < 0 || coords.get(1) < 0 || coords.get(0) > this.dimensions[0]
+        || coords.get(1) > this.dimensions[1]) || this.collideFurniture(coords);
   }
 
   public boolean renderingDialogue() {

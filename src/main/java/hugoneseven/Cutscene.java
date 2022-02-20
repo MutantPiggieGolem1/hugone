@@ -1,12 +1,14 @@
 package hugoneseven;
+
 import java.awt.Graphics2D;
 
+import hugoneseven.Constants.Feature;
 import hugoneseven.util.Video;
 
 class Cutscene implements Feature {
   Video video;
 
-  public Cutscene(Video vid){
+  public Cutscene(Video vid) {
     this.video = vid;
   }
 
@@ -14,7 +16,10 @@ class Cutscene implements Feature {
     return this.video.isPlayed();
   }
 
-  public void render(Graphics2D g){
-    if (!this.video.isPlaying()) {this.video.play();};
+  public void render(Graphics2D g) {
+    if (!this.video.isPlaying()) {
+      this.video.play();
+    }
+    ;
   }
 };
