@@ -2,6 +2,9 @@ package hugoneseven.util;
 
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
+
+import javax.imageio.ImageIO;
 import javax.swing.*;
 
 import hugoneseven.Constants;
@@ -12,7 +15,7 @@ public class Image extends JPanel {
 
   public Image(String filepath) {
     try {
-      this.image = Utils.getImage(Constants.RESOURCEDIR + filepath);
+      this.image = ImageIO.read(new File(Constants.RESOURCEDIR + filepath));
     } catch (Exception e) {
       System.out.println("!WARNING! Image file failed to load @" + filepath);
       this.image = Utils.NULLIMG.getImage();

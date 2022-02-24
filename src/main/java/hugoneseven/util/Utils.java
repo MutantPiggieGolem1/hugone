@@ -1,16 +1,12 @@
 package hugoneseven.util;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
-
-import javax.imageio.ImageIO;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -60,6 +56,29 @@ public class Utils {
     dirkeys.put(KeyEvent.VK_A, Direction.LEFT);
     dirkeys.put(KeyEvent.VK_D, Direction.RIGHT);
   }
+  public static final HashMap<Direction,Integer> keydirs = new HashMap<Direction,Integer>();
+  static {
+    keydirs.put(Direction.UP,   KeyEvent.VK_W);
+    keydirs.put(Direction.DOWN, KeyEvent.VK_S);
+    keydirs.put(Direction.LEFT, KeyEvent.VK_A);
+    keydirs.put(Direction.RIGHT,KeyEvent.VK_D);
+  }
+  public static HashMap<Direction, Image> arrowimages = new HashMap<Direction, Image>();
+  static {
+      arrowimages.put(Direction.LEFT , new Image("ARROW_LEFT.png" ));
+      arrowimages.put(Direction.RIGHT, new Image("ARROW_RIGHT.png"));
+      arrowimages.put(Direction.UP   , new Image("ARROW_UP.png"   ));
+      arrowimages.put(Direction.DOWN , new Image("ARROW_DOWN.png" ));
+      arrowimages.put(Direction.NONE , new Image("ARROW_NONE.png" ));
+  }
+  public static final HashMap<Direction,Integer> dirtoint = new HashMap<Direction,Integer>();
+  static {
+    dirtoint.put(Direction.NONE ,0);
+    dirtoint.put(Direction.LEFT ,0);
+    dirtoint.put(Direction.UP   ,1);
+    dirtoint.put(Direction.DOWN ,2);
+    dirtoint.put(Direction.RIGHT,3);
+  }
 
   public static int[] getChange(Direction dir) {
     return getChange(dir, 10);
@@ -85,9 +104,5 @@ public class Utils {
         break;
     }
     return pos;
-  }
-
-  public static BufferedImage getImage(String filepath) throws IOException {
-    return ImageIO.read(new File(filepath));
   }
 }

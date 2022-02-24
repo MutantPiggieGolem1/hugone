@@ -2,5 +2,9 @@
     "LEFT",
     "RIGHT",
     "REST2",
-    "DEATH"
+    "UP",
+    "DOWN",
+    "LEFT",
+    "RIGHT",
+    "RIGHT"
 ]

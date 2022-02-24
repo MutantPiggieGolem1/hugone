@@ -8,6 +8,7 @@ import hugoneseven.Constants.RenderState;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
@@ -88,7 +89,6 @@ class Area implements Feature {
       if (f.getCoords().contains(coords)) {
         return true;
       }
-      ;
     }
     return false;
   }
@@ -105,4 +105,6 @@ class Area implements Feature {
   public boolean renderingDialogue() {
     return this.renderstate.equals(RenderState.DIALOGUE);
   }
+
+  public void reccieveKeyPress(KeyEvent e) {}
 }

@@ -1,12 +1,10 @@
 package hugoneseven;
 
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 
-import hugoneseven.util.Image;
-
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 public class Constants {
     public static enum GameState {
@@ -45,10 +43,11 @@ public class Constants {
     }
 
     public static enum BattleState {
-        DIALOGUE, // enemy/player is saying something
+        INTRO,
         FIGHT, // player is hitting notes
         LOSE, // <play death theme>, so sad
-        WIN // u win pog
+        WIN, // u win pog
+        FINISHED // game officially ended
     }
 
     public static interface InteractableObject {
@@ -62,17 +61,15 @@ public class Constants {
         public abstract boolean update(); // check for completion
 
         public abstract void render(Graphics2D g); // draw this feature
+
+        public abstract void reccieveKeyPress(KeyEvent e); // wasd only
     }
 
     public static final String RESOURCEDIR = "./src/main/resources/";
     public static final double FPS = 60.0;
     public static final double TPS = 20.0;
-    public static Image getArrowImage(Direction dir) {
-        HashMap<Direction,String> imagepaths = new HashMap<Direction,String>();
-        imagepaths.put(Direction.LEFT,"leftarrow.png");
-        imagepaths.put(Direction.RIGHT,"rightarrow.png");
-        imagepaths.put(Direction.UP,"uparrow.png");
-        imagepaths.put(Direction.DOWN,"downarrow.png");
-        return new Image(RESOURCEDIR+imagepaths.get(dir));
-    }
+
+    public static final int HEALTHPERHEART = 25;
+    public static final int MINNOTEMOVE = 2;
+    public static final int HITMARGIN = 150;
 }

@@ -93,8 +93,13 @@
     "NOMMA_BATTLE": {
       "enemy": "ENEMY_1",
       "damage": 25,
-      "background": "nomma_battle_bg.png",
-      "notes": "nomma_battle_notes.json"
+      "introcard" : "NOMMA_BATTLE_INTROCARD.png",
+      "introscene": "NOMMA_BATTLE_INTRO.mp4",
+      "background": "NOMMA_BATTLE_BG.png",
+      
+      "bpm": 60,
+      "notes": "nomma_battle_notes.json",
+      "speed": 300
     }
   },
   "dialogue": {

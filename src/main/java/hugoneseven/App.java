@@ -72,7 +72,7 @@ class App {
           cur = story.getCurrent();
           switch (story.currentState()) {
             case CUTSCENE:
-            
+              break;
             case EXPLORATION:
               Area a = (Area) cur;
               if(!a.renderingDialogue()) {
@@ -87,6 +87,7 @@ class App {
           }
         } catch (Exception e) {
           e.printStackTrace();
+          System.exit(1);
         }
       }
     }, 0, (long) (1000 / Constants.TPS), TimeUnit.MILLISECONDS);

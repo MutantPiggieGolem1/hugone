@@ -51,6 +51,7 @@ public class Player extends Character implements KeyListener {
       case KeyEvent.VK_D:
         this.todir = Utils.dirkeys.get(kc);
         this.tomove = MoveState.MOVE1;
+        App.story.getCurrent().reccieveKeyPress(e);
         break;
       case KeyEvent.VK_SPACE:
         this.spacedown = true;
@@ -113,7 +114,4 @@ public class Player extends Character implements KeyListener {
     if (!a.checkCollisions(target))
       this.pos = target;
   }
-
-public void renderHealth(Graphics2D g) {
-}
 }

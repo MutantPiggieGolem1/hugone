@@ -1,6 +1,7 @@
 package hugoneseven;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -69,6 +70,9 @@ class Dialogues implements Feature {
 
     dialogue.render(g);
   }
+
+  @Override
+  public void reccieveKeyPress(KeyEvent e) {}
 }
 
 class Dialogue {

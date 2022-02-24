@@ -1,6 +1,7 @@
 package hugoneseven;
 
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 
 import hugoneseven.Constants.Feature;
 import hugoneseven.util.Video;
@@ -20,6 +21,7 @@ class Cutscene implements Feature {
     if (!this.video.isPlaying()) {
       this.video.play();
     }
-    ;
   }
+
+  public void reccieveKeyPress(KeyEvent e) {}
 };
