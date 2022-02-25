@@ -62,6 +62,7 @@ public class Utils {
     keydirs.put(Direction.DOWN, KeyEvent.VK_S);
     keydirs.put(Direction.LEFT, KeyEvent.VK_A);
     keydirs.put(Direction.RIGHT,KeyEvent.VK_D);
+    keydirs.put(Direction.NONE, KeyEvent.VK_ESCAPE);
   }
   public static HashMap<Direction, Image> arrowimages = new HashMap<Direction, Image>();
   static {
@@ -70,6 +71,14 @@ public class Utils {
       arrowimages.put(Direction.UP   , new Image("ARROW_UP.png"   ));
       arrowimages.put(Direction.DOWN , new Image("ARROW_DOWN.png" ));
       arrowimages.put(Direction.NONE , new Image("ARROW_NONE.png" ));
+  }
+  public static HashMap<Direction, Image> longarrowimages = new HashMap<Direction, Image>();
+  static {
+      longarrowimages.put(Direction.LEFT , new Image("ARROW_LEFT_HOLD.png" ));
+      longarrowimages.put(Direction.RIGHT, new Image("ARROW_RIGHT_HOLD.png"));
+      longarrowimages.put(Direction.UP   , new Image("ARROW_UP_HOLD.png"   ));
+      longarrowimages.put(Direction.DOWN , new Image("ARROW_DOWN_HOLD.png" ));
+      longarrowimages.put(Direction.NONE , new Image("ARROW_NONE_HOLD.png" ));
   }
   public static final HashMap<Direction,Integer> dirtoint = new HashMap<Direction,Integer>();
   static {

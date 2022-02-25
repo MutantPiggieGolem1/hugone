@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
 import hugoneseven.Constants.Feature;
+import hugoneseven.Constants.KeyPress;
 import hugoneseven.util.Video;
 
 class Cutscene implements Feature {
@@ -23,5 +24,5 @@ class Cutscene implements Feature {
     }
   }
 
-  public void reccieveKeyPress(KeyEvent e) {}
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
 };

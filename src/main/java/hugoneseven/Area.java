@@ -4,6 +4,7 @@ import org.json.*;
 
 import hugoneseven.Constants.Feature;
 import hugoneseven.Constants.InteractableObject;
+import hugoneseven.Constants.KeyPress;
 import hugoneseven.Constants.RenderState;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
@@ -32,7 +33,7 @@ class Area implements Feature {
     this.image = new Image(data.getString("image"));
     this.dimensions[0] = dims.getInt(0);
     this.dimensions[1] = dims.getInt(1);
-    this.image.setScale(this.dimensions[0] / this.image.getImage().getWidth());
+    this.image.scaleToSize(this.dimensions[0]);
 
     // setup furniture
     JSONArray furnituredata = data.getJSONArray("furniture");
@@ -106,5 +107,5 @@ class Area implements Feature {
     return this.renderstate.equals(RenderState.DIALOGUE);
   }
 
-  public void reccieveKeyPress(KeyEvent e) {}
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
 }

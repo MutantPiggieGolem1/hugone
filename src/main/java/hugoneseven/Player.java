@@ -12,6 +12,7 @@ import org.json.JSONException;
 
 import hugoneseven.Constants.MoveState;
 import hugoneseven.Constants.Direction;
+import hugoneseven.Constants.KeyPress;
 import hugoneseven.util.Utils;
 
 public class Player extends Character implements KeyListener {
@@ -51,7 +52,7 @@ public class Player extends Character implements KeyListener {
       case KeyEvent.VK_D:
         this.todir = Utils.dirkeys.get(kc);
         this.tomove = MoveState.MOVE1;
-        App.story.getCurrent().reccieveKeyPress(e);
+        App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYDOWN);
         break;
       case KeyEvent.VK_SPACE:
         this.spacedown = true;
@@ -66,6 +67,7 @@ public class Player extends Character implements KeyListener {
       case KeyEvent.VK_S:
       case KeyEvent.VK_D:
         this.tomove = MoveState.STOP;
+        App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYUP);
         break;
       case KeyEvent.VK_SPACE:
         this.spacedown = false;

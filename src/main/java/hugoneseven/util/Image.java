@@ -21,9 +21,9 @@ public class Image extends JPanel {
       this.image = Utils.NULLIMG.getImage();
     }
   }
-
-  public void setScale(double scale) {
-    this.scale = scale;
+  public double scaleToSize(int size) {
+    this.scale = size / this.image.getWidth();
+    return this.scale;
   }
 
   public BufferedImage getImage() {

@@ -55,7 +55,12 @@
       "name": "Nomma",
       "health": 60,
       "emotions": {
-        "MAD": "NOMMA_MAD.png"
+        "MAD": "NOMMA_MAD.png",
+        "BOP": "NOMMA_BOP.png",
+        "HURT_UP": "NOMMA_HURT_UP.png",
+        "HURT_DOWN": "NOMMA_HURT_DOWN.png",
+        "HURT_LEFT": "NOMMA_HURT_LEFT.png",
+        "HURT_RIGHT": "NOMMA_HURT_RIGHT.png"
       },
       "directions": {}
     },

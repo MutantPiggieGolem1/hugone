@@ -42,8 +42,7 @@ public class Furniture implements InteractableObject {
     this.location = Utils.toArray(location).toArray(new Integer[location.length()]);;
 
     this.image = new Image(data.getString("image"));
-    double scale = this.dimensions[0] / this.image.getWidth();
-    this.image.setScale(scale);
+    double scale = this.image.scaleToSize(this.dimensions[0]);
     this.dimensions[1] = (int) Math.ceil(scale * this.image.getHeight()); // auto rescale height bound
   }
 

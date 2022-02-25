@@ -27,7 +27,15 @@ public class Constants {
         EXCITED,
         SAD,
         MAD,
-        BOP // for music battles
+
+        // for music battles
+        BOP,
+        HIT,
+        HURT_UP,
+        HURT_DOWN,
+        HURT_LEFT,
+        HURT_RIGHT
+        
         // etc.
     }
 
@@ -50,6 +58,11 @@ public class Constants {
         FINISHED // game officially ended
     }
 
+    public static enum KeyPress {
+        KEYDOWN,
+        KEYUP
+    }
+
     public static interface InteractableObject {
         public abstract void onInteraction();
 
@@ -58,11 +71,11 @@ public class Constants {
     }
 
     public static interface Feature {
-        public abstract boolean update(); // check for completion
+        public boolean update(); // check for completion
 
-        public abstract void render(Graphics2D g); // draw this feature
+        public void render(Graphics2D g); // draw this feature
 
-        public abstract void reccieveKeyPress(KeyEvent e); // wasd only
+        public abstract void reccieveKeyPress(KeyEvent e, KeyPress keydown); // wasd only
     }
 
     public static final String RESOURCEDIR = "./src/main/resources/";

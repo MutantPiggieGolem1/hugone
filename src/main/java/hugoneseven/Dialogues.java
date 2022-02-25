@@ -14,6 +14,7 @@ import org.json.JSONObject;
 
 import hugoneseven.Constants.Emotion;
 import hugoneseven.Constants.Feature;
+import hugoneseven.Constants.KeyPress;
 import hugoneseven.util.Audio;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
@@ -72,7 +73,7 @@ class Dialogues implements Feature {
   }
 
   @Override
-  public void reccieveKeyPress(KeyEvent e) {}
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
 }
 
 class Dialogue {
@@ -93,7 +94,7 @@ class Dialogue {
     }
     try {
       Image img = new Image(data.getString("textbox"));
-      // img.setScale((App.f.getWidth())/img.getWidth());
+      // img.scaleToSize(App.f.getWidth());
       this.textbox = img;
     } catch (Exception e) {
       System.out.println("!WARNING! Textbox image failed to load for dialogue. " + e.getMessage());

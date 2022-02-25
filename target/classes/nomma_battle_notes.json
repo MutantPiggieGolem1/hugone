@@ -6,5 +6,8 @@
     "DOWN",
     "LEFT",
     "RIGHT",
-    "RIGHT"
+    "RIGHT",
+    "DOWN2",
+    "REST1",
+    "DEATH4"
 ]

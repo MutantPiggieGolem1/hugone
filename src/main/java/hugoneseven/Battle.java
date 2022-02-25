@@ -17,6 +17,7 @@ import hugoneseven.Constants.Direction;
 import hugoneseven.Constants.Emotion;
 import hugoneseven.Constants.Feature;
 import hugoneseven.Constants.GameState;
+import hugoneseven.Constants.KeyPress;
 import hugoneseven.util.Audio;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
@@ -24,7 +25,8 @@ import hugoneseven.util.Video;
 
 @SuppressWarnings("unused")
 class Battle implements Feature {
-  private static final int horizontalmargin = 100;
+  private static final int leftmargin = 400;
+  private static final int rightmargin = 100;
   private static final int verticalmargin = 20;
   private String id;
   private Character enemy;
@@ -42,8 +44,10 @@ class Battle implements Feature {
   private Image background;
   public int notespeed;
   public int bpm;
+  private int beat;
 
   private long lasttime;
+  private Emotion enemem = Emotion.BOP;
 
   public Battle(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("battles").getJSONObject(id);
@@ -54,6 +58,7 @@ class Battle implements Feature {
     this.notespeed = data.getInt("speed");
     this.bpm = data.getInt("bpm");
     this.state = BattleState.INTRO;
+    this.beat = 0;
     try {
       this.losetrack = new Audio("faintcourage.wav");
       this.background = new Image(data.getString("background"));
@@ -90,7 +95,9 @@ class Battle implements Feature {
           tn.add(notelen > 1 ? new HoldNote(this, notedir, notelen) : new Note(this, notedir));
           break;
         case "DEATH":
-          tn.add(new DeathNote(this));
+          for (int o = 0; o < notelen; o++) {
+            tn.add(new DeathNote(this));
+          }
           break;
         case "NONE":
         case "REST":
@@ -122,6 +129,9 @@ class Battle implements Feature {
     }
 
     if (this.lasttime + (60 * 1000 / this.bpm) >= System.currentTimeMillis()) return; // has enough time passed since the last beat?
+    
+    this.beat++;
+
     if (this.notes.hasNext()) { // throw in the next beat
       Note n = this.notes.next();
       if (n != null) {
@@ -139,11 +149,16 @@ class Battle implements Feature {
     }
     this.renderedNotes.removeAll(dq);
     this.lasttime = System.currentTimeMillis();
+    this.enemem = Emotion.BOP; // reset rendering
   }
 
-  public void miss() { // specifically for notes.
+  // specifically for notes.
+  public void hit(Direction dir) {
+    this.enemem = Emotion.valueOf("HURT_"+dir.toString());
+  }
+  public void miss() {
+    this.enemem = Emotion.HIT;
     App.player.health -= this.notedamage;
-    // render effects here?
   }
 
   public void render(Graphics2D g) {
@@ -158,8 +173,7 @@ class Battle implements Feature {
         }
         break;
       case FIGHT:
-        App.player.render(Emotion.BOP, g); // probably change
-        this.enemy.render(Emotion.MAD, g);
+        this.enemy.render(this.enemem, g);
 
         for (Note n : this.renderedNotes) { // draw all the notes
           if (n == null) continue;
@@ -184,8 +198,8 @@ class Battle implements Feature {
   }
 
   public int getSpawnX(Direction direction) {
-    float columnwidth = ((float) (App.framewidth - horizontalmargin * 2)) / 4.0f;
-    return (int) Math.round(horizontalmargin + columnwidth * Utils.dirtoint.get(direction) + columnwidth / 2.0);
+    float columnwidth = ((float) (App.framewidth - (leftmargin+rightmargin))) / 4.0f;
+    return (int) Math.round(leftmargin + columnwidth * Utils.dirtoint.get(direction) + columnwidth / 2.0);
   }
 
   public int getSpawnY() {
@@ -196,10 +210,18 @@ class Battle implements Feature {
     return App.frameheight - verticalmargin;
   }
 
-  public void reccieveKeyPress(KeyEvent e) {
+  public int getBeat() {
+    return this.beat;
+  }
+
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {
     for (Note n : this.renderedNotes) {
       if (Utils.keydirs.get(n.direction) == e.getKeyCode() && Math.abs(n.getY()-this.getEndY()) < Constants.HITMARGIN) {
-        n.hit();
+        if (n instanceof HoldNote) {
+          ((HoldNote)n).hit(p);
+        } else {
+          n.hit();
+        }
         return;
       }
     }
@@ -207,10 +229,10 @@ class Battle implements Feature {
 }
 
 class Note { // TODO: Implement other notes
-  private Battle parent;
   public final Direction direction;
-  private Image image;
-  private int[] location;
+  protected Battle parent;
+  protected Image image;
+  protected int[] location;
   private boolean hit;
   private long lasttime;
 
@@ -227,7 +249,7 @@ class Note { // TODO: Implement other notes
   }
 
   public void beat() {
-    if (!this.hit && this.location[1] > this.parent.getEndY()) {
+    if (!this.hit && this.pastBound()) {
       this.parent.miss();
       this.hit = true;
     }
@@ -250,25 +272,56 @@ class Note { // TODO: Implement other notes
   }
 
   public void hit() {
+    this.parent.hit(this.direction);
     this.hit = true;
   }
 
   public int getY() {
     return this.location[1];
   }
+
+  protected boolean pastBound() {
+    return this.location[1] > this.parent.getEndY();
+  }
 }
 
 class HoldNote extends Note {
   Integer holdtime;
+  int keydownon;
 
   public HoldNote(Battle p, Direction dir, int leng) {
     super(p, dir);
     this.holdtime = leng;
+    this.image = Utils.longarrowimages.get(dir); // TODO: different lengths of arrows
+  }
+
+  public void hit(KeyPress p) {
+    switch (p) {
+      case KEYDOWN:
+        this.keydownon = this.parent.getBeat();
+        break;
+      case KEYUP:
+        // the note was held for long enough
+        if (this.keydownon > 0 && Math.abs( (super.parent.getBeat()-this.keydownon) - this.holdtime ) <= 1) {this.hit();}
+        System.out.println("Battle Beat: ["+super.parent.getBeat()+"] | Button held for: ["+(super.parent.getBeat()-this.keydownon)+"] | Note Length: ["+this.holdtime+"] | Hold Difference: ["+((super.parent.getBeat()-this.keydownon) - this.holdtime)+"] Valid: "+(Math.abs( (super.parent.getBeat()-this.keydownon) - this.holdtime ) <= 1)+";");
+        this.keydownon = -1;
+        break;
+    }
+  }
+
+  @Override
+  protected boolean pastBound() {
+    return this.location[1] > this.parent.getEndY() && this.keydownon < 0; // both past bound and not holding (allows too long notes)
   }
 }
 
 class DeathNote extends Note {
   public DeathNote(Battle p) {
     super(p, Direction.NONE);
+  }
+
+  @Override
+  public void hit() {
+    // L cant hit this bozo
   }
 }

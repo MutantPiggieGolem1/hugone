@@ -41,7 +41,7 @@ public class Character {
     for (String key : JSONObject.getNames(images)) {
       String value = images.getString(key);
       Image img = new Image(value);
-      img.setScale(128 / img.getWidth());
+      img.scaleToSize(128);
       this.emotions.put(Emotion.valueOf(key), img);
     }
 
@@ -59,7 +59,7 @@ public class Character {
 
             if (dirmovs.has(mov)) {
               Image img = new Image(dirmovs.getString(mov));
-              img.setScale(64 / img.getWidth());
+              img.scaleToSize(64);
               this.directions.get(direction).put(movestate, img);
             } else {
               this.directions.get(direction).put(movestate, Utils.NULLIMG);
