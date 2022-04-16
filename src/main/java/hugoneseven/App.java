@@ -2,14 +2,12 @@ package hugoneseven;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
 import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
-import javax.swing.event.MouseInputAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,12 +51,12 @@ class App {
     f.setSize(framewidth, frameheight);
     dc.requestFocus();
     dc.setBackground(Color.GRAY);
-    dc.addMouseListener(new MouseInputAdapter() {
+    dc.addMouseListener(new javax.swing.event.MouseInputAdapter() {
       @Override
-      public void mousePressed(MouseEvent e) {
+      public void mousePressed(java.awt.event.MouseEvent e) {
         if (story.currentState().equals(GameState.EXPLORATION)) {
           Area a = (Area)story.getCurrent();
-          System.out.println("(" + e.getX() + "," + e.getY() + ") - [" + f.getWidth() + "," + f.getHeight() + "] {" + a.checkCollisions(java.util.Arrays.asList(e.getX(),e.getY())) + "}");
+          System.out.println("(" + e.getX() + "," + e.getY() + ") - [" + f.getWidth() + "," + f.getHeight() + "] {" + a.checkCollisions(new java.awt.Point(e.getX(),e.getY())) + "}");
         }
       }
     });
@@ -118,6 +116,15 @@ class App {
       case EXPLORATION:
         cur.render(g);
         player.render(g);
+
+        java.awt.Point pt = (java.awt.Point)App.shit.get("ploc1");
+        if (pt == null) break;
+        g.drawOval(pt.x,pt.y,1,1);
+
+        java.awt.Point pl = (java.awt.Point)App.shit.get("ploc");
+        if (pl == null) break;
+        g.drawOval(pl.x,pl.y,3,3);
+
         break;
       case BATTLE:
         cur.render(g);

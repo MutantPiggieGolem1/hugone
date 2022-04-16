@@ -1,8 +1,6 @@
 package hugoneseven;
 
-import java.util.HashSet;
-import java.util.List;
-
+import java.awt.Point;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -68,7 +66,7 @@ public class Constants {
         public abstract void onInteraction();
 
         // public void onInteraction(int count);
-        public abstract HashSet<List<Integer>> getCoords();
+        public abstract boolean collidesWith(Point p);
     }
 
     public static interface Feature {
@@ -88,4 +86,5 @@ public class Constants {
     public static final int HEALTHPERHEART = 25;
     public static final int MINNOTEMOVE = 2;
     public static final int HITMARGIN = 150;
+    public static final int CHARACTERSIZE = 64;
 }

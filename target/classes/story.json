@@ -80,7 +80,7 @@
     "BOTTOM_FLOOR": {
       "image": "BOTTOM_FLOOR.png",
       "find": ["wallet"],
-      "startlocation": [100,100],
+      "startlocation": [160,160],
       "dimensions": [[0,50],[1200,700]],
       "furniture": [
         {

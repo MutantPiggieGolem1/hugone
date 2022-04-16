@@ -1,6 +1,7 @@
 package hugoneseven;
 
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.util.HashMap;
 
 import org.json.JSONException;
@@ -25,7 +26,7 @@ public class Character {
   private HashMap<Direction, HashMap<MoveState, Image>> directions = new HashMap<Direction, HashMap<MoveState, Image>>();
 
   protected int health = -1;
-  protected int[] pos = new int[] { 0, 0 }; // placeholder
+  protected Point pos = new Point(); // placeholder
   public final HashMap<MoveState, MoveState> movemap = new HashMap<MoveState, MoveState>();
 
   private MoveState lastmovestate = MoveState.STOP;
@@ -59,7 +60,7 @@ public class Character {
 
             if (dirmovs.has(mov)) {
               Image img = new Image(dirmovs.getString(mov));
-              img.scaleToWidth(64);
+              img.scaleToWidth(Constants.CHARACTERSIZE);
               this.directions.get(direction).put(movestate, img);
             } else {
               this.directions.get(direction).put(movestate, Utils.NULLIMG);
@@ -108,10 +109,14 @@ public class Character {
   }
 
   public void render(Direction dir, MoveState mvs, Graphics2D g) {
-    this.directions.get(dir).get(mvs).draw(this.pos[0], this.pos[1], g);
+    this.directions.get(dir).get(mvs).draw(this.pos.x, this.pos.y, g);
   }
 
   public void moveLoop() {
     this.lastmovestate = movemap.get(this.lastmovestate); // update the move state
+  }
+
+  protected Point getCenter() {
+    return new Point(this.pos.x+Constants.CHARACTERSIZE/2,this.pos.y+Constants.CHARACTERSIZE/2);
   }
 }

@@ -1,13 +1,11 @@
 package hugoneseven;
 
-import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
 
 import org.json.JSONException;
 
@@ -87,10 +85,11 @@ public class Player extends Character implements KeyListener {
     return true;
   }
 
-  public boolean facingTowards(HashSet<List<Integer>> coords) {
-    int[] delta = Utils.getChange(this.direction, 5);
-    List<Integer> target = Arrays.asList(pos[0] + delta[0], pos[1] + delta[1]);
-    return coords.contains(target);
+  public Point facingTowards() {
+    Point delta = Utils.getChange(this.direction);
+    Point pclone= ((Point)this.pos.clone());
+    pclone.translate(delta.x, delta.y);
+    return pclone;
   }
 
   public void moveLoop() {
@@ -112,12 +111,13 @@ public class Player extends Character implements KeyListener {
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
-    int[] target = Utils.getChange(pos,this.direction,10);
-    if (!a.checkCollisions(target))
-      this.pos = target;
+    App.shit.put("ploc1",this.pos);
+    App.shit.put("ploc",this.getCenter());
+    if (!a.checkCollisions(Utils.getChange(this.getCenter(),this.direction,10)))
+      this.pos = this.facingTowards();
   }
 
-  public void teleport(int[] loc) {
-    this.pos = new int[] { loc[0] , loc[1] };
+  public void teleport(Point loc) {
+    this.pos = (Point)loc.clone();
   }
 }

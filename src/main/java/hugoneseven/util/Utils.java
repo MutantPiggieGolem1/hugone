@@ -1,6 +1,7 @@
 package hugoneseven.util;
 
 import java.awt.event.KeyEvent;
+import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -90,25 +91,23 @@ public class Utils {
     dirtoint.put(Direction.RIGHT,3);
   }
 
-  public static int[] getChange(Direction dir) {
-    return getChange(new int[] { 0, 0 },dir, 10);
+  public static Point getChange(Direction dir) {
+    return getChange(new Point(), dir, 10);
   };
-  public static int[] getChange(Direction dir, int d) {
-    return getChange(new int[] { 0, 0 },dir, d);
-  }
-  public static int[] getChange(int[] pos, Direction dir, int d) { 
+  public static Point getChange(Point pos, Direction dir, int d) {
+    pos = (Point)pos.clone();
     switch (dir) {
       case UP:
-        pos[1] -= d;
+        pos.translate(0,-d);
         break;
       case DOWN:
-        pos[1] += d;
+        pos.translate(0,d);
         break;
       case LEFT:
-        pos[0] -= d;
+        pos.translate(-d,0);
         break;
       case RIGHT:
-        pos[0] += d;
+        pos.translate(d,0);
         break;
       case NONE:
       default:

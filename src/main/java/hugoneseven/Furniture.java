@@ -1,9 +1,8 @@
 package hugoneseven;
 
 import java.awt.Graphics2D;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.awt.Rectangle;
+import java.awt.Point;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -21,7 +20,8 @@ public class Furniture implements InteractableObject {
   private Dialogues dialogue;
   private Integer[] location;
   private Integer[] dimensions;
-  private HashSet<List<Integer>> allcoords = new HashSet<List<Integer>>();
+  private Rectangle rect;
+  private boolean collide;
   private boolean interacted = false;
 
   public Furniture(JSONObject data, Area area) throws JSONException {
@@ -40,20 +40,12 @@ public class Furniture implements InteractableObject {
     double scale = this.image.scaleToWidth(this.dimensions[0]);
     this.dimensions[1] = (int) Math.floor(scale * this.image.getHeight()); // auto rescale height bound
 
-    if (!data.getBoolean("collide")) return;
-    App.shit.put("furncolcount",0);
-    for (int x = this.location[0]; x <= this.location[0] + this.dimensions[0]; x++) {
-      for (int y = this.location[1]; y <= this.location[1] + this.dimensions[1]; y++) {
-        App.shit.put("furncolcount",(Integer)App.shit.get("furncolcount")+1);
-        if (App.shit.get("furncolcount").equals(1)) App.shit.put("furncoord1",Arrays.asList(x, y));
-        else if (App.shit.get("furncolcount").equals(this.dimensions[0]*this.dimensions[1])) App.shit.put("furncoord2",Arrays.asList(x, y));
-        this.allcoords.add(Arrays.asList(x, y));
-      }
-    }
+    this.rect = new Rectangle(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
+    this.collide = data.getBoolean("collide");
   }
 
-  public HashSet<List<Integer>> getCoords() {
-    return this.allcoords;
+  public boolean collidesWith(Point p) {
+    return this.collide && this.rect.contains(p);
   }
 
   public void onInteraction() {
@@ -63,12 +55,7 @@ public class Furniture implements InteractableObject {
     this.area.setDialogue(this.dialogue);
   }
 
-  @SuppressWarnings("unchecked")
   public void render(Graphics2D g) {
     this.image.draw(this.location[0], this.location[1], g);
-    g.drawRect(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
-    List<Integer> c1 = (List<Integer>)App.shit.get("furncoord1");
-    List<Integer> c2 = (List<Integer>)App.shit.get("furncoord2");
-    g.drawLine(c1.get(0),c1.get(1), c2.get(0), c2.get(1));
   }
 }

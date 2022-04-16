@@ -2,6 +2,7 @@ package hugoneseven;
 
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
+import java.awt.Point;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -253,7 +254,7 @@ class Note {
   public final Direction direction;
   protected Battle parent;
   protected Image image;
-  protected int[] location;
+  protected Point location;
   protected boolean hit;
   private long lasttime;
 
@@ -266,7 +267,7 @@ class Note {
 
   public void spawn() {
     this.hit = false;
-    this.location = new int[] { this.parent.getSpawnX(this.direction), this.parent.getSpawnY() };
+    this.location = new Point( this.parent.getSpawnX(this.direction), this.parent.getSpawnY() );
     this.lasttime = System.currentTimeMillis();
   }
 
@@ -280,7 +281,7 @@ class Note {
   protected void moveDown() {
     int dist = Math.round((System.currentTimeMillis()-this.lasttime)*this.parent.notespeed)/(60*1000/this.parent.bpm);
     if (dist > Constants.MINNOTEMOVE) {
-      this.location[1] += dist;
+      this.location.translate(0, dist);
       this.lasttime = System.currentTimeMillis();
     }
   }
@@ -289,7 +290,7 @@ class Note {
     if (this.hit) return;
     this.moveDown();
 
-    this.image.draw(this.location[0], this.location[1], g);
+    this.image.draw(this.location.x, this.location.y, g);
   }
 
   public boolean update() { // when should i stop attempting to render this note?
@@ -302,11 +303,11 @@ class Note {
   }
 
   public int getY() {
-    return this.location[1];
+    return this.location.y;
   }
 
   protected boolean pastBound() {
-    return this.location[1] > this.parent.getEndY();
+    return this.location.y > this.parent.getEndY();
   }
 }
 
@@ -341,16 +342,16 @@ class HoldNote extends Note {
     if (this.hit) return;
     this.moveDown();
 
-    this.image.draw(this.location[0], this.location[1], g);
+    this.image.draw(this.location.x, this.location.y, g);
     
     for (int i = 1; i<this.holdtime; i++) {
-      this.tailimage.draw(this.location[0], (int) (this.location[1]-(Math.floor(this.parent.notespeed*i*this.image.getHeight())/(1000/this.parent.bpm))), g);
+      this.tailimage.draw(this.location.x, (int) (this.location.y-(Math.floor(this.parent.notespeed*i*this.image.getHeight())/(1000/this.parent.bpm))), g);
     }
   }
 
   @Override
   protected boolean pastBound() {
-    return this.location[1] > this.parent.getEndY() && this.keydownon < 0; // both past bound and not holding (allows too long notes)
+    return this.location.y > this.parent.getEndY() && this.keydownon < 0; // both past bound and not holding (allows too long notes)
   }
 }
 
