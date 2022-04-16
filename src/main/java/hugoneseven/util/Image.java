@@ -21,7 +21,11 @@ public class Image extends JPanel {
       this.image = Utils.NULLIMG.getImage();
     }
   }
-  public double scaleToSize(int size) {
+
+  public double scaleToWidth(int size) {
+    return this.scaleToWidth((double)size);
+  }
+  public double scaleToWidth(double size) {
     this.scale = size / this.image.getWidth();
     return this.scale;
   }

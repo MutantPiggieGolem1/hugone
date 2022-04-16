@@ -1,22 +1,19 @@
 package hugoneseven;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import java.awt.Graphics2D;
+import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyAdapter;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import hugoneseven.Constants.BattleState;
 import hugoneseven.Constants.Direction;
 import hugoneseven.Constants.Emotion;
 import hugoneseven.Constants.Feature;
-import hugoneseven.Constants.GameState;
 import hugoneseven.Constants.KeyPress;
 import hugoneseven.util.Audio;
 import hugoneseven.util.Image;
@@ -25,9 +22,9 @@ import hugoneseven.util.Video;
 
 @SuppressWarnings("unused")
 class Battle implements Feature {
-  private static final int leftmargin = 400;
-  private static final int rightmargin = 100;
-  private static final int verticalmargin = 20;
+  protected static final int leftmargin = 400;
+  protected static final int rightmargin = 100;
+  protected static final int verticalmargin = 20;
   private String id;
   private Character enemy;
 
@@ -42,12 +39,16 @@ class Battle implements Feature {
   private ArrayList<Note> renderedNotes = new ArrayList<Note>();
   private Integer notedamage;
   private Image background;
+  private Image overlay;
+  private Image missimage;
+  private Audio misssound;
   public int notespeed;
   public int bpm;
   private int beat;
 
   private long lasttime;
   private Emotion enemem = Emotion.BOP;
+  private Audio song;
 
   public Battle(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("battles").getJSONObject(id);
@@ -57,13 +58,18 @@ class Battle implements Feature {
     this.notedamage = data.getInt("damage");
     this.notespeed = data.getInt("speed");
     this.bpm = data.getInt("bpm");
-    this.state = BattleState.INTRO;
     this.beat = 0;
     try {
+      this.song = new Audio(data.getString("song"));
       this.losetrack = new Audio("faintcourage.wav");
       this.background = new Image(data.getString("background"));
+      if (data.has("overlay")) {this.overlay = new Image(data.getString("overlay"));}
+      this.missimage = new Image(data.getString("missimage"));
+      this.missimage.scaleToWidth(App.framewidth);
+      this.misssound = new Audio(data.getString("misssound"));
       this.introcard = new Image(data.getString("introcard"));
-      this.introscene = new Cutscene(new Video(Constants.RESOURCEDIR + data.getString("introscene")));
+      this.introcard.scaleToWidth(App.framewidth);
+      this.introscene = new Cutscene(new Video(Constants.RESOURCEDIR + data.getString("introscene"),App.f));
     } catch (Exception e) {
       System.out.println("!WARNING! Could not load battle data.\n"+e.toString());
       System.exit(1);
@@ -110,6 +116,10 @@ class Battle implements Feature {
       }
     }
     this.notes = tn.iterator();
+  }
+
+  public void init() {
+    this.state = BattleState.INTRO;
   }
 
   public boolean update() {
@@ -159,6 +169,7 @@ class Battle implements Feature {
   public void miss() {
     this.enemem = Emotion.HIT;
     App.player.health -= this.notedamage;
+    if (!this.misssound.isPlaying()) {this.misssound.play();}
   }
 
   public void render(Graphics2D g) {
@@ -173,16 +184,25 @@ class Battle implements Feature {
         }
         break;
       case FIGHT:
+        if (!this.song.isPlaying()) {
+          this.song.play();
+        }
         this.enemy.render(this.enemem, g);
+        if (this.enemem.equals(Emotion.HIT)) {
+          this.missimage.draw(0,0,g);
+        }
 
-        for (Note n : this.renderedNotes) { // draw all the notes
+        for (Note n : this.renderedNotes.toArray(new Note[]{})) { // draw all the notes
           if (n == null) continue;
           n.render(g);
         }
 
+        g.drawString(""+App.player.health, 0, 0);
+
         this.background.draw(0, 0, g); // draw in the image bg
         break;
       case LOSE:
+        this.song.stop();
         if (!this.losetrack.isPlaying())
           this.losetrack.play();
         if (this.losetrack.isPlayed()) {
@@ -190,6 +210,7 @@ class Battle implements Feature {
         }
         break;
       case WIN:
+        this.song.stop();
         this.state = BattleState.FINISHED;
         break;
       case FINISHED: // placeholder for animation completion
@@ -228,18 +249,19 @@ class Battle implements Feature {
   }
 }
 
-class Note { // TODO: Implement other notes
+class Note {
   public final Direction direction;
   protected Battle parent;
   protected Image image;
   protected int[] location;
-  private boolean hit;
+  protected boolean hit;
   private long lasttime;
 
   public Note(Battle p, Direction dir) {
     this.parent = p;
     this.direction = dir;
     this.image = Utils.arrowimages.get(dir);
+    this.image.scaleToWidth((App.framewidth - (Battle.leftmargin+Battle.rightmargin))/8.0f);
   }
 
   public void spawn() {
@@ -255,14 +277,17 @@ class Note { // TODO: Implement other notes
     }
   }
 
-  public void render(Graphics2D g) {
-    if (this.hit) return;
-
+  protected void moveDown() {
     int dist = Math.round((System.currentTimeMillis()-this.lasttime)*this.parent.notespeed)/(60*1000/this.parent.bpm);
     if (dist > Constants.MINNOTEMOVE) {
       this.location[1] += dist;
       this.lasttime = System.currentTimeMillis();
     }
+  }
+
+  public void render(Graphics2D g) {
+    if (this.hit) return;
+    this.moveDown();
 
     this.image.draw(this.location[0], this.location[1], g);
   }
@@ -287,17 +312,19 @@ class Note { // TODO: Implement other notes
 
 class HoldNote extends Note {
   Integer holdtime;
+  Image tailimage = Utils.ARROWTAILIMAGE;
   int keydownon;
 
   public HoldNote(Battle p, Direction dir, int leng) {
     super(p, dir);
     this.holdtime = leng;
-    this.image = Utils.longarrowimages.get(dir); // TODO: different lengths of arrows
+    this.image = Utils.longarrowimages.get(dir);
   }
 
-  public void hit(KeyPress p) {
+  public void hit(KeyPress p) { // TODO: fix hold system
     switch (p) {
       case KEYDOWN:
+        if (this.keydownon > 0) break;
         this.keydownon = this.parent.getBeat();
         break;
       case KEYUP:
@@ -306,6 +333,18 @@ class HoldNote extends Note {
         System.out.println("Battle Beat: ["+super.parent.getBeat()+"] | Button held for: ["+(super.parent.getBeat()-this.keydownon)+"] | Note Length: ["+this.holdtime+"] | Hold Difference: ["+((super.parent.getBeat()-this.keydownon) - this.holdtime)+"] Valid: "+(Math.abs( (super.parent.getBeat()-this.keydownon) - this.holdtime ) <= 1)+";");
         this.keydownon = -1;
         break;
+    }
+  }
+
+  @Override
+  public void render(Graphics2D g) {
+    if (this.hit) return;
+    this.moveDown();
+
+    this.image.draw(this.location[0], this.location[1], g);
+    
+    for (int i = 1; i<this.holdtime; i++) {
+      this.tailimage.draw(this.location[0], (int) (this.location[1]-(Math.floor(this.parent.notespeed*i*this.image.getHeight())/(1000/this.parent.bpm))), g);
     }
   }
 

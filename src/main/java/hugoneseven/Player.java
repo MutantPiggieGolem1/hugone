@@ -1,5 +1,6 @@
 package hugoneseven;
 
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -111,9 +112,12 @@ public class Player extends Character implements KeyListener {
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
-    int[] delta = Utils.getChange(this.direction); // not performant but seems to be no other way. perhaps undo this
-    int[] target = new int[] { pos[0] + delta[0], pos[1] + delta[1] };
+    int[] target = Utils.getChange(pos,this.direction,10);
     if (!a.checkCollisions(target))
       this.pos = target;
+  }
+
+  public void teleport(int[] loc) {
+    this.pos = new int[] { loc[0] , loc[1] };
   }
 }

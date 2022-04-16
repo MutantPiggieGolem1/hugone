@@ -15,6 +15,7 @@ import hugoneseven.Constants.Direction;
 
 public class Utils {
   public static final Image NULLIMG = new Image("null.png");
+  public static final Image ARROWTAILIMAGE = new Image("ARROW_TAIL.png");
 
   public static <T> String toString(T[] arr) {
     String o = arr[0].toString();
@@ -90,11 +91,12 @@ public class Utils {
   }
 
   public static int[] getChange(Direction dir) {
-    return getChange(dir, 10);
+    return getChange(new int[] { 0, 0 },dir, 10);
   };
-
   public static int[] getChange(Direction dir, int d) {
-    int[] pos = new int[] { 0, 0 };
+    return getChange(new int[] { 0, 0 },dir, d);
+  }
+  public static int[] getChange(int[] pos, Direction dir, int d) { 
     switch (dir) {
       case UP:
         pos[1] -= d;

@@ -48,7 +48,7 @@ public class Story {
       JSONObject value = scenes.getJSONObject(key);
       switch (GameState.valueOf(value.getString("type"))) {
         case CUTSCENE:
-          this.cutscenes.put(key, new Cutscene(new Video(value.getString("video"))));
+          this.cutscenes.put(key, new Cutscene(new Video(value.getString("video"),App.f)));
           break;
         case EXPLORATION:
           this.areas.put(key, new Area(value.getString("id")));
@@ -74,6 +74,7 @@ public class Story {
   public void next() { // advance story
     try {
       this.current = this.data.getJSONObject("scenes").getJSONObject(this.current).getString("next");
+      this.getCurrent().init();
     } catch (JSONException e) {
       System.out.println("!WARNING! Could not advance storyline.");
     }

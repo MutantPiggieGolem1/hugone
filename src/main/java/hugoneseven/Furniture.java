@@ -33,17 +33,23 @@ public class Furniture implements InteractableObject {
 
     JSONArray location = data.getJSONArray("location"); // top left
     JSONArray dimension = data.getJSONArray("dimensions");
-    for (int x = location.getInt(0); x <= location.getInt(0) + dimension.getInt(0); x++) {
-      for (int y = location.getInt(1); y <= location.getInt(1) + dimension.getInt(1); y++) {
+    this.location = Utils.toArray(location).toArray(new Integer[location.length()]);
+    this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
+
+    this.image = new Image(data.getString("image"));
+    double scale = this.image.scaleToWidth(this.dimensions[0]);
+    this.dimensions[1] = (int) Math.floor(scale * this.image.getHeight()); // auto rescale height bound
+
+    if (!data.getBoolean("collide")) return;
+    App.shit.put("furncolcount",0);
+    for (int x = this.location[0]; x <= this.location[0] + this.dimensions[0]; x++) {
+      for (int y = this.location[1]; y <= this.location[1] + this.dimensions[1]; y++) {
+        App.shit.put("furncolcount",(Integer)App.shit.get("furncolcount")+1);
+        if (App.shit.get("furncolcount").equals(1)) App.shit.put("furncoord1",Arrays.asList(x, y));
+        else if (App.shit.get("furncolcount").equals(this.dimensions[0]*this.dimensions[1])) App.shit.put("furncoord2",Arrays.asList(x, y));
         this.allcoords.add(Arrays.asList(x, y));
       }
     }
-    this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
-    this.location = Utils.toArray(location).toArray(new Integer[location.length()]);;
-
-    this.image = new Image(data.getString("image"));
-    double scale = this.image.scaleToSize(this.dimensions[0]);
-    this.dimensions[1] = (int) Math.ceil(scale * this.image.getHeight()); // auto rescale height bound
   }
 
   public HashSet<List<Integer>> getCoords() {
@@ -57,9 +63,12 @@ public class Furniture implements InteractableObject {
     this.area.setDialogue(this.dialogue);
   }
 
+  @SuppressWarnings("unchecked")
   public void render(Graphics2D g) {
-    g.drawRect(this.location[0], this.location[1], this.location[0] + this.dimensions[0],
-        this.location[1] + this.dimensions[1]);
     this.image.draw(this.location[0], this.location[1], g);
+    g.drawRect(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
+    List<Integer> c1 = (List<Integer>)App.shit.get("furncoord1");
+    List<Integer> c2 = (List<Integer>)App.shit.get("furncoord2");
+    g.drawLine(c1.get(0),c1.get(1), c2.get(0), c2.get(1));
   }
 }

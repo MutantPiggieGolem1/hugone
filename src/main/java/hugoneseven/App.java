@@ -3,6 +3,7 @@ package hugoneseven;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.event.MouseEvent;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
@@ -17,10 +18,13 @@ import hugoneseven.Constants.Feature;
 import hugoneseven.Constants.GameState;
 import hugoneseven.util.Utils;
 
-/* Fix furniture collisions & rendering
+/*
  * Location coords are in TOP LEFT
 */
+
 class App {
+  public static HashMap<String,Object> shit = new HashMap<String,Object>();
+
   public static Story story;
   public static Player player;
   public static GameState gamestate;
@@ -28,7 +32,7 @@ class App {
   public static final int framewidth = 1366;
   public static final int frameheight = 768;
 
-  public static final JFrame f = new JFrame("Hugone Seven - Alpha v0.0.1b");
+  public static final JFrame f = new JFrame("Hugone - Alpha Version");
   private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
   public static void main(String[] args) {
@@ -40,7 +44,6 @@ class App {
     try {
       story.init();
     } catch (JSONException e) {
-      e.printStackTrace();
       throw new RuntimeException("Couldn't initalize story.\nDetais: " + e.toString());
     }
     player = story.player;
@@ -53,7 +56,10 @@ class App {
     dc.addMouseListener(new MouseInputAdapter() {
       @Override
       public void mousePressed(MouseEvent e) {
-        System.out.println("(" + e.getX() + "," + e.getY() + ") - [" + f.getWidth() + "," + f.getHeight() + "]");
+        if (story.currentState().equals(GameState.EXPLORATION)) {
+          Area a = (Area)story.getCurrent();
+          System.out.println("(" + e.getX() + "," + e.getY() + ") - [" + f.getWidth() + "," + f.getHeight() + "] {" + a.checkCollisions(java.util.Arrays.asList(e.getX(),e.getY())) + "}");
+        }
       }
     });
     f.add(dc);

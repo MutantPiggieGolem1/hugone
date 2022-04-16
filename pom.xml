@@ -4,11 +4,11 @@
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>hugoneseven</groupId>
-  <artifactId>hugoneseven</artifactId>
-  <version>0.0.1-ALPHA</version>
+  <groupId>hugone</groupId>
+  <artifactId>hugone</artifactId>
+  <version>ALPHA</version>
 
-  <name>hugoneseven</name>
+  <name>hugone</name>
   <!-- <url>http://www.example.com</url> -->
 
   <properties>
@@ -29,6 +29,11 @@
       <artifactId>json</artifactId>
       <version>20211205</version>
     </dependency>
+    <dependency>
+      <groupId>javax.media</groupId>
+      <artifactId>jmf</artifactId>
+      <version>2.1.1e</version>
+  </dependency>
   </dependencies>
 
   <build>

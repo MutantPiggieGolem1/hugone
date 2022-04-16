@@ -1,13 +1,14 @@
 [
     "LEFT",
-    "RIGHT",
+    "DOWN",
     "REST2",
     "UP",
     "DOWN",
     "LEFT",
-    "RIGHT",
-    "RIGHT",
-    "DOWN2",
-    "REST1",
+    "UP",
+    "LEFT",
+    "RIGHT9",
+    "DOWN8",
+    "REST8",
     "DEATH4"
 ]

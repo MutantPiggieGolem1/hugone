@@ -14,6 +14,10 @@ class Cutscene implements Feature {
     this.video = vid;
   }
 
+  public void init() {
+    this.video.play();
+  }
+
   public boolean update() {
     return this.video.isPlayed();
   }

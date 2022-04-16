@@ -4,7 +4,7 @@
     "intro": {
       "type": "CUTSCENE",
       "id": "intro",
-      "video": "intro.mp4",
+      "video": "intro.mov",
       "next": "bottomfloor"
     },
     "bottomfloor": {
@@ -80,13 +80,14 @@
     "BOTTOM_FLOOR": {
       "image": "BOTTOM_FLOOR.png",
       "find": ["wallet"],
-      "dimensions": [1200,700],
+      "startlocation": [100,100],
+      "dimensions": [[0,50],[1200,700]],
       "furniture": [
         {
           "objectid": "closet1",
           "image": "closet_1.png",
-          "location": [32,32],
-          "dimensions": [32,32],
+          "location": [100,100],
+          "dimensions": [50,100],
           "collide": true,
           "dialogue": "explore_closet_1",
           "item": "wallet"
@@ -99,8 +100,12 @@
       "enemy": "ENEMY_1",
       "damage": 25,
       "introcard" : "NOMMA_BATTLE_INTROCARD.png",
-      "introscene": "NOMMA_BATTLE_INTRO.mp4",
+      "introscene": "NOMMA_BATTLE_INTRO.mov",
       "background": "NOMMA_BATTLE_BG.png",
+      "overlay": "NOMMA_BATTLE_OV.png",
+      "song": "NOMMA_BATTLE_SONG.wav",
+      "missimage": "NOMMA_BATTLE_MISS.png",
+      "misssound": "NOMMA_BATTLE_MISS.wav",
       
       "bpm": 60,
       "notes": "nomma_battle_notes.json",

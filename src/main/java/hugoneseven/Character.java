@@ -41,7 +41,7 @@ public class Character {
     for (String key : JSONObject.getNames(images)) {
       String value = images.getString(key);
       Image img = new Image(value);
-      img.scaleToSize(128);
+      img.scaleToWidth(128);
       this.emotions.put(Emotion.valueOf(key), img);
     }
 
@@ -59,7 +59,7 @@ public class Character {
 
             if (dirmovs.has(mov)) {
               Image img = new Image(dirmovs.getString(mov));
-              img.scaleToSize(64);
+              img.scaleToWidth(64);
               this.directions.get(direction).put(movestate, img);
             } else {
               this.directions.get(direction).put(movestate, Utils.NULLIMG);
@@ -92,8 +92,7 @@ public class Character {
       eimg.draw(50, App.f.getHeight() - (200 + eimg.getScaleHeight()), g);
     } // placeholder coords
     else {
-      System.out
-          .println("!WARNING! Emotion image failed to draw! Character: " + this.id + " Emotion: " + emotion.toString());
+      System.out.println("!WARNING! Could not find emotion '"+ emotion.toString() +"' in character '"+ this.id +"'.");
     }
   }
 

@@ -40,8 +40,11 @@ class Dialogues implements Feature {
         System.out.println("!WARNING! Subdialogue failed to load for " + id + ".");
       }
     }
-    ;
     this.index = 0;
+  }
+
+  public void init() {
+    
   }
 
   public void setParent(Area p) {

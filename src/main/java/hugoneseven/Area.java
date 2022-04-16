@@ -24,16 +24,23 @@ class Area implements Feature {
   private ArrayList<String> find;
   private Dialogues dialogue;
   private int[] dimensions = new int[2];
+  private int[] borders = new int[2];
+  private int[] startloc = new int[2];
 
   public Area(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("areas").getJSONObject(id);
     JSONArray dims = data.getJSONArray("dimensions");
+    JSONArray start = data.getJSONArray("startlocation");
 
     this.id = id;
     this.image = new Image(data.getString("image"));
-    this.dimensions[0] = dims.getInt(0);
-    this.dimensions[1] = dims.getInt(1);
-    this.image.scaleToSize(this.dimensions[0]);
+    this.dimensions[0] = dims.getJSONArray(1).getInt(0);
+    this.dimensions[1] = dims.getJSONArray(1).getInt(1);
+    this.borders[0] = dims.getJSONArray(0).getInt(0);
+    this.borders[1] = dims.getJSONArray(0).getInt(1);
+    this.startloc[0] = start.getInt(0);
+    this.startloc[1] = start.getInt(1);
+    this.image.scaleToWidth(this.dimensions[0]);
 
     // setup furniture
     JSONArray furnituredata = data.getJSONArray("furniture");
@@ -45,6 +52,10 @@ class Area implements Feature {
 
     // misc vars
     this.find = Utils.toArray(data.getJSONArray("find"));
+  }
+
+  public void init() {
+    App.player.teleport(this.startloc);
     this.renderstate = RenderState.DEFAULT;
   }
 
@@ -85,7 +96,7 @@ class Area implements Feature {
     });
   }
 
-  private boolean collideFurniture(List<Integer> coords) {
+  public boolean collideFurniture(List<Integer> coords) {
     for (Furniture f : this.furniture) {
       if (f.getCoords().contains(coords)) {
         return true;
@@ -99,8 +110,9 @@ class Area implements Feature {
   }
 
   public boolean checkCollisions(List<Integer> coords) {
-    return (coords.get(0) < 0 || coords.get(1) < 0 || coords.get(0) > this.dimensions[0]
-        || coords.get(1) > this.dimensions[1]) || this.collideFurniture(coords);
+    return coords.get(0) < this.borders[0]   || coords.get(1) < this.borders[1]
+        || coords.get(0) > this.dimensions[0]|| coords.get(1) > this.dimensions[1]
+        || this.collideFurniture(coords);
   }
 
   public boolean renderingDialogue() {
