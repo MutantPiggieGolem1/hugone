@@ -80,6 +80,7 @@
     "BOTTOM_FLOOR": {
       "image": "BOTTOM_FLOOR.png",
       "find": ["wallet"],
+      "music": "explore_bottom_floor.wav",
       "startlocation": [160,160],
       "dimensions": [[0,50],[1200,700]],
       "furniture": [

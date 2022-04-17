@@ -47,8 +47,9 @@ class App {
     player = story.player;
     gamestate = story.currentState();
 
-    DrawingCanvas dc = new DrawingCanvas(framewidth, frameheight);
+    f.setIconImage(Utils.ICONIMG);
     f.setSize(framewidth, frameheight);
+    DrawingCanvas dc = new DrawingCanvas(framewidth, frameheight);
     dc.requestFocus();
     dc.setBackground(Color.GRAY);
     dc.addMouseListener(new javax.swing.event.MouseInputAdapter() {
@@ -116,15 +117,6 @@ class App {
       case EXPLORATION:
         cur.render(g);
         player.render(g);
-
-        java.awt.Point pt = (java.awt.Point)App.shit.get("ploc1");
-        if (pt == null) break;
-        g.drawOval(pt.x,pt.y,1,1);
-
-        java.awt.Point pl = (java.awt.Point)App.shit.get("ploc");
-        if (pl == null) break;
-        g.drawOval(pl.x,pl.y,3,3);
-
         break;
       case BATTLE:
         cur.render(g);

@@ -28,6 +28,7 @@ target/
 
 # Compiled Files
 *.class
+.class
 bin/
 build/
 /bin1/

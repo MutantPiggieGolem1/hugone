@@ -19,6 +19,11 @@ public class Audio {
     }
   };
 
+  public void changeVolume(float db) {
+    FloatControl gainControl = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
+    gainControl.setValue(db);
+  }
+
   public void reset() {
     try {
       this.stop();

@@ -16,6 +16,7 @@ import hugoneseven.Constants.Feature;
 import hugoneseven.Constants.InteractableObject;
 import hugoneseven.Constants.KeyPress;
 import hugoneseven.Constants.RenderState;
+import hugoneseven.util.Audio;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
 
@@ -27,6 +28,7 @@ class Area implements Feature {
   private RenderState renderstate;
   private ArrayList<String> find;
   private Dialogues dialogue;
+  private Audio music;
   private int[] dimensions = new int[2];
   private int[] borders = new int[2];
   private Point startloc = new Point();
@@ -44,6 +46,15 @@ class Area implements Feature {
     this.borders[1] = dims.getJSONArray(0).getInt(1);
     this.startloc.setLocation(start.getInt(0), start.getInt(1));;
     this.image.scaleToWidth(this.dimensions[0]);
+    // misc vars
+    this.find = Utils.toArray(data.getJSONArray("find"));
+
+    try {
+      this.music = new Audio(data.getString("music"));
+    } catch (Exception e) {
+      System.out.println("!WARNING! Could not load area data.\n"+e.toString());
+      System.exit(1);
+    }
 
     // setup furniture
     JSONArray furnituredata = data.getJSONArray("furniture");
@@ -52,14 +63,12 @@ class Area implements Feature {
       Furniture furni = new Furniture(furn, this);
       this.furniture.add(furni);
     }
-
-    // misc vars
-    this.find = Utils.toArray(data.getJSONArray("find"));
   }
 
   public void init() {
     App.player.teleport(this.startloc);
     this.renderstate = RenderState.DEFAULT;
+    if (this.music!=null) this.music.play();
   }
 
   public ArrayList<Furniture> getFurniture() {
@@ -67,6 +76,7 @@ class Area implements Feature {
   }
 
   public boolean update() {
+    if (this.music!=null && !this.music.isPlaying()) this.music.play();
     return App.player.inventory.containsAll(find) && this.renderstate.equals(RenderState.DEFAULT); // all required items, and not rendering dialogue
   }
 

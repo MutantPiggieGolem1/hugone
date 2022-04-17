@@ -111,8 +111,6 @@ public class Player extends Character implements KeyListener {
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
-    App.shit.put("ploc1",this.pos);
-    App.shit.put("ploc",this.getCenter());
     if (!a.checkCollisions(Utils.getChange(this.getCenter(),this.direction,10)))
       this.pos = this.facingTowards();
   }

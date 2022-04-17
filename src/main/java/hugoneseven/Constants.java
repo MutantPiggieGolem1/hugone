@@ -1,6 +1,7 @@
 package hugoneseven;
 
 import java.awt.Point;
+import java.awt.GraphicsEnvironment;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.io.File;
@@ -80,7 +81,8 @@ public class Constants {
     }
 
     public static final String RESOURCEDIR = String.join(File.separator,new String[]{System.getProperty("user.dir"),"src","main","resources",""});
-    public static final double FPS = 60.0;
+    public static final int REFRESHRATE = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode().getRefreshRate();
+    public static final double FPS = REFRESHRATE; // 60.0 usually
     public static final double TPS = 20.0;
 
     public static final int HEALTHPERHEART = 25;
