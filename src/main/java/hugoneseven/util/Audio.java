@@ -3,19 +3,27 @@ package hugoneseven.util;
 import java.io.File;
 import javax.sound.sampled.*;
 
+import hugoneseven.Constants;
+
 public class Audio {
   private Clip clip;
   private File inpfile;
 
   public Audio(String filepath) {
     try {
-      this.inpfile = new File(Utils.RESOURCEDIR+filepath);
+      this.inpfile = new File(Constants.RESOURCEDIR + filepath);
       this.clip = AudioSystem.getClip();
       this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
     } catch (Exception e) {
-      System.out.println("!WARNING! Audio file failed to load @"+filepath);
+      System.out.println("!WARNING! Audio file failed to load @" + filepath);
     }
   };
+
+  public void changeVolume(float db) {
+    FloatControl gainControl = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
+    gainControl.setValue(db);
+  }
+
   public void reset() {
     try {
       this.stop();
@@ -26,17 +34,21 @@ public class Audio {
       System.out.println("!WARNING! Audio file failed to reset!");
     }
   }
-  public void play(){
+
+  public void play() {
     this.clip.start();
   };
-  public void stop(){
+
+  public void stop() {
     this.clip.stop();
     this.clip.close();
   };
-  public boolean isPlaying(){
+
+  public boolean isPlaying() {
     return this.clip.isRunning();
   };
-  public boolean isPlayed(){
-    return this.clip.getLongFramePosition()+1 >= this.clip.getFrameLength();
+
+  public boolean isPlayed() {
+    return this.clip.getLongFramePosition() + 1 >= this.clip.getFrameLength();
   };
 };

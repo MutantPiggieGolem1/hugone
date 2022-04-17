@@ -1,52 +1,42 @@
 package hugoneseven.util;
 
 import java.awt.event.KeyEvent;
-import java.awt.image.BufferedImage;
+import java.awt.Point;
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Scanner;
 
-import javax.imageio.ImageIO;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 
-import hugoneseven.enums.Direction;
+import hugoneseven.Constants.Direction;
 
 public class Utils {
-  public static final String RESOURCEDIR = "./resources/";
-  public static final double FPS = 60.0;
-  public static final double TPS = 20.0;
-
   public static final Image NULLIMG = new Image("null.png");
-
-  public static final HashMap<Integer,Direction> dirkeys = new HashMap<Integer,Direction>();
-  static {dirkeys.put(KeyEvent.VK_W,Direction.UP);dirkeys.put(KeyEvent.VK_S,Direction.DOWN);dirkeys.put(KeyEvent.VK_A,Direction.LEFT);dirkeys.put(KeyEvent.VK_D,Direction.RIGHT);}
+  public static final Image ARROWTAILIMAGE = new Image("ARROW_TAIL.png");
+  public static final java.awt.image.BufferedImage ICONIMG = new Image("icon.png").getImage();
 
   public static <T> String toString(T[] arr) {
     String o = arr[0].toString();
-    for (T i : Arrays.copyOfRange(arr,1,arr.length)) {
-      o += ","+i.toString();
+    for (T i : Arrays.copyOfRange(arr, 1, arr.length)) {
+      o += "," + i.toString();
     }
     return o;
   }
-  public static Integer[] toArray(ArrayList<Integer> arr) {
-    Integer[] out = new Integer[arr.size()];
-    for (int i = 0; i<arr.size(); i++) {
-      out[i] = arr.get(i);
-    }
-    return out;
+
+  @SuppressWarnings("unchecked")
+  public static <T> T[] toArray(ArrayList<T> arr) {
+    return (T[]) arr.toArray();
   }
 
   @SuppressWarnings("unchecked")
   public static <T> ArrayList<T> toArray(JSONArray jsonarr) throws JSONException {
     ArrayList<T> out = new ArrayList<T>();
     for (int i = 0; i < jsonarr.length(); i++) {
-      out.add((T)jsonarr.get(i));
+      out.add((T) jsonarr.get(i));
     }
     return out;
   }
@@ -61,27 +51,69 @@ public class Utils {
     myReader.close();
     return out;
   }
-  
-  public static int[] getChange(Direction dir) {return getChange(dir,10);};
-  public static int[] getChange(Direction dir, int d) {
-    int[] pos = new int[]{0,0};
+
+  public static final HashMap<Integer, Direction> dirkeys = new HashMap<Integer, Direction>();
+  static {
+    dirkeys.put(KeyEvent.VK_W, Direction.UP);
+    dirkeys.put(KeyEvent.VK_S, Direction.DOWN);
+    dirkeys.put(KeyEvent.VK_A, Direction.LEFT);
+    dirkeys.put(KeyEvent.VK_D, Direction.RIGHT);
+  }
+  public static final HashMap<Direction,Integer> keydirs = new HashMap<Direction,Integer>();
+  static {
+    keydirs.put(Direction.UP,   KeyEvent.VK_W);
+    keydirs.put(Direction.DOWN, KeyEvent.VK_S);
+    keydirs.put(Direction.LEFT, KeyEvent.VK_A);
+    keydirs.put(Direction.RIGHT,KeyEvent.VK_D);
+    keydirs.put(Direction.NONE, KeyEvent.VK_ESCAPE);
+  }
+  public static HashMap<Direction, Image> arrowimages = new HashMap<Direction, Image>();
+  static {
+      arrowimages.put(Direction.LEFT , new Image("ARROW_LEFT.png" ));
+      arrowimages.put(Direction.RIGHT, new Image("ARROW_RIGHT.png"));
+      arrowimages.put(Direction.UP   , new Image("ARROW_UP.png"   ));
+      arrowimages.put(Direction.DOWN , new Image("ARROW_DOWN.png" ));
+      arrowimages.put(Direction.NONE , new Image("ARROW_NONE.png" ));
+  }
+  public static HashMap<Direction, Image> longarrowimages = new HashMap<Direction, Image>();
+  static {
+      longarrowimages.put(Direction.LEFT , new Image("ARROW_LEFT_HOLD.png" ));
+      longarrowimages.put(Direction.RIGHT, new Image("ARROW_RIGHT_HOLD.png"));
+      longarrowimages.put(Direction.UP   , new Image("ARROW_UP_HOLD.png"   ));
+      longarrowimages.put(Direction.DOWN , new Image("ARROW_DOWN_HOLD.png" ));
+      longarrowimages.put(Direction.NONE , new Image("ARROW_NONE_HOLD.png" ));
+  }
+  public static final HashMap<Direction,Integer> dirtoint = new HashMap<Direction,Integer>();
+  static {
+    dirtoint.put(Direction.NONE ,0);
+    dirtoint.put(Direction.LEFT ,0);
+    dirtoint.put(Direction.UP   ,1);
+    dirtoint.put(Direction.DOWN ,2);
+    dirtoint.put(Direction.RIGHT,3);
+  }
+
+  public static Point getChange(Direction dir) {
+    return getChange(new Point(), dir, 10);
+  };
+  public static Point getChange(Point pos, Direction dir, int d) {
+    pos = (Point)pos.clone();
     switch (dir) {
       case UP:
-        pos[1] -= d;
-      break;
+        pos.translate(0,-d);
+        break;
       case DOWN:
-        pos[1] += d;
-      break;
+        pos.translate(0,d);
+        break;
       case LEFT:
-        pos[0] -= d;
-      break;
+        pos.translate(-d,0);
+        break;
       case RIGHT:
-        pos[0] += d;
-      break;
+        pos.translate(d,0);
+        break;
+      case NONE:
+      default:
+        break;
     }
     return pos;
-  }
-  public static BufferedImage getImage(String filepath) throws IOException {
-    return ImageIO.read(new File(filepath));
   }
 }

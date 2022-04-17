@@ -2,72 +2,27 @@ package hugoneseven;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.event.MouseEvent;
-import java.util.HashSet;
-import java.util.List;
+import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
-import javax.swing.event.MouseInputAdapter;
 
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hugoneseven.Constants.Feature;
+import hugoneseven.Constants.GameState;
 import hugoneseven.util.Utils;
 
 /*
- * Prevent audio overlap
- * Add Battles
- * Implement video
-
  * Location coords are in TOP LEFT
 */
 
-enum GameState {
-  CUTSCENE,
-  EXPLORATION,
-  DIALOGUE,
-  BATTLE
-}
-enum Emotion {
-  IDLE,
-  HAPPY,
-  EXCITED,
-  SAD,
-  MAD,
-  BOP // for music battles
-  // etc.
-}
-enum MoveState {
-  STOP,
-  MOVE1,
-  MOVE2
-}
-enum RenderState {
-  DEFAULT,
-  DIALOGUE
-}
-enum BattleState {
-  DIALOGUE, // enemy/player is saying something
-  DEMO,     // enemy is doing preview (like fnf)
-  FIGHT,    // player is hitting notes
-  LOSE,     // <play death theme>, so sad
-  WIN       // u win pog
-}
-interface InteractableObject {
-  public abstract void onInteraction();
-  //public void onInteraction(int count);
-  public abstract HashSet<List<Integer>> getCoords();
-}
-interface Feature {
-  public abstract boolean update(); // check for completion
-  public abstract void render(Graphics2D g); // draw this feature
-}
-
-
 class App {
+  public static HashMap<String,Object> shit = new HashMap<String,Object>();
+
   public static Story story;
   public static Player player;
   public static GameState gamestate;
@@ -75,34 +30,28 @@ class App {
   public static final int framewidth = 1366;
   public static final int frameheight = 768;
 
-  public static final JFrame f = new JFrame("Hugone Seven - Alpha v0.0.1b");
+  public static final JFrame f = new JFrame("Hugone - Alpha Version");
   private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
   public static void main(String[] args) {
     try {
-      story = new Story(new JSONObject(Utils.readFile(Utils.RESOURCEDIR+"story.json")));
+      story = new Story(new JSONObject(Utils.readFile(Constants.RESOURCEDIR + "story.json")));
     } catch (Exception e) {
-      throw new RuntimeException("Couldn't load story json data.\nDetais: "+e.toString());
+      throw new RuntimeException("Couldn't load story json data.\nDetais: " + e.toString());
     }
     try {
       story.init();
     } catch (JSONException e) {
-      e.printStackTrace();
-      throw new RuntimeException("Couldn't initalize story.\nDetais: "+e.toString());
+      throw new RuntimeException("Couldn't initalize story.\nDetais: " + e.toString());
     }
     player = story.player;
     gamestate = story.currentState();
-     
-    DrawingCanvas dc = new DrawingCanvas(framewidth,frameheight);
-    f.setSize(framewidth,frameheight);
+
+    f.setIconImage(Utils.ICONIMG);
+    f.setSize(framewidth, frameheight);
+    DrawingCanvas dc = new DrawingCanvas(framewidth, frameheight);
     dc.requestFocus();
     dc.setBackground(Color.GRAY);
-    dc.addMouseListener(new MouseInputAdapter() {
-      @Override
-      public void mousePressed(MouseEvent e) {
-        System.out.println("("+e.getX()+","+e.getY()+") - ["+f.getWidth()+","+f.getHeight()+"]");
-      }
-    });
     f.add(dc);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.addKeyListener(player);
@@ -114,26 +63,38 @@ class App {
       public void run() {
         try {
           Feature cur = story.getCurrent();
-          if (cur.update()) story.next(); // on completion, advance story
+          if (cur.update())
+            story.next(); // on completion, advance story
           cur = story.getCurrent();
-          if (story.currentState().equals(GameState.EXPLORATION) && !((Area)cur).renderingDialogue()) {
-            Area a = (Area)cur;
-            player.moveLoop();
-            a.checkInteracts(player);
+          switch (story.currentState()) {
+            case CUTSCENE:
+              break;
+            case EXPLORATION:
+              Area a = (Area) cur;
+              if(!a.renderingDialogue()) {
+                player.moveLoop();
+                a.checkInteracts(player);
+              }
+              break;
+            case BATTLE:
+              Battle b = (Battle) cur;
+              b.beat();
+              break;
           }
         } catch (Exception e) {
           e.printStackTrace();
+          System.exit(1);
         }
       }
-    }, 0, (long)(1000/Utils.TPS), TimeUnit.MILLISECONDS);
+    }, 0, (long) (1000 / Constants.TPS), TimeUnit.MILLISECONDS);
 
     // Draw Loop
     while (true) {
-      while (f.isShowing()) { // dont render in background
-        if (System.currentTimeMillis()-dc.prevtime >= 1000.0/Utils.FPS) {
-          dc.repaint();
-          dc.prevtime = System.currentTimeMillis();
-        }
+      if (!f.isShowing())
+        continue;// dont render in background
+      if (System.currentTimeMillis() - dc.prevtime >= 1000.0 / Constants.FPS) {
+        dc.repaint();
+        dc.prevtime = System.currentTimeMillis();
       }
     }
   }
@@ -143,14 +104,14 @@ class App {
     switch (story.currentState()) {
       case CUTSCENE:
         cur.render(g);
-      break;
+        break;
       case EXPLORATION:
         cur.render(g);
         player.render(g);
+        break;
+      case BATTLE:
+        cur.render(g);
       break;
-      // case BATTLE:
-      //   TODO: implement battles
-      // break;
       default:
         System.out.println("!WARNING! Unrecognized GameState!");
     }

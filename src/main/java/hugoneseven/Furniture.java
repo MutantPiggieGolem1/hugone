@@ -1,14 +1,14 @@
 package hugoneseven;
 
 import java.awt.Graphics2D;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.awt.Rectangle;
+import java.awt.Point;
 
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import hugoneseven.Constants.InteractableObject;
 import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
 
@@ -20,7 +20,8 @@ public class Furniture implements InteractableObject {
   private Dialogues dialogue;
   private Integer[] location;
   private Integer[] dimensions;
-  private HashSet<List<Integer>> allcoords = new HashSet<List<Integer>>();
+  private Rectangle rect;
+  private boolean collide;
   private boolean interacted = false;
 
   public Furniture(JSONObject data, Area area) throws JSONException {
@@ -30,34 +31,31 @@ public class Furniture implements InteractableObject {
     this.dialogue = App.story.getDialogue(data.getString("dialogue"));
     this.dialogue.setParent(area);
 
-    JSONArray location= data.getJSONArray("location"); // top left
-    JSONArray dimension= data.getJSONArray("dimensions");
-    for (int x = location.getInt(0); x <= location.getInt(0)+dimension.getInt(0); x++) {
-      for (int y = location.getInt(1); y <= location.getInt(1)+dimension.getInt(1); y++) {
-        this.allcoords.add(Arrays.asList(x,y));
-      }
-    }
-    this.dimensions = Utils.toArray(Utils.toArray(dimension));
-    this.location   = Utils.toArray(Utils.toArray(location));
+    JSONArray location = data.getJSONArray("location"); // top left
+    JSONArray dimension = data.getJSONArray("dimensions");
+    this.location = Utils.toArray(location).toArray(new Integer[location.length()]);
+    this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
 
     this.image = new Image(data.getString("image"));
-    double scale = this.dimensions[0]/this.image.getImage().getWidth();
-    this.image.setScale(scale);
-    this.dimensions[1] = (int)Math.ceil(scale*this.image.getHeight()); // auto rescale height bound
+    double scale = this.image.scaleToWidth(this.dimensions[0]);
+    this.dimensions[1] = (int) Math.floor(scale * this.image.getHeight()); // auto rescale height bound
+
+    this.rect = new Rectangle(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
+    this.collide = data.getBoolean("collide");
   }
 
-  public HashSet<List<Integer>> getCoords() {
-    return this.allcoords;
+  public boolean collidesWith(Point p) {
+    return this.collide && this.rect.contains(p);
   }
 
   public void onInteraction() {
-    if (!this.interacted && item != null) App.player.addItem(item);
+    if (!this.interacted && item != null)
+      App.player.addItem(item);
     this.interacted = true;
     this.area.setDialogue(this.dialogue);
   }
 
-  public void render(Graphics2D g){
-    g.drawRect(this.location[0],this.location[1],this.location[0]+this.dimensions[0],this.location[1]+this.dimensions[1]);
-    this.image.draw(this.location[0],this.location[1],g);
+  public void render(Graphics2D g) {
+    this.image.draw(this.location[0], this.location[1], g);
   }
 }
