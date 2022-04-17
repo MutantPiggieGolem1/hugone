@@ -52,15 +52,6 @@ class App {
     DrawingCanvas dc = new DrawingCanvas(framewidth, frameheight);
     dc.requestFocus();
     dc.setBackground(Color.GRAY);
-    dc.addMouseListener(new javax.swing.event.MouseInputAdapter() {
-      @Override
-      public void mousePressed(java.awt.event.MouseEvent e) {
-        if (story.currentState().equals(GameState.EXPLORATION)) {
-          Area a = (Area)story.getCurrent();
-          System.out.println("(" + e.getX() + "," + e.getY() + ") - [" + f.getWidth() + "," + f.getHeight() + "] {" + a.checkCollisions(new java.awt.Point(e.getX(),e.getY())) + "}");
-        }
-      }
-    });
     f.add(dc);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.addKeyListener(player);
