@@ -21,7 +21,7 @@ import hugoneseven.util.Utils;
 */
 
 class App {
-  public static HashMap<String,Object> shit = new HashMap<String,Object>();
+  public static HashMap<String,Object> shit = new HashMap<String,Object>(); // stores temporary vars to be relayed to main file
 
   public static Story story;
   public static Player player;
@@ -67,6 +67,10 @@ class App {
             story.next(); // on completion, advance story
           cur = story.getCurrent();
           switch (story.currentState()) {
+            case MENU:
+              Menu m = (Menu) cur;
+              m.update();
+              break;
             case CUTSCENE:
               break;
             case EXPLORATION:
@@ -102,13 +106,16 @@ class App {
   public static void render(Graphics2D g) {
     Feature cur = story.getCurrent();
     switch (story.currentState()) {
+      case MENU:
+        cur.render(g);
+      break;
       case CUTSCENE:
         cur.render(g);
-        break;
+      break;
       case EXPLORATION:
         cur.render(g);
         player.render(g);
-        break;
+      break;
       case BATTLE:
         cur.render(g);
       break;

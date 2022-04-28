@@ -8,6 +8,7 @@ import java.io.File;
 
 public class Constants {
     public static enum GameState {
+        MENU,
         CUTSCENE,
         EXPLORATION,
         BATTLE
@@ -42,7 +43,7 @@ public class Constants {
     public static enum MoveState {
         STOP,
         MOVE1,
-        MOVE2
+        MOVE2, RUN1, RUN2
     }
 
     public static enum RenderState {

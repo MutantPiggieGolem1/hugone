@@ -97,7 +97,7 @@ class Dialogue {
     }
     try {
       Image img = new Image(data.getString("textbox"));
-      // img.scaleToSize(App.f.getWidth());
+      //img.scaleToWidth(App.f.getWidth()-50);
       this.textbox = img;
     } catch (Exception e) {
       System.out.println("!WARNING! Textbox image failed to load for dialogue. " + e.getMessage());

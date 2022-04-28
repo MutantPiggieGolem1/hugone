@@ -10,6 +10,7 @@ import hugoneseven.util.Video;
 
 public class Story {
   public Player player;
+  private HashMap<String, Menu> menus = new HashMap<String,Menu>();
   private HashMap<String, Character> characters = new HashMap<String, Character>();
   private HashMap<String, Cutscene> cutscenes = new HashMap<String, Cutscene>();
   private HashMap<String, Area> areas = new HashMap<String, Area>();
@@ -17,6 +18,8 @@ public class Story {
   private HashMap<String, Dialogues> dialogues = new HashMap<String, Dialogues>();
 
   private String current; // id of current
+  //private Menu winscreen,deathscreen;
+
   public final JSONObject data;
 
   public Story(JSONObject data) {
@@ -24,7 +27,13 @@ public class Story {
   };
 
   public void init() throws JSONException {
-    this.current = "intro";
+    this.start();
+    
+    // load menus
+    JSONObject datamenus = this.data.getJSONObject("menus");
+    for (String id : JSONObject.getNames(datamenus)) {
+      this.menus.put(id,new Menu(id,App.f));
+    }
 
     // load characters
     JSONObject datacharacters = this.data.getJSONObject("characters");
@@ -56,8 +65,7 @@ public class Story {
         case BATTLE:
           this.battles.put(key, new Battle(value.getString("id")));
           break;
-        default: // add all the story elements, must be sorted in order to fit inside strict
-                 // typing
+        default: // add all the story elements, must be sorted to fit strict typing
           System.out.println("!WARNING! Unrecognized type for story data loading! " + value.getString("type"));
       }
     }
@@ -69,6 +77,10 @@ public class Story {
 
   public Dialogues getDialogue(String id) {
     return this.dialogues.get(id);
+  }
+
+  public void start() {
+    this.current = "intro";
   }
 
   public void next() { // advance story
@@ -92,6 +104,8 @@ public class Story {
 
   public Feature getCurrent() {
     switch (this.currentState()) {
+      case MENU:
+        return this.menus.get(current);
       case CUTSCENE:
         return this.cutscenes.get(current);
       case EXPLORATION:

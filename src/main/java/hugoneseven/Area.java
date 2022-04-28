@@ -21,7 +21,7 @@ import hugoneseven.util.Image;
 import hugoneseven.util.Utils;
 
 @SuppressWarnings("unused")
-class Area implements Feature {
+class Area implements Feature { // TODO: Make a designated exit
   private final String id;
   private final Image image;
   private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
@@ -76,7 +76,13 @@ class Area implements Feature {
   }
 
   public boolean update() {
-    if (this.music!=null && !this.music.isPlaying()) this.music.play();
+    if (this.music!=null) {
+      if (this.music.isPlaying()) {
+        if (this.renderingDialogue()) this.music.stop();
+      } else {
+        this.music.play();
+      }
+    }
     return App.player.inventory.containsAll(find) && this.renderstate.equals(RenderState.DEFAULT); // all required items, and not rendering dialogue
   }
 

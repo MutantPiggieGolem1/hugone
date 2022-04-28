@@ -20,6 +20,7 @@ public class Player extends Character implements KeyListener {
   private MoveState movestate = MoveState.STOP;
   private int framenum = 0;
   public int money;
+  private boolean sprinting = false;
   private boolean spacedown = false;
   private MoveState tomove;
   private Direction todir;
@@ -53,6 +54,9 @@ public class Player extends Character implements KeyListener {
         this.tomove = MoveState.MOVE1;
         App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYDOWN);
         break;
+      case KeyEvent.VK_X:
+        this.sprinting = true;
+        break;
       case KeyEvent.VK_SPACE:
         this.spacedown = true;
         break;
@@ -68,6 +72,9 @@ public class Player extends Character implements KeyListener {
         this.tomove = MoveState.STOP;
         App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYUP);
         break;
+      case KeyEvent.VK_X:
+        this.sprinting = false;
+        break;
       case KeyEvent.VK_SPACE:
         this.spacedown = false;
         break;
@@ -79,17 +86,20 @@ public class Player extends Character implements KeyListener {
   }
 
   public boolean spaceDown() {
-    if (!this.spacedown)
-      return false;
+    if (!this.spacedown) return false;
     this.spacedown = false;
     return true;
   }
 
-  public Point facingTowards() {
+  public Point facingTowards() { // WARNING: ONLY FOR INTERACTS
     Point delta = Utils.getChange(this.direction);
     Point pclone= ((Point)this.pos.clone());
     pclone.translate(delta.x, delta.y);
     return pclone;
+  }
+
+  private Point walkingTowards(boolean center) {
+    return Utils.getChange(center ? this.getCenter() : this.pos,this.direction,this.sprinting ? 15 : 10);
   }
 
   public void moveLoop() {
@@ -107,12 +117,12 @@ public class Player extends Character implements KeyListener {
       return;
     } // dont move while stopped
 
-    if (Math.round(this.framenum % 3) == 0L)
+    if (Math.round(this.framenum % (this.sprinting ? 2 : 3)) == 0L)
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
-    if (!a.checkCollisions(Utils.getChange(this.getCenter(),this.direction,10)))
-      this.pos = this.facingTowards();
+    if (!a.checkCollisions(this.walkingTowards(true)))
+      this.pos = this.walkingTowards(false);
   }
 
   public void teleport(Point loc) {

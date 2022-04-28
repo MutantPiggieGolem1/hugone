@@ -77,6 +77,8 @@ public class Character {
     movemap.put(MoveState.STOP, MoveState.STOP);
     movemap.put(MoveState.MOVE1, MoveState.MOVE2);
     movemap.put(MoveState.MOVE2, MoveState.MOVE1);
+    movemap.put(MoveState.RUN1, MoveState.RUN2);
+    movemap.put(MoveState.RUN2, MoveState.RUN1);
   }
 
   protected void setName(String name) {

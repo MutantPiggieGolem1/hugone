@@ -1,5 +1,24 @@
 
 {
+  "menus": {
+    "STARTMENU": {
+      "background": "STARTMENU.png",
+      "buttonloc": [100,-100],
+      "buttondim": [50,20],
+      "buttons": [
+        {
+          "title": "Play",
+          "image": "STARTMENU_play.png",
+          "func": 0
+        },
+        {
+          "title": "Credits",
+          "image": "STARTMENU_credits.png",
+          "func": 1
+        }
+      ]
+    }
+  },
   "scenes": {
     "intro": {
       "type": "CUTSCENE",
