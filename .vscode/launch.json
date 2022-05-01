@@ -8,8 +8,8 @@
             "type": "java",
             "name": "Launch",
             "request": "launch",
-            "mainClass": "hugoneseven.App",
-            "projectName": "hugoneseven",
+            "mainClass": "hugone.App",
+            "projectName": "hugone",
             "console": "internalConsole"
         }
     ]
