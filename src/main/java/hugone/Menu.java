@@ -30,7 +30,7 @@ public class Menu implements Feature {
     private Dimension buttondim;
 
     private final Rectangle CENTERBUTTON;
-    private final int SPACING = 30;
+    private final int SPACING = 500;
     private boolean animating;
 
     public Menu(String id, JFrame f) {
@@ -46,9 +46,9 @@ public class Menu implements Feature {
         this.buttonloc = new Point(buttonloc.getInt(0),buttonloc.getInt(1));
         JSONArray buttons = data.getJSONArray("buttons");
         this.buttons = new JButton[buttons.length()];
-        for (int i = 0; i < buttons.length(); i++) {
+        for (int i = 0; i < this.buttons.length; i++) {
             JSONObject buttondata = buttons.getJSONObject(i);
-            ImageIcon buttonicon = new ImageIcon(new Image(buttondata.getString("image")).getImage());
+            ImageIcon buttonicon = new ImageIcon(new Image(buttondata.getString("image")).getImage().getScaledInstance((int)this.buttondim.getWidth(), (int)this.buttondim.getHeight(), 0));
             JButton button = new JButton(buttondata.getString("title"),buttonicon);
             switch (buttondata.getInt("func")) {
                 case 0: // return to menu
@@ -63,12 +63,15 @@ public class Menu implements Feature {
                     
                 break;
             }
+            button.setBorderPainted(false); 
+            button.setContentAreaFilled(false); 
+            button.setFocusPainted(false); 
+            button.setOpaque(false);
             button.setFocusable(false);
-            button.setVisible(false);
-            this.parent.add(button);
+            button.setVisible(false);     
             this.buttons[i] = button;
         }
-        this.CENTERBUTTON = new Rectangle((int)this.buttonloc.getX(), (int)this.buttonloc.getY(), (int)this.buttondim.getWidth(), (int)this.buttondim.getHeight());
+        this.CENTERBUTTON = new Rectangle((int)this.buttonloc.getX(), (int)this.buttonloc.getY(), (int)(this.buttondim.getWidth()*1.2), (int)(this.buttondim.getHeight()*1.2));
     }
 
     @Override
@@ -81,6 +84,7 @@ public class Menu implements Feature {
             x+=this.buttondim.getWidth()+this.SPACING;
             b.setVisible(true);
             b.setEnabled(true);
+            this.parent.add(b);
         }
     }
 
@@ -114,6 +118,13 @@ public class Menu implements Feature {
             case KeyEvent.VK_SPACE:
 
             break;
+        }
+    }
+
+    public void close() {
+        for (JButton b : this.buttons) {
+            b.setVisible(false);
+            b.setEnabled(false);
         }
     }
 

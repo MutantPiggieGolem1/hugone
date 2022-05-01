@@ -249,6 +249,9 @@ class Battle implements Feature {
       }
     }
   }
+
+  @Override
+  public void close() {}
 }
 
 class Note {

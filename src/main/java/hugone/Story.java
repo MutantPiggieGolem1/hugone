@@ -27,10 +27,6 @@ public class Story {
   };
 
   public void init() throws JSONException {
-    // this.current = "STARTMENU";
-    // this.menu = true;
-    this.start();
-    
     // load menus
     JSONObject datamenus = this.data.getJSONObject("menus");
     for (String id : JSONObject.getNames(datamenus)) {
@@ -71,6 +67,10 @@ public class Story {
           System.out.println("!WARNING! Unrecognized type for story data loading! " + value.getString("type"));
       }
     }
+
+    this.current = "STARTMENU";
+    this.menu = true;
+    this.getCurrent().init();
   }
 
   public Character getCharacter(String id) {
@@ -82,6 +82,7 @@ public class Story {
   }
 
   public void start() {
+    this.getCurrent().close();
     this.current = "intro";
     this.menu = false;
   }
@@ -101,7 +102,7 @@ public class Story {
       return GameState.valueOf(this.data.getJSONObject("scenes").getJSONObject(current).getString("type"));
     } catch (JSONException e) {
       System.out.println("!WARNING! Could not determine story state. "
-          + this.data.getJSONObject("scenes").getJSONObject(current).getString("type"));
+          + this.data.getJSONObject("scenes").getJSONObject(this.current).getString("type"));
       return null;
     }
   }

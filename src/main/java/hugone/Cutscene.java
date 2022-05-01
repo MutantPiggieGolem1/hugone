@@ -29,4 +29,9 @@ class Cutscene implements Feature {
   }
 
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
+
+  @Override
+  public void close() {
+    this.video.close();
+  }
 };

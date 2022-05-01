@@ -3,8 +3,8 @@
   "menus": {
     "STARTMENU": {
       "background": "STARTMENU.png",
-      "buttonloc": [0,0],
-      "buttondim": [50,20],
+      "buttonloc": [650,600],
+      "buttondim": [200,50],
       "buttons": [
         {
           "title": "Play",

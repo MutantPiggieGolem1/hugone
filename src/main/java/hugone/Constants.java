@@ -79,6 +79,8 @@ public class Constants {
         public abstract void reccieveKeyPress(KeyEvent e, KeyPress keydown); // wasd only
 
         public void init();
+
+        public void close();
     }
 
     private static final java.awt.DisplayMode defaultdisplaymode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();

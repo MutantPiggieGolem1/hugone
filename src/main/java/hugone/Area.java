@@ -132,4 +132,7 @@ class Area implements Feature { // TODO: Make a designated exit
   }
 
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
+
+  @Override
+  public void close() {}
 }

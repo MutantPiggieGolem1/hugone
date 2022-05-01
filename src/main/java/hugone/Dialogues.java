@@ -72,6 +72,11 @@ class Dialogues implements Feature {
 
   @Override
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
+
+  @Override
+  public void close() {
+    this.reset();
+  }
 }
 
 class Dialogue {
