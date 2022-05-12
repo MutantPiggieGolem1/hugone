@@ -2,6 +2,7 @@ package hugone;
 
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
+
 import java.awt.Point;
 
 import org.json.JSONArray;
@@ -14,7 +15,7 @@ import hugone.util.Utils;
 
 public class Furniture implements InteractableObject {
   public final String id;
-  private Area area;
+  protected Area area;
   private Image image;
   private String item;
   private Dialogues dialogue;
@@ -25,23 +26,24 @@ public class Furniture implements InteractableObject {
   private boolean interacted = false;
 
   public Furniture(JSONObject data, Area area) throws JSONException {
-    this.id = data.getString("objectid");
-    this.item = data.getString("item");
     this.area = area;
-    this.dialogue = App.story.getDialogue(data.getString("dialogue"));
-    this.dialogue.setParent(area);
+
+    this.id = data.has("objectid") ? data.getString("objectid") : null;
+    this.item = data.has("item") ? data.getString("item") : null;
+    this.collide = data.has("collide") ? data.getBoolean("collide") : true;
+    if (data.has("dialogue")) {
+      this.dialogue = App.story.getDialogue(data.getString("dialogue"));
+      this.dialogue.setParent(area);
+    }
 
     JSONArray location = data.getJSONArray("location"); // top left
     JSONArray dimension = data.getJSONArray("dimensions");
     this.location = Utils.toArray(location).toArray(new Integer[location.length()]);
     this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
-
     this.image = new Image(data.getString("image"));
     double scale = this.image.scaleToWidth(this.dimensions[0]);
     this.dimensions[1] = (int) Math.floor(scale * this.image.getHeight()); // auto rescale height bound
-
     this.rect = new Rectangle(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
-    this.collide = data.getBoolean("collide");
   }
 
   public boolean collidesWith(Point p) {
@@ -57,5 +59,20 @@ public class Furniture implements InteractableObject {
 
   public void render(Graphics2D g) {
     this.image.draw(this.location[0], this.location[1], g);
+  }
+}
+
+class Exit extends Furniture {
+  public Exit(JSONObject data, Area area) {
+    super(data,area);
+  }
+
+  @Override
+  public void onInteraction() {
+    if (App.player.inventory.containsAll(this.area.getFind())) {
+      this.area.exit();
+    } else {
+      this.area.setDialogue(App.story.getDialogue("cant_exit"));
+    }
   }
 }

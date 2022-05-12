@@ -42,7 +42,7 @@ public class Character {
     for (String key : JSONObject.getNames(images)) {
       String value = images.getString(key);
       Image img = new Image(value);
-      img.scaleToWidth(128);
+      img.scaleToWidth(512);
       this.emotions.put(Emotion.valueOf(key), img);
     }
 
@@ -75,8 +75,9 @@ public class Character {
     }
 
     movemap.put(MoveState.STOP, MoveState.STOP);
+    movemap.put(MoveState.MOVE0, MoveState.MOVE1);
     movemap.put(MoveState.MOVE1, MoveState.MOVE2);
-    movemap.put(MoveState.MOVE2, MoveState.MOVE1);
+    movemap.put(MoveState.MOVE2, MoveState.MOVE0);
     movemap.put(MoveState.RUN1, MoveState.RUN2);
     movemap.put(MoveState.RUN2, MoveState.RUN1);
   }

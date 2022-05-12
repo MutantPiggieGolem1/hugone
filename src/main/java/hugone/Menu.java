@@ -10,8 +10,6 @@ import javax.swing.JFrame;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.Point;
-import java.awt.Dimension;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 
@@ -26,12 +24,11 @@ public class Menu implements Feature {
     private Image background;
     private JButton[] buttons;
     private int selectedbutton;
-    private Point buttonloc;
-    private Dimension buttondim;
 
-    private final Rectangle CENTERBUTTON;
-    private final int SPACING = 500;
-    private boolean animating;
+    private final Rectangle NORMALBUTTON, CENTERBUTTON;
+    private final int SPACING = 400;
+    private boolean animating = false;
+    private int buttonspeed = 30;
 
     public Menu(String id, JFrame f) {
         this.parent = f;
@@ -41,15 +38,12 @@ public class Menu implements Feature {
         this.background = new Image(data.getString("background"));
         
         JSONArray buttondim = data.getJSONArray("buttondim");
-        this.buttondim = new Dimension(buttondim.getInt(0),buttondim.getInt(1));
         JSONArray buttonloc = data.getJSONArray("buttonloc");
-        this.buttonloc = new Point(buttonloc.getInt(0),buttonloc.getInt(1));
         JSONArray buttons = data.getJSONArray("buttons");
         this.buttons = new JButton[buttons.length()];
         for (int i = 0; i < this.buttons.length; i++) {
             JSONObject buttondata = buttons.getJSONObject(i);
-            ImageIcon buttonicon = new ImageIcon(new Image(buttondata.getString("image")).getImage().getScaledInstance((int)this.buttondim.getWidth(), (int)this.buttondim.getHeight(), 0));
-            JButton button = new JButton(buttondata.getString("title"),buttonicon);
+            JButton button = new JButton(new ImageIcon(new Image(buttondata.getString("image")).getImage().getScaledInstance(buttondim.getInt(0), buttondim.getInt(1), 0)));
             switch (buttondata.getInt("func")) {
                 case 0: // return to menu
                     button.addActionListener((ActionEvent e) -> {
@@ -71,17 +65,22 @@ public class Menu implements Feature {
             button.setVisible(false);     
             this.buttons[i] = button;
         }
-        this.CENTERBUTTON = new Rectangle((int)this.buttonloc.getX(), (int)this.buttonloc.getY(), (int)(this.buttondim.getWidth()*1.2), (int)(this.buttondim.getHeight()*1.2));
+        
+        int width = buttondim.getInt(0);
+        int height= buttondim.getInt(1);
+        this.NORMALBUTTON = new Rectangle(buttonloc.getInt(0), buttonloc.getInt(1), width, height);
+        int cwidth = (int)Math.ceil(width*1.3);
+        int cheight= (int)Math.ceil(height*1.3);
+        this.CENTERBUTTON = new Rectangle(buttonloc.getInt(0)-(cwidth-width)/2, buttonloc.getInt(1)+(cheight-height)/2, cwidth, cheight);
     }
 
     @Override
     public void init() {
-        int x = (int)this.buttonloc.getX();
-        int y = (int)this.buttonloc.getY();
+        int y = (int)this.NORMALBUTTON.getY();
         this.selectedbutton = this.buttons.length/2; // the centre button
-        for (JButton b : this.buttons) {
-            b.setBounds(x,y,(int)this.buttondim.getWidth(),(int)this.buttondim.getHeight());
-            x+=this.buttondim.getWidth()+this.SPACING;
+        for (int i = 0; i<this.buttons.length; i++) {
+            JButton b = this.buttons[i];
+            b.setBounds(this.calculateX(i),y,(int)this.NORMALBUTTON.getWidth(),(int)this.NORMALBUTTON.getHeight());
             b.setVisible(true);
             b.setEnabled(true);
             this.parent.add(b);
@@ -90,6 +89,7 @@ public class Menu implements Feature {
 
     @Override
     public boolean update() {
+        this.animate();
         return false;
     }
 
@@ -103,7 +103,7 @@ public class Menu implements Feature {
 
     @Override
     public void reccieveKeyPress(KeyEvent e, KeyPress keydown) {
-        if (keydown.equals(KeyPress.KEYUP)) return;
+        if (keydown.equals(KeyPress.KEYUP) || this.animating) return;
         switch (e.getKeyCode()) {
             case KeyEvent.VK_A:
                 this.selectedbutton = hugone.util.Utils.clamp(this.selectedbutton-1,this.buttons.length-1,0);
@@ -123,22 +123,34 @@ public class Menu implements Feature {
 
     public void close() {
         for (JButton b : this.buttons) {
+            b.setFocusable(false);
             b.setVisible(false);
             b.setEnabled(false);
         }
     }
 
-    private void animate() { // linear interpolation for position and resizing
+    private void animate() {
         if (!this.animating) return;
         int match = 0;
         for (int i = 0; i < this.buttons.length; i++) {
             JButton b = this.buttons[i];
             if (i==this.selectedbutton) {
                 if (b.getBounds().equals(this.CENTERBUTTON)) {match++;continue;}
-                b.setBounds(this.CENTERBUTTON);
+                b.setBounds(
+                    calculateDelta(b.getX(), this.buttonspeed, (int)this.CENTERBUTTON.getX()), 
+                    calculateDelta(b.getY(), 5, (int)this.CENTERBUTTON.getY()), 
+                    calculateDelta(b.getWidth(), 10, (int)this.CENTERBUTTON.getWidth()),
+                    calculateDelta(b.getHeight(), 10, (int)this.CENTERBUTTON.getHeight())
+                );
             } else {
-                if (b.getX() == this.calculateX(i)) {match++;continue;}
-                b.setBounds(this.calculateX(i),(int)this.CENTERBUTTON.getY(), (int)this.CENTERBUTTON.getWidth(), (int)this.CENTERBUTTON.getHeight());
+                int goal = this.calculateX(i);
+                if (b.getX() == goal) {match++;continue;}
+                b.setBounds(
+                    calculateDelta(b.getX(), this.buttonspeed, goal), 
+                    calculateDelta(b.getY(), 5, (int)this.NORMALBUTTON.getY()), 
+                    calculateDelta(b.getWidth(), 10, (int)this.NORMALBUTTON.getWidth()),
+                    calculateDelta(b.getHeight(), 10, (int)this.NORMALBUTTON.getHeight())
+                );
             }
         }
         if (match >= this.buttons.length) this.animating = false;
@@ -146,7 +158,12 @@ public class Menu implements Feature {
 
     private int calculateX(int index) { // get x pos for a button
         return (int)((index-this.selectedbutton) // dist from selected
-            * (this.CENTERBUTTON.getWidth()+this.SPACING) // width + spacing
-            + this.CENTERBUTTON.getX()); 
+            * (this.NORMALBUTTON.getWidth()+this.SPACING) // width + spacing
+            + this.NORMALBUTTON.getX()); 
+    }
+
+    private int calculateDelta(int loc, int spd, int goal) {
+        if (loc==goal) return goal;
+        return loc > goal ? ((loc - spd > goal) ? loc-spd : goal) : ((loc + spd < goal) ? loc+spd : goal);
     }
 }

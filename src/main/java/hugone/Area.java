@@ -18,7 +18,7 @@ import hugone.util.Image;
 import hugone.util.Utils;
 
 @SuppressWarnings("unused")
-class Area implements Feature { // TODO: Make a designated exit
+class Area implements Feature {
   private final String id;
   private final Image image;
   private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
@@ -29,6 +29,7 @@ class Area implements Feature { // TODO: Make a designated exit
   private int[] dimensions = new int[2];
   private int[] borders = new int[2];
   private Point startloc;
+  private boolean exit = false;
 
   public Area(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("areas").getJSONObject(id);
@@ -60,6 +61,9 @@ class Area implements Feature { // TODO: Make a designated exit
       Furniture furni = new Furniture(furn, this);
       this.furniture.add(furni);
     }
+
+    JSONObject exitdata = data.getJSONObject("exit");
+    this.furniture.add(new Exit(exitdata, this));
   }
 
   public void init() {
@@ -72,6 +76,14 @@ class Area implements Feature { // TODO: Make a designated exit
     return this.furniture;
   }
 
+  public ArrayList<String> getFind() {
+    return this.find;
+  }
+
+  public void exit() {
+    this.exit = true;
+  }
+
   public boolean update() {
     if (this.music!=null) {
       if (this.music.isPlaying()) {
@@ -80,7 +92,7 @@ class Area implements Feature { // TODO: Make a designated exit
         this.music.play();
       }
     }
-    return App.player.inventory.containsAll(find) && this.renderstate.equals(RenderState.DEFAULT); // all required items, and not rendering dialogue
+    return this.exit && this.renderstate.equals(RenderState.DEFAULT); // all required items, and not rendering dialogue
   }
 
   public void setDialogue(Dialogues dg) {

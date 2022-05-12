@@ -262,7 +262,7 @@ class Note {
   protected boolean hit;
   private long lasttime;
 
-  public Note(Battle p, Direction dir) {
+  public Note(Battle p, Direction dir) { // TODO: Fix arrow directions
     this.parent = p;
     this.direction = dir;
     this.image = Utils.arrowimages.get(dir);

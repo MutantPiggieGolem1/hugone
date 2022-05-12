@@ -85,6 +85,8 @@ public class Player extends Character implements KeyListener {
   }
 
   public void render(Graphics2D g) {
+    Point facing = this.facingTowards();
+    g.drawLine((int)facing.getX(),(int)facing.getY(),(int)facing.getX(),(int)facing.getY());
     super.render(this.direction, this.movestate, g);
   }
 
@@ -120,7 +122,7 @@ public class Player extends Character implements KeyListener {
       return;
     } // dont move while stopped
 
-    if (Math.round(this.framenum % (this.sprinting ? 2 : 3)) == 0L)
+    if (Math.round(this.framenum % (this.sprinting ? 1.1 : 2)) == 0L)
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 

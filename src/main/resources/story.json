@@ -4,7 +4,7 @@
     "STARTMENU": {
       "background": "STARTMENU.png",
       "buttonloc": [650,600],
-      "buttondim": [200,50],
+      "buttondim": [250,75],
       "buttons": [
         {
           "title": "Play",
@@ -54,24 +54,28 @@
       },
       "directions": {
         "UP": {
-          "STOP": "PLAYER_UP_STOP.png",
-          "MOVE1":"PLAYER_UP_MOVE1.png",
-          "MOVE2":"PLAYER_UP_MOVE2.png"
+          "STOP": "KyleBackIdle.png",
+          "MOVE0":"KyleBackWalk1.png",
+          "MOVE1":"KyleBackIdle.png",
+          "MOVE2":"KyleBackWalk2.png"
         },
         "DOWN": {
-          "STOP": "PLAYER_DOWN_STOP.png",
-          "MOVE1":"PLAYER_DOWN_MOVE1.png",
-          "MOVE2":"PLAYER_DOWN_MOVE2.png"
+          "STOP": "KyleFrontIdle.png",
+          "MOVE0":"KyleFrontWalk1.png",
+          "MOVE1":"KyleFrontIdle.png",
+          "MOVE2":"KyleFrontWalk2.png"
         },
         "LEFT": {
-          "STOP": "PLAYER_LEFT_STOP.png",
-          "MOVE1":"PLAYER_LEFT_MOVE1.png",
-          "MOVE2":"PLAYER_LEFT_MOVE2.png"
+          "STOP": "KyleLeftIdle.png",
+          "MOVE0":"KyleLeftWalk1.png",
+          "MOVE1":"KyleLeftIdle.png",
+          "MOVE2":"KyleLeftWalk2.png"
         },
         "RIGHT": {
-          "STOP": "PLAYER_RIGHT_STOP.png",
-          "MOVE1":"PLAYER_RIGHT_MOVE1.png",
-          "MOVE2":"PLAYER_RIGHT_MOVE2.png"
+          "STOP": "KyleRightIdle.png",
+          "MOVE0":"KyleRightWalk1.png",
+          "MOVE1":"KyleRightIdle.png",
+          "MOVE2":"KyleRightWalk2.png"
         }
       }
     },
@@ -117,7 +121,12 @@
           "dialogue": "explore_closet_1",
           "item": "wallet"
         }
-      ]
+      ],
+      "exit": {
+        "location": [200,300],
+        "dimensions": [50,100],
+        "image": "door_1.png"
+      }
     }
   },
   "battles": {
@@ -145,6 +154,17 @@
           "emotion": "HAPPY",
           "line": "There's still lots of clothes in here... Oh sick! There's a wallet in one of the pockets.",
           "audio": "explore_closet_1.wav",
+          "textbox": "textbox.png"
+        }
+      ]
+    },
+    "cant_exit": {
+      "lines": [
+        {
+          "character": "KYLE",
+          "emotion": "HAPPY",
+          "line": "We should probably look around more before we leave this room.",
+          "audio": "cant_exit.wav",
           "textbox": "textbox.png"
         }
       ]

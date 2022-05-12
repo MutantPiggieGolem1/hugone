@@ -12,6 +12,8 @@ public class DrawingCanvas extends javax.swing.JComponent {
 
   public DrawingCanvas(JFrame f) {
     this.parent = f;
+    this.setFocusable(true);
+    this.requestFocus();
     this.setBackground(java.awt.Color.GRAY);
   }
 

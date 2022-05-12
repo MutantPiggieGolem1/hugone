@@ -42,8 +42,8 @@ public class Constants {
 
     public static enum MoveState {
         STOP,
-        MOVE1,
-        MOVE2, RUN1, RUN2
+        MOVE0, MOVE1, MOVE2,
+        RUN1, RUN2
     }
 
     public static enum RenderState {
@@ -95,5 +95,5 @@ public class Constants {
         public static final int MINNOTEMOVE = 2;
         public static final int HITMARGIN = 150;
     }
-    public static final int CHARACTERSIZE = 64;
+    public static final int CHARACTERSIZE = 96;
 }
