@@ -71,9 +71,7 @@ public class Character {
     }
     Image eximg = this.directions.get(Direction.UP).get(MoveState.STOP);
     int h = Constants.CHARACTERSIZE;
-    if (eximg != null) {
-      h = eximg.getScaleHeight();
-    }
+    if (eximg != null) h = eximg.getScaleHeight();
     this.pos = new Rectangle(0,0,Constants.CHARACTERSIZE,h);
 
     if (data.has("health")) {
@@ -111,9 +109,7 @@ public class Character {
   }
 
   public void render(Direction dir, boolean stop, Graphics2D g) {
-    if (stop) {
-      this.lastmovestate = MoveState.STOP;
-    }
+    if (stop) this.lastmovestate = MoveState.STOP;
     this.render(dir, this.lastmovestate, g);
   }
 

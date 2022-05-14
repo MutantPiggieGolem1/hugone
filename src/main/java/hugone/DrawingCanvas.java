@@ -35,7 +35,7 @@ public class DrawingCanvas extends javax.swing.JComponent {
   public void paintComponent(java.awt.Graphics g) {
     super.paintComponent(g);
     Graphics2D g2 = (Graphics2D)g;
-    //g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_DEFAULT);
+    
     App.render(g2);
     App.postRender(g2);
     g.dispose();

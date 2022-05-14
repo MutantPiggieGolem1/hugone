@@ -262,11 +262,11 @@ class Note {
   protected boolean hit;
   private long lasttime;
 
-  public Note(Battle p, Direction dir) { // TODO: Fix arrow directions
+  public Note(Battle p, Direction dir) {
     this.parent = p;
     this.direction = dir;
     this.image = Utils.arrowimages.get(dir);
-    this.image.scaleToWidth((App.f.getWidth() - (Battle.leftmargin+Battle.rightmargin))/8.0f);
+    this.image.scaleToWidth(-(App.f.getWidth() - (Battle.leftmargin+Battle.rightmargin))/8.0f); // inverted for some reason
   }
 
   public void spawn() {
@@ -316,9 +316,9 @@ class Note {
 }
 
 class HoldNote extends Note {
-  Integer holdtime;
-  Image tailimage = Utils.ARROWTAILIMAGE;
-  int keydownon;
+  private Integer holdtime;
+  private Image tailimage = Utils.ARROWTAILIMAGE;
+  private int keydownon;
 
   public HoldNote(Battle p, Direction dir, int leng) {
     super(p, dir);
@@ -355,7 +355,7 @@ class HoldNote extends Note {
 
   @Override
   protected boolean pastBound() {
-    return this.location.y > this.parent.getEndY() && this.keydownon < 0; // both past bound and not holding (allows too long notes)
+    return this.location.y > this.parent.getEndY() && this.keydownon > 0; // both past bound and not holding (allows too long notes)
   }
 }
 
