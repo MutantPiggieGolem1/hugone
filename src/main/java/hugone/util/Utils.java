@@ -1,7 +1,7 @@
 package hugone.util;
 
 import java.awt.event.KeyEvent;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
@@ -93,29 +93,29 @@ public class Utils {
     dirtoint.put(Direction.RIGHT,3);
   }
 
-  public static Point getChange(Direction dir) {
-    return getChange(new Point(), dir, 10);
+  public static Rectangle getChange(Direction dir) {
+    return getChange(new Rectangle(), dir, 10);
   };
-  public static Point getChange(Point pos, Direction dir, int d) {
-    pos = (Point)pos.clone();
+  public static Rectangle getChange(Rectangle r, Direction dir, int d) {
+    r = (Rectangle)r.clone();
     switch (dir) {
       case UP:
-        pos.translate(0,-d);
+        r.translate(0,-d);
         break;
       case DOWN:
-        pos.translate(0,d);
+        r.translate(0,d);
         break;
       case LEFT:
-        pos.translate(-d,0);
+        r.translate(-d,0);
         break;
       case RIGHT:
-        pos.translate(d,0);
+        r.translate(d,0);
         break;
       case NONE:
       default:
         break;
     }
-    return pos;
+    return r;
   }
 
   public static int fps() {

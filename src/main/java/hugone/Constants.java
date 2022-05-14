@@ -1,6 +1,5 @@
 package hugone;
 
-import java.awt.Point;
 import java.awt.GraphicsEnvironment;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
@@ -68,7 +67,7 @@ public class Constants {
         public abstract void onInteraction();
 
         // public void onInteraction(int count);
-        public abstract boolean collidesWith(Point p);
+        public abstract boolean collidesWith(java.awt.Rectangle r);
     }
 
     public static interface Feature {

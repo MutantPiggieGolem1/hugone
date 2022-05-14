@@ -3,8 +3,6 @@ package hugone;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-import java.awt.Point;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -46,8 +44,8 @@ public class Furniture implements InteractableObject {
     this.rect = new Rectangle(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
   }
 
-  public boolean collidesWith(Point p) {
-    return this.collide && this.rect.contains(p);
+  public boolean collidesWith(Rectangle r) {
+    return this.collide && this.rect.intersects(r);
   }
 
   public void onInteraction() {

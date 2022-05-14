@@ -2,6 +2,7 @@ package hugone;
 
 import java.awt.Graphics2D;
 import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -26,8 +27,7 @@ class Area implements Feature {
   private ArrayList<String> find;
   private Dialogues dialogue;
   private Audio music;
-  private int[] dimensions = new int[2];
-  private int[] borders = new int[2];
+  private Rectangle dimensions;
   private Point startloc;
   private boolean exit = false;
 
@@ -38,12 +38,9 @@ class Area implements Feature {
 
     this.id = id;
     this.image = new Image(data.getString("image"));
-    this.dimensions[0] = dims.getJSONArray(1).getInt(0);
-    this.dimensions[1] = dims.getJSONArray(1).getInt(1);
-    this.borders[0] = dims.getJSONArray(0).getInt(0);
-    this.borders[1] = dims.getJSONArray(0).getInt(1);
+    this.dimensions = new Rectangle(dims.getJSONArray(0).getInt(0),dims.getJSONArray(0).getInt(1),dims.getJSONArray(1).getInt(0),dims.getJSONArray(1).getInt(1));
     this.startloc = new Point(start.getInt(0), start.getInt(1));;
-    this.image.scaleToWidth(this.dimensions[0]);
+    this.image.scaleToWidth(this.dimensions.width);
     // misc vars
     this.find = Utils.toArray(data.getJSONArray("find"));
 
@@ -124,19 +121,17 @@ class Area implements Feature {
     });
   }
 
-  public boolean collideFurniture(Point coords) {
+  public boolean collideFurniture(Rectangle r) {
     for (Furniture f : this.furniture) {
-      if (f.collidesWith(coords)) {
+      if (f.collidesWith(r)) {
         return true;
       }
     }
     return false;
   }
 
-  public boolean checkCollisions(Point coords) {
-    return coords.x < this.borders[0]   || coords.y < this.borders[1]
-        || coords.x > this.dimensions[0]|| coords.y > this.dimensions[1]
-        || this.collideFurniture(coords);
+  public boolean collidesWith(Rectangle r) { // true if collision
+    return !this.dimensions.contains(r) || this.collideFurniture(r);
   }
 
   public boolean renderingDialogue() {

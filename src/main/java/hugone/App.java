@@ -51,7 +51,6 @@ class App {
     f.add(dc);
     f.addKeyListener(player);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-    //f.addMouseListener(l); for menus
 
     // Game Loop begins
     executor.scheduleAtFixedRate(() -> {

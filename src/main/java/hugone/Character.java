@@ -1,7 +1,7 @@
 package hugone;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.util.HashMap;
 
 import org.json.JSONException;
@@ -26,7 +26,7 @@ public class Character {
   private HashMap<Direction, HashMap<MoveState, Image>> directions = new HashMap<Direction, HashMap<MoveState, Image>>();
 
   protected int health = -1;
-  protected Point pos = new Point(); // placeholder
+  protected Rectangle pos = new Rectangle();
   public final HashMap<MoveState, MoveState> movemap = new HashMap<MoveState, MoveState>();
 
   private MoveState lastmovestate = MoveState.STOP;
@@ -69,6 +69,12 @@ public class Character {
         }
       }
     }
+    Image eximg = this.directions.get(Direction.UP).get(MoveState.STOP);
+    int h = Constants.CHARACTERSIZE;
+    if (eximg != null) {
+      h = eximg.getScaleHeight();
+    }
+    this.pos = new Rectangle(0,0,Constants.CHARACTERSIZE,h);
 
     if (data.has("health")) {
       this.health = data.getInt("health");
@@ -117,9 +123,5 @@ public class Character {
 
   public void moveLoop() {
     this.lastmovestate = movemap.get(this.lastmovestate); // update the move state
-  }
-
-  protected Point getCenter() {
-    return new Point(this.pos.x+Constants.CHARACTERSIZE/2,this.pos.y+Constants.CHARACTERSIZE/2);
   }
 }

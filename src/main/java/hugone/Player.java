@@ -1,7 +1,7 @@
 package hugone;
 
 import java.awt.Graphics2D;
-import java.awt.Point;
+import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -85,8 +85,6 @@ public class Player extends Character implements KeyListener {
   }
 
   public void render(Graphics2D g) {
-    Point facing = this.facingTowards();
-    g.drawLine((int)facing.getX(),(int)facing.getY(),(int)facing.getX(),(int)facing.getY());
     super.render(this.direction, this.movestate, g);
   }
 
@@ -96,15 +94,11 @@ public class Player extends Character implements KeyListener {
     return true;
   }
 
-  public Point facingTowards() { // WARNING: ONLY FOR INTERACTS
-    Point delta = Utils.getChange(this.direction);
-    Point pclone= ((Point)this.pos.clone());
-    pclone.translate(delta.x, delta.y);
-    return pclone;
+  public Rectangle facingTowards() {
+    return facingTowards(false);
   }
-
-  private Point walkingTowards(boolean center) {
-    return Utils.getChange(center ? this.getCenter() : this.pos,this.direction,this.sprinting ? 15 : 10);
+  public Rectangle facingTowards(boolean walking) {
+    return Utils.getChange(this.pos, this.direction, walking&&this.sprinting ? 15 : 10);
   }
 
   public void moveLoop() {
@@ -126,12 +120,12 @@ public class Player extends Character implements KeyListener {
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
-    if (!a.checkCollisions(this.walkingTowards(true)))
-      this.pos = this.walkingTowards(false);
+    if (!a.collidesWith(this.facingTowards(true)))
+      this.pos = this.facingTowards(true);
   }
 
-  public void teleport(Point loc) {
-    this.pos = (Point)loc.clone();
+  public void teleport(java.awt.Point loc) {
+    this.pos.setLocation(loc);
   }
 
   public void stopMovement() {

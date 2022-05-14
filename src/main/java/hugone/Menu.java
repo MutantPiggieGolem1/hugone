@@ -116,7 +116,7 @@ public class Menu implements Feature {
                 this.animate();
             break;
             case KeyEvent.VK_SPACE:
-
+                this.buttons[this.selectedbutton].doClick();
             break;
         }
     }
