@@ -71,7 +71,7 @@ public class Character {
     }
     Image eximg = this.directions.get(Direction.UP).get(MoveState.STOP);
     int h = Constants.CHARACTERSIZE;
-    if (eximg != null) h = eximg.getScaleHeight();
+    if (eximg != null) h = eximg.getHeight();
     this.pos = new Rectangle(0,0,Constants.CHARACTERSIZE,h);
 
     if (data.has("health")) {
@@ -97,7 +97,7 @@ public class Character {
   public void render(Emotion emotion, Graphics2D g) {
     Image eimg = this.emotions.get(emotion);
     if (eimg != null) {
-      eimg.draw(50, App.f.getHeight() - (200 + eimg.getScaleHeight()), g);
+      eimg.draw(50, App.f.getHeight() - (200 + eimg.getHeight()), g);
     } // placeholder coords
     else {
       System.out.println("!WARNING! Could not find emotion '"+ emotion.toString() +"' in character '"+ this.id +"'.");

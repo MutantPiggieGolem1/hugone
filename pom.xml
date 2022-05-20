@@ -6,7 +6,7 @@
 
   <groupId>hugone</groupId>
   <artifactId>hugone</artifactId>
-  <version>ALPHA</version>
+  <version>0.5-ALPHA</version>
 
   <name>hugone</name>
   <!-- <url>http://www.example.com</url> -->
@@ -23,11 +23,6 @@
       <artifactId>json</artifactId>
       <version>20211205</version>
     </dependency>
-    <dependency>
-      <groupId>javax.media</groupId>
-      <artifactId>jmf</artifactId>
-      <version>2.1.1e</version>
-  </dependency>
   </dependencies>
 
   <build>
@@ -54,14 +49,14 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
-          <configuration>
-            <archive>
-              <manifest>
-                <addClasspath>true</addClasspath>
-                <mainClass>hugone.App</mainClass>
-              </manifest>
-            </archive>
-          </configuration>
+            <configuration>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <mainClass>hugone.App</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>

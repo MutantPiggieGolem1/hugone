@@ -87,7 +87,6 @@ public class Constants {
     public static final int REFRESHRATE = defaultdisplaymode.getRefreshRate();
     public static final double FPS = REFRESHRATE; // 60.0 usually
     public static final double TPS = 20.0;
-    public static final java.awt.Dimension SCREENDIMS = java.awt.Toolkit.getDefaultToolkit().getScreenSize();
 
     public class Battle {
         public static final int HEALTHPERHEART = 25;

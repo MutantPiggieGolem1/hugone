@@ -84,9 +84,9 @@ class Area implements Feature {
   public boolean update() {
     if (this.music!=null) {
       if (this.music.isPlaying()) {
-        if (this.renderingDialogue()) this.music.stop();
+        if (this.renderingDialogue()) this.music.pause();
       } else {
-        this.music.play();
+        if (!this.renderingDialogue()) this.music.play();
       }
     }
     return this.exit && this.renderstate.equals(RenderState.DEFAULT); // all required items, and not rendering dialogue
@@ -141,5 +141,7 @@ class Area implements Feature {
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
 
   @Override
-  public void close() {}
+  public void close() {
+    if (this.music != null) this.music.stop();
+  }
 }

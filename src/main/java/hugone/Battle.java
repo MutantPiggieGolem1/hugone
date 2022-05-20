@@ -169,7 +169,7 @@ class Battle implements Feature {
     this.enemem = Emotion.HIT;
     App.player.health -= this.notedamage;
     if (this.misssound.isPlayed()) this.misssound.reset();
-    if (!this.misssound.isPlaying()) this.misssound.play();
+    this.misssound.play();
   }
 
   public void render(Graphics2D g) {
@@ -265,8 +265,7 @@ class Note {
   public Note(Battle p, Direction dir) {
     this.parent = p;
     this.direction = dir;
-    this.image = Utils.arrowimages.get(dir);
-    this.image.scaleToWidth(-(App.f.getWidth() - (Battle.leftmargin+Battle.rightmargin))/8.0f); // inverted for some reason
+    this.image = Utils.arrowimages.get(dir).scaleToWidth((App.f.getWidth() - (Battle.leftmargin+Battle.rightmargin))/-8);
   }
 
   public void spawn() {

@@ -110,7 +110,7 @@
       "find": ["wallet"],
       "music": "explore_bottom_floor.wav",
       "startlocation": [160,160],
-      "dimensions": [[50,50],[1200,650]],
+      "dimensions": [[50,50],[1366,768]],
       "furniture": [
         {
           "objectid": "closet1",

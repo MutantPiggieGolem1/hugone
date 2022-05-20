@@ -1,61 +1,48 @@
 package hugone.util;
 
-import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.io.File;
-import java.io.IOException;
 
-import javax.imageio.ImageIO;
-import javax.swing.*;
-
-import hugone.Constants;
-
-public class Image extends JPanel {
-  private BufferedImage image;
-  protected double scale = 1.0;
+public class Image extends javax.swing.JPanel {
+  private java.awt.Image image;
 
   public Image(String filepath) {
     try {
-      File f = new File(Constants.RESOURCEDIR + filepath);
+      File f = new File(getClass().getClassLoader().getResource(filepath).toURI());
       if (f.canRead()) {
-        this.image = ImageIO.read(f);
+        this.image = javax.imageio.ImageIO.read(f);
       } else {
         System.out.println("!WARNING! Image file failed to read @" + filepath);
         this.image = Utils.NULLIMG.getImage();
       }
-    } catch (IOException e) {
+    } catch (Exception e) {
       System.out.println("!WARNING! Image file failed to load @" + filepath);
       this.image = Utils.NULLIMG.getImage();
     }
   }
 
-  public double scaleToWidth(int size) {
-    return this.scaleToWidth((double) size);
+  public Image scaleToWidth(int width) {
+    if (width > 0) {
+      this.image = this.image.getScaledInstance(width, Math.round(width / (float)this.image.getWidth(null) * this.image.getHeight(null)), BufferedImage.SCALE_SMOOTH);
+    } else {
+      System.out.println("!WARNING! Attempted to scale image to width <0!");
+    }
+    return this;
   }
 
-  public double scaleToWidth(double size) {
-    this.scale = size / this.image.getWidth();
-    return this.scale;
-  }
-
-  public BufferedImage getImage() {
+  public java.awt.Image getImage() {
     return this.image;
   }
 
   public int getWidth() {
-    return this.image.getWidth();
+    return this.image.getWidth(null);
   };
 
   public int getHeight() {
-    return this.image.getHeight();
+    return this.image.getHeight(null);
   };
 
-  public void draw(int x, int y, Graphics2D g) {
-    g.drawImage(this.image, x, y, (int) Math.round(this.image.getWidth() * this.scale),
-        (int) Math.round(this.image.getHeight() * this.scale), null);
-  }
-
-  public int getScaleHeight() {
-    return (int) Math.round(this.image.getHeight() * this.scale);
+  public void draw(int x, int y, java.awt.Graphics2D g) {
+    g.drawImage(this.image, x, y, this.image.getWidth(null), this.image.getHeight(null), null);
   }
 }

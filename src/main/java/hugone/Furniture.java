@@ -39,8 +39,8 @@ public class Furniture implements InteractableObject {
     this.location = Utils.toArray(location).toArray(new Integer[location.length()]);
     this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
     this.image = new Image(data.getString("image"));
-    double scale = this.image.scaleToWidth(this.dimensions[0]);
-    this.dimensions[1] = (int) Math.floor(scale * this.image.getHeight()); // auto rescale height bound
+    this.image.scaleToWidth(this.dimensions[0]);
+    this.dimensions[1] = this.image.getHeight(); // auto rescale height bound
     this.rect = new Rectangle(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
   }
 

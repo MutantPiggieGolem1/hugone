@@ -17,7 +17,7 @@ import hugone.Constants.Direction;
 public class Utils {
   public static final Image NULLIMG = new Image("null.png");
   public static final Image ARROWTAILIMAGE = new Image("ARROW_TAIL.png");
-  public static final java.awt.image.BufferedImage ICONIMG = new Image("icon.png").getImage();
+  public static final java.awt.Image ICONIMG = new Image("icon.png").getImage();
   private static long prevns;
 
   public static <T> String toString(T[] arr) {

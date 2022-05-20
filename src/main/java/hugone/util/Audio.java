@@ -8,6 +8,7 @@ import hugone.Constants;
 public class Audio {
   private Clip clip;
   private File inpfile;
+  private long pausetime = -1;
 
   public Audio(String filepath) {
     try {
@@ -33,26 +34,33 @@ public class Audio {
       this.stop();
       this.clip = AudioSystem.getClip();
       this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
-      clip.setMicrosecondPosition(0);
+      this.clip.setMicrosecondPosition(0);
     } catch (Exception e) {
       System.out.println("!WARNING! Audio file failed to reset!");
     }
   }
 
   public void play() {
+    if (this.pausetime > 0) this.clip.setMicrosecondPosition(this.pausetime);
+    this.pausetime = -1;
     this.clip.start();
   };
+
+  public void pause() {
+    this.pausetime = this.clip.getMicrosecondPosition();
+    this.clip.stop();
+  }
 
   public void stop() {
     this.clip.stop();
     this.clip.close();
-  };
+  }
 
   public boolean isPlaying() {
     return this.clip.isRunning();
-  };
+  }
 
   public boolean isPlayed() {
     return this.clip.getLongFramePosition() + 1 >= this.clip.getFrameLength();
-  };
-};
+  }
+}

@@ -46,8 +46,10 @@ class App {
 
     DrawingCanvas dc = new DrawingCanvas(f);
     f.setIconImage(Utils.ICONIMG);
-    f.setSize(Constants.SCREENDIMS);
     f.setFocusable(true);
+    f.setResizable(false);
+    f.setUndecorated(false);
+    f.setExtendedState(JFrame.MAXIMIZED_BOTH); 
     f.add(dc);
     f.addKeyListener(player);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -85,8 +87,9 @@ class App {
     }, 0, (long) (1000 / Constants.TPS), TimeUnit.MILLISECONDS);
 
     f.setVisible(true);
-    dc.requestFocus();
+    f.requestFocus();
     dc.startDraw();
+    f.setEnabled(true);
   }
 
   public static void render(Graphics2D g) {

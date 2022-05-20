@@ -89,6 +89,7 @@ public class Story {
 
   public void next() { // advance story
     try {
+      this.getCurrent().close();
       this.current = this.data.getJSONObject("scenes").getJSONObject(this.current).getString("next");
       this.getCurrent().init();
     } catch (JSONException e) {

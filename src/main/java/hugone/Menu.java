@@ -17,7 +17,7 @@ import hugone.Constants.Feature;
 import hugone.Constants.KeyPress;
 import hugone.util.Image;
 
-@SuppressWarnings("unused")
+@SuppressWarnings("unused") // TODO: Fix duplicate menu buttons
 public class Menu implements Feature {
     private JFrame parent;
     private String id;
@@ -35,7 +35,7 @@ public class Menu implements Feature {
         JSONObject data = App.story.data.getJSONObject("menus").getJSONObject(id);
 
         this.id = id;
-        this.background = new Image(data.getString("background"));
+        this.background = new Image(data.getString("background")).scaleToWidth(App.f.getWidth());
         
         JSONArray buttondim = data.getJSONArray("buttondim");
         JSONArray buttonloc = data.getJSONArray("buttonloc");
