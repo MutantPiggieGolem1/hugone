@@ -34,4 +34,4 @@ class Cutscene implements Feature {
   public void close() {
     this.video.close();
   }
-};
+}

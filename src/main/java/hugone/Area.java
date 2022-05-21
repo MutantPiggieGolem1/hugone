@@ -19,7 +19,7 @@ import hugone.util.Image;
 import hugone.util.Utils;
 
 @SuppressWarnings("unused")
-class Area implements Feature {
+class Area implements Feature { // TODO: Allow audio overlap
   private final String id;
   private final Image image;
   private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
@@ -143,6 +143,7 @@ class Area implements Feature {
 
   @Override
   public void close() {
-    if (this.music != null) this.music.stop();
+    if (this.music != null) this.music.reset();
+    
   }
 }

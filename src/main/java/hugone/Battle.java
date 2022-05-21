@@ -246,7 +246,11 @@ class Battle implements Feature {
   }
 
   @Override
-  public void close() {}
+  public void close() {
+    this.losetrack.reset();
+    this.introscene.close();
+    this.song.reset();
+  }
 }
 
 class Note {

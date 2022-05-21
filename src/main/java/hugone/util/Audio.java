@@ -1,26 +1,21 @@
 package hugone.util;
 
-import java.io.File;
 import javax.sound.sampled.*;
-
-import hugone.Constants;
 
 public class Audio {
   private Clip clip;
-  private File inpfile;
   private long pausetime = -1;
 
-  public Audio(String filepath) {
+  private AudioInputStream original;
+
+  public Audio(String filename) {
     try {
-      this.inpfile = new File(Constants.RESOURCEDIR + filepath);
-      if (this.inpfile.canRead()) {
-        this.clip = AudioSystem.getClip();
-        this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
-      } else {
-        System.out.println("!WARNING! Audio file failed to read @" + filepath);
-      }
+      original = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(filename));
+      original.mark(Integer.MAX_VALUE);
+      this.clip = AudioSystem.getClip();
+      this.clip.open(original);
     } catch (Exception e) {
-      System.out.println("!WARNING! Audio file failed to load @" + filepath);
+      System.out.println("!WARNING! Audio file failed to load @" + filename);
     }
   };
 
@@ -32,8 +27,9 @@ public class Audio {
   public void reset() {
     try {
       this.stop();
+      this.original.reset();
       this.clip = AudioSystem.getClip();
-      this.clip.open(AudioSystem.getAudioInputStream(this.inpfile.getAbsoluteFile()));
+      this.clip.open(this.original);
       this.clip.setMicrosecondPosition(0);
     } catch (Exception e) {
       System.out.println("!WARNING! Audio file failed to reset!");
