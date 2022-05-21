@@ -1,6 +1,8 @@
 package hugone;
 
 import java.util.HashMap;
+import java.util.Scanner;
+
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -22,9 +24,15 @@ public class Story {
 
   public final JSONObject data;
 
-  public Story(JSONObject data) {
-    this.data = data;
-  };
+  public Story(String filename) {
+    String out = "";
+    Scanner myReader = new Scanner(getClass().getClassLoader().getResourceAsStream(filename));
+    while (myReader.hasNextLine()) {
+      out = out.concat(myReader.nextLine().trim()); // removing newlines & trailing spaces
+    }
+    myReader.close();
+    this.data = new JSONObject(out);
+  }
 
   public void init() throws JSONException {
     // load menus
@@ -51,20 +59,20 @@ public class Story {
 
     // Load scenes
     JSONObject scenes = this.data.getJSONObject("scenes");
-    for (String key : JSONObject.getNames(scenes)) {
-      JSONObject value = scenes.getJSONObject(key);
-      switch (GameState.valueOf(value.getString("type"))) {
+    for (String id : JSONObject.getNames(scenes)) {
+      JSONObject data = scenes.getJSONObject(id);
+      switch (GameState.valueOf(data.getString("type"))) {
         case CUTSCENE:
-          this.cutscenes.put(key, new Cutscene(new Video(value.getString("video"),App.f)));
+          this.cutscenes.put(id, new Cutscene(new Video(data.getString("video"),App.f)));
           break;
         case EXPLORATION:
-          this.areas.put(key, new Area(value.getString("id")));
+          this.areas.put(id, new Area(data.getString("id")));
           break;
         case BATTLE:
-          this.battles.put(key, new Battle(value.getString("id")));
+          this.battles.put(id, new Battle(data.getString("id")));
           break;
         default: // add all the story elements, must be sorted to fit strict typing
-          System.out.println("!WARNING! Unrecognized type for story data loading! " + value.getString("type"));
+          System.out.println("!WARNING! Unrecognized type for story data loading! " + data.getString("type"));
       }
     }
 

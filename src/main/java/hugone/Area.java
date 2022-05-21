@@ -103,6 +103,7 @@ class Area implements Feature {
     for (Furniture furniture : this.furniture) {
       furniture.render(g);
     }
+    App.player.render(g);
     if (this.renderstate.equals(RenderState.DIALOGUE)) {
       if (this.dialogue.update() || App.player.spaceDown()) {
         this.renderstate = RenderState.DEFAULT; // once done / skipped, return to normal state

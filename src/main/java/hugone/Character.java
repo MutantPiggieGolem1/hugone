@@ -11,7 +11,6 @@ import hugone.Constants.Direction;
 import hugone.Constants.Emotion;
 import hugone.Constants.MoveState;
 import hugone.util.Image;
-import hugone.util.Utils;
 
 /* Where "Character" should be rendered w/emotion:
  *  - Dialogue
@@ -63,7 +62,7 @@ public class Character {
               img.scaleToWidth(Constants.CHARACTERSIZE);
               this.directions.get(direction).put(movestate, img);
             } else {
-              this.directions.get(direction).put(movestate, Utils.NULLIMG);
+              this.directions.get(direction).put(movestate, Image.NULLIMG);
             }
           }
         }

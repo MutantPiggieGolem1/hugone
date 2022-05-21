@@ -2,12 +2,9 @@ package hugone.util;
 
 import java.awt.event.KeyEvent;
 import java.awt.Rectangle;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Scanner;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +12,6 @@ import org.json.JSONException;
 import hugone.Constants.Direction;
 
 public class Utils {
-  public static final Image NULLIMG = new Image("null.png");
   public static final Image ARROWTAILIMAGE = new Image("ARROW_TAIL.png");
   public static final java.awt.Image ICONIMG = new Image("icon.png").getImage();
   private static long prevns;
@@ -39,17 +35,6 @@ public class Utils {
     for (int i = 0; i < jsonarr.length(); i++) {
       out.add((T) jsonarr.get(i));
     }
-    return out;
-  }
-
-  public static String readFile(String filepath) throws FileNotFoundException {
-    String out = "";
-    File file = new File(filepath);
-    Scanner myReader = new Scanner(file);
-    while (myReader.hasNextLine()) {
-      out = out.concat(myReader.nextLine().trim()); // removing newlines & trailing spaces
-    }
-    myReader.close();
     return out;
   }
 

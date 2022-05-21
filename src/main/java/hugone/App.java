@@ -1,44 +1,31 @@
 package hugone;
 
 import java.awt.Graphics2D;
-import java.util.HashMap;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import hugone.Constants.Feature;
 import hugone.Constants.GameState;
 import hugone.util.Utils;
 
-/*
- * Location coords are in TOP LEFT
-*/
-
 class App {
-  public static HashMap<String,Object> shit = new HashMap<String,Object>(); // stores temporary vars to be relayed to main file
+  public static java.util.HashMap<String,Object> shit = new java.util.HashMap<String,Object>(); // stores temporary vars to be relayed to main file
 
   public static Story story;
   public static Player player;
   public static GameState gamestate;
-  public static final int prevtime = 0;
 
   public static final JFrame f = new JFrame("Hugone - Alpha Version");
   private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
   public static void main(String[] args) {
     try {
-      story = new Story(new JSONObject(Utils.readFile(Constants.RESOURCEDIR + "story.json")));
-    } catch (Exception e) {
-      throw new RuntimeException("Couldn't load story json data.\nDetais: " + e.toString());
-    }
-    try {
+      story = new Story("story.json");
       story.init();
-    } catch (JSONException e) {
+    } catch (Exception e) {
       throw new RuntimeException("Couldn't initalize story.\nDetais: " + e.toString());
     }
     player = story.player;
@@ -93,21 +80,7 @@ class App {
   }
 
   public static void render(Graphics2D g) {
-    Feature cur = story.getCurrent();
-    cur.render(g);
-    switch (story.currentState()) {
-      case MENU:
-      break;
-      case CUTSCENE:
-      break;
-      case EXPLORATION:
-        player.render(g);
-      break;
-      case BATTLE:
-      break;
-      default:
-        System.out.println("!WARNING! Unrecognized GameState!");
-    }
+    story.getCurrent().render(g);
   }
 
   public static void postRender(Graphics2D g) {

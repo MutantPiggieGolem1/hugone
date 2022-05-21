@@ -76,12 +76,7 @@ class Battle implements Feature {
       System.exit(1);
     }
 
-    JSONArray notes = null;
-    try {
-      notes = new JSONArray(Utils.readFile(Constants.RESOURCEDIR + data.getString("notes"))); // load in the notes
-    } catch (FileNotFoundException e1) {
-      System.out.println("!WARNING! Could not load battle notes.");
-    }
+    JSONArray notes = data.getJSONArray("notes");
     ArrayList<Note> tn = new ArrayList<Note>();
     for (int i = 0; i < notes.length(); i++) {
       String strnote = notes.getString(i);

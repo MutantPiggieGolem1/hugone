@@ -1,23 +1,17 @@
 package hugone.util;
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 
 public class Image extends javax.swing.JPanel {
+  public static final Image NULLIMG = new Image("null.png");
   private java.awt.Image image;
 
-  public Image(String filepath) {
+  public Image(String filename) {
     try {
-      File f = new File(getClass().getClassLoader().getResource(filepath).toURI());
-      if (f.canRead()) {
-        this.image = javax.imageio.ImageIO.read(f);
-      } else {
-        System.out.println("!WARNING! Image file failed to read @" + filepath);
-        this.image = Utils.NULLIMG.getImage();
-      }
+      this.image = javax.imageio.ImageIO.read(getClass().getClassLoader().getResourceAsStream(filename));
     } catch (Exception e) {
-      System.out.println("!WARNING! Image file failed to load @" + filepath);
-      this.image = Utils.NULLIMG.getImage();
+      System.out.println("!WARNING! Image file failed to load @" + filename);
+      this.image = NULLIMG.getImage();
     }
   }
 
