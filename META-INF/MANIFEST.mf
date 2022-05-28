@@ -1,1 +1,2 @@
-Main-Class: hugoneseven.App
+Class-Path: .  
+Main-Class: hugone.App

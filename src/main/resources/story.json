@@ -1,5 +1,34 @@
-
 {
+  "menus": {
+    "STARTMENU": {
+      "background": "STARTMENU.png",
+      "buttonloc": [
+        650,
+        600
+      ],
+      "buttondim": [
+        250,
+        75
+      ],
+      "buttons": [
+        {
+          "title": "Play",
+          "image": "STARTMENU_play.png",
+          "func": 0
+        },
+        {
+          "title": "Settings",
+          "image": "STARTMENU_settings.png",
+          "func": 1
+        },
+        {
+          "title": "Gallery",
+          "image": "STARTMENU_gallery.png",
+          "func": 2
+        }
+      ]
+    }
+  },
   "scenes": {
     "intro": {
       "type": "CUTSCENE",
@@ -30,24 +59,28 @@
       },
       "directions": {
         "UP": {
-          "STOP": "PLAYER_UP_STOP.png",
-          "MOVE1":"PLAYER_UP_MOVE1.png",
-          "MOVE2":"PLAYER_UP_MOVE2.png"
+          "STOP": "KyleBackIdle.png",
+          "MOVE0": "KyleBackWalk1.png",
+          "MOVE1": "KyleBackIdle.png",
+          "MOVE2": "KyleBackWalk2.png"
         },
         "DOWN": {
-          "STOP": "PLAYER_DOWN_STOP.png",
-          "MOVE1":"PLAYER_DOWN_MOVE1.png",
-          "MOVE2":"PLAYER_DOWN_MOVE2.png"
+          "STOP": "KyleFrontIdle.png",
+          "MOVE0": "KyleFrontWalk1.png",
+          "MOVE1": "KyleFrontIdle.png",
+          "MOVE2": "KyleFrontWalk2.png"
         },
         "LEFT": {
-          "STOP": "PLAYER_LEFT_STOP.png",
-          "MOVE1":"PLAYER_LEFT_MOVE1.png",
-          "MOVE2":"PLAYER_LEFT_MOVE2.png"
+          "STOP": "KyleLeftIdle.png",
+          "MOVE0": "KyleLeftWalk1.png",
+          "MOVE1": "KyleLeftIdle.png",
+          "MOVE2": "KyleLeftWalk2.png"
         },
         "RIGHT": {
-          "STOP": "PLAYER_RIGHT_STOP.png",
-          "MOVE1":"PLAYER_RIGHT_MOVE1.png",
-          "MOVE2":"PLAYER_RIGHT_MOVE2.png"
+          "STOP": "KyleRightIdle.png",
+          "MOVE0": "KyleRightWalk1.png",
+          "MOVE1": "KyleRightIdle.png",
+          "MOVE2": "KyleRightWalk2.png"
         }
       }
     },
@@ -79,38 +112,81 @@
   "areas": {
     "BOTTOM_FLOOR": {
       "image": "BOTTOM_FLOOR.png",
-      "find": ["wallet"],
+      "find": [
+        "wallet"
+      ],
       "music": "explore_bottom_floor.wav",
-      "startlocation": [160,160],
-      "dimensions": [[0,50],[1200,700]],
+      "startlocation": [
+        160,
+        160
+      ],
+      "dimensions": [
+        [
+          50,
+          50
+        ],
+        [
+          1366,
+          768
+        ]
+      ],
       "furniture": [
         {
           "objectid": "closet1",
           "image": "closet_1.png",
-          "location": [100,100],
-          "dimensions": [50,100],
+          "location": [
+            100,
+            100
+          ],
+          "dimensions": [
+            50,
+            100
+          ],
           "collide": true,
           "dialogue": "explore_closet_1",
           "item": "wallet"
         }
-      ]
+      ],
+      "exit": {
+        "location": [
+          200,
+          300
+        ],
+        "dimensions": [
+          50,
+          100
+        ],
+        "image": "door_1.png"
+      }
     }
   },
   "battles": {
     "NOMMA_BATTLE": {
       "enemy": "ENEMY_1",
       "damage": 25,
-      "introcard" : "NOMMA_BATTLE_INTROCARD.png",
+      "introcard": "NOMMA_BATTLE_INTROCARD.png",
       "introscene": "NOMMA_BATTLE_INTRO.mov",
       "background": "NOMMA_BATTLE_BG.png",
       "overlay": "NOMMA_BATTLE_OV.png",
       "song": "NOMMA_BATTLE_SONG.wav",
       "missimage": "NOMMA_BATTLE_MISS.png",
       "misssound": "NOMMA_BATTLE_MISS.wav",
-      
       "bpm": 60,
-      "notes": "nomma_battle_notes.json",
-      "speed": 300
+      "speed": 300,
+      "notes": [
+        "LEFT",
+        "DOWN",
+        "REST2",
+        "UP",
+        "DOWN",
+        "LEFT",
+        "UP",
+        "LEFT",
+        "RIGHT9",
+        "DOWN8",
+        "REST8",
+        "DEATH4"
+      ]
     }
   },
   "dialogue": {
@@ -121,6 +197,17 @@
           "emotion": "HAPPY",
           "line": "There's still lots of clothes in here... Oh sick! There's a wallet in one of the pockets.",
           "audio": "explore_closet_1.wav",
+          "textbox": "textbox.png"
+        }
+      ]
+    },
+    "cant_exit": {
+      "lines": [
+        {
+          "character": "KYLE",
+          "emotion": "HAPPY",
+          "line": "We should probably look around more before we leave this room.",
+          "audio": "cant_exit.wav",
           "textbox": "textbox.png"
         }
       ]

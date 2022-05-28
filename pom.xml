@@ -6,7 +6,7 @@
 
   <groupId>hugone</groupId>
   <artifactId>hugone</artifactId>
-  <version>ALPHA</version>
+  <version>0.5-ALPHA</version>
 
   <name>hugone</name>
   <!-- <url>http://www.example.com</url> -->
@@ -19,21 +19,10 @@
 
   <dependencies>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.11</version>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>org.json</groupId>
       <artifactId>json</artifactId>
       <version>20211205</version>
     </dependency>
-    <dependency>
-      <groupId>javax.media</groupId>
-      <artifactId>jmf</artifactId>
-      <version>2.1.1e</version>
-  </dependency>
   </dependencies>
 
   <build>
@@ -60,14 +49,36 @@
         <plugin>
           <artifactId>maven-jar-plugin</artifactId>
           <version>3.0.2</version>
+            <configuration>
+              <archive>
+                <manifest>
+                  <addClasspath>true</addClasspath>
+                  <mainClass>hugone.App</mainClass>
+                </manifest>
+              </archive>
+            </configuration>
+        </plugin>
+        <plugin>
+          <artifactId>maven-assembly-plugin</artifactId>
           <configuration>
             <archive>
               <manifest>
-                <addClasspath>true</addClasspath>
-                <mainClass>hugoneseven.App</mainClass>
+                <mainClass>hugone.App</mainClass>
               </manifest>
             </archive>
+            <descriptorRefs>
+              <descriptorRef>jar-with-dependencies</descriptorRef>
+            </descriptorRefs>
           </configuration>
+          <executions>
+            <execution>
+              <id>make-assembly</id> <!-- this is used for inheritance merges -->
+              <phase>package</phase> <!-- bind to the packaging phase -->
+              <goals>
+                <goal>single</goal>
+              </goals>
+            </execution>
+          </executions>
         </plugin>
         <plugin>
           <artifactId>maven-install-plugin</artifactId>
