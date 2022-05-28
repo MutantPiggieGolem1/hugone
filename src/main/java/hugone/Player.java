@@ -15,19 +15,23 @@ import hugone.Constants.KeyPress;
 import hugone.util.Utils;
 
 public class Player extends Character implements KeyListener {
-  public ArrayList<String> inventory = new ArrayList<String>();
   private Direction direction = Direction.DOWN;
   private MoveState movestate = MoveState.STOP;
-  private int framenum = 0;
-  public int money;
-  private boolean sprinting = false;
-  private boolean spacedown = false;
   private MoveState tomove;
   private Direction todir;
+  private int framenum = 0;
+  private boolean sprinting = false;
+  private boolean spacedown = false;
 
+  public ArrayList<String> inventory = new ArrayList<String>();
+  public int money;
+  private ArrayList<Character> followers = new ArrayList<Character>();
+  
   public Player(String name) throws JSONException {
     super("PLAYER");
     super.setName(name);
+
+    this.followers.add(App.story.getCharacter("ENEMY_1"));
   }
 
   public void addItem(String itemid, int count) {
@@ -86,6 +90,11 @@ public class Player extends Character implements KeyListener {
 
   public void render(Graphics2D g) {
     super.render(this.direction, this.movestate, g);
+    // MoveState ms = this.movestate;
+    // for (Character c : this.followers.toArray(new Character[]{})) {
+    //   ms = movemap.get(ms);
+    //   c.render(this.direction, ms, g);
+    // } TODO: Add following logic
   }
 
   public boolean spaceDown() {
@@ -120,8 +129,10 @@ public class Player extends Character implements KeyListener {
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
-    if (!a.collidesWith(this.facingTowards(true)))
-      this.pos = this.facingTowards(true);
+    Rectangle goal = this.facingTowards(true);
+    if (!a.collidesWith(goal)) {
+      this.pos = goal;
+    }
   }
 
   public void teleport(java.awt.Point loc) {

@@ -4,20 +4,25 @@ import javax.sound.sampled.*;
 
 public class Audio {
   private Clip clip;
-  private long pausetime = -1;
 
-  private AudioInputStream original;
+  private long pausetime = -1;
+  private AudioFormat format;
+  private byte[] data;
 
   public Audio(String filename) {
     try {
-      original = AudioSystem.getAudioInputStream(getClass().getClassLoader().getResourceAsStream(filename));
-      original.mark(Integer.MAX_VALUE);
+      AudioInputStream in = AudioSystem.getAudioInputStream(new java.io.BufferedInputStream(getClass().getClassLoader().getResourceAsStream(filename)));
+      this.data = in.readAllBytes();
+      this.format = in.getFormat();
+
       this.clip = AudioSystem.getClip();
-      this.clip.open(original);
+      this.clip.open(this.format, this.data, 0, data.length);
     } catch (Exception e) {
       System.out.println("!WARNING! Audio file failed to load @" + filename);
+      e.printStackTrace();
+      System.exit(1); // can't use null replacement because of stream complications
     }
-  };
+  }
 
   public void changeVolume(float db) {
     FloatControl gainControl = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
@@ -27,9 +32,8 @@ public class Audio {
   public void reset() {
     try {
       this.stop();
-      this.original.reset();
       this.clip = AudioSystem.getClip();
-      this.clip.open(this.original);
+      this.clip.open(this.format, this.data, 0, this.data.length);
       this.clip.setMicrosecondPosition(0);
     } catch (Exception e) {
       System.out.println("!WARNING! Audio file failed to reset!");

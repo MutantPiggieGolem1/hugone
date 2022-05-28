@@ -62,7 +62,7 @@ public class Character {
               img.scaleToWidth(Constants.CHARACTERSIZE);
               this.directions.get(direction).put(movestate, img);
             } else {
-              this.directions.get(direction).put(movestate, Image.NULLIMG);
+              this.directions.get(direction).put(movestate, Image.NULL);
             }
           }
         }

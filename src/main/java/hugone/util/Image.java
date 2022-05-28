@@ -3,7 +3,7 @@ package hugone.util;
 import java.awt.image.BufferedImage;
 
 public class Image extends javax.swing.JPanel {
-  public static final Image NULLIMG = new Image("null.png");
+  public static final Image NULL = new Image("null.png");
   private java.awt.Image image;
 
   public Image(String filename) {
@@ -11,7 +11,7 @@ public class Image extends javax.swing.JPanel {
       this.image = javax.imageio.ImageIO.read(getClass().getClassLoader().getResourceAsStream(filename));
     } catch (Exception e) {
       System.out.println("!WARNING! Image file failed to load @" + filename);
-      this.image = NULLIMG.getImage();
+      this.image = NULL.getImage();
     }
   }
 
