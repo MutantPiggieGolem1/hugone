@@ -13,6 +13,7 @@ import hugone.util.Video;
 public class Story {
   public Player player;
   private HashMap<String, Menu> menus = new HashMap<String,Menu>();
+  private HashMap<String, Card> cards = new HashMap<String,Card>();
   private HashMap<String, Character> characters = new HashMap<String, Character>();
   private HashMap<String, Cutscene> cutscenes = new HashMap<String, Cutscene>();
   private HashMap<String, Area> areas = new HashMap<String, Area>();
@@ -39,6 +40,11 @@ public class Story {
     JSONObject datamenus = this.data.getJSONObject("menus");
     for (String id : JSONObject.getNames(datamenus)) {
       this.menus.put(id,new Menu(id,App.f));
+    }
+
+    JSONObject datacards = this.data.getJSONObject("cards");
+    for (String id : JSONObject.getNames(datacards)) {
+      this.cards.put(id,new Card(new hugone.util.Image(datacards.getString(id))));
     }
 
     // load characters
@@ -87,6 +93,10 @@ public class Story {
 
   public Dialogues getDialogue(String id) {
     return this.dialogues.get(id);
+  }
+
+  public Card getCard(String id) {
+    return this.cards.get(id);
   }
 
   public void start() {

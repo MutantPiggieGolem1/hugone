@@ -3,12 +3,10 @@ package hugone;
 import java.awt.Graphics2D;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 import javax.swing.JFrame;
 
 import hugone.Constants.Feature;
-import hugone.Constants.GameState;
 import hugone.util.Utils;
 
 class App {
@@ -16,9 +14,9 @@ class App {
 
   public static Story story;
   public static Player player;
-  public static GameState gamestate;
 
-  public static final JFrame f = new JFrame("Hugone - Alpha Version");
+  public static final JFrame f = new JFrame("Pseufaux 1 - Hugone [BETA]");
+
   private static final ScheduledExecutorService executor = Executors.newScheduledThreadPool(1);
 
   public static void main(String[] args) {
@@ -29,7 +27,6 @@ class App {
       throw new RuntimeException("Couldn't initalize story.\nDetais: " + e.toString());
     }
     player = story.player;
-    gamestate = story.currentState();
 
     DrawingCanvas dc = new DrawingCanvas(f);
     f.setIconImage(Utils.ICONIMG);
@@ -71,7 +68,7 @@ class App {
         e.printStackTrace();
         System.exit(0);
       }
-    }, 0, (long) (1000 / Constants.TPS), TimeUnit.MILLISECONDS);
+    }, 0, (long) (1000 / Constants.TPS), java.util.concurrent.TimeUnit.MILLISECONDS);
 
     f.setVisible(true);
     f.requestFocus();

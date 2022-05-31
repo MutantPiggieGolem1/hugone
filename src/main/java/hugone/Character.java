@@ -93,11 +93,14 @@ public class Character {
     return this.name;
   }
 
-  public void render(Emotion emotion, Graphics2D g) {
+  public void render(Emotion e, Graphics2D g) {
+    this.render(new java.awt.Point(50,App.f.getHeight()-200),e,g);
+  }
+  public void render(java.awt.Point loc, Emotion emotion, Graphics2D g) {
     Image eimg = this.emotions.get(emotion);
     if (eimg != null) {
-      eimg.draw(50, App.f.getHeight() - (200 + eimg.getHeight()), g);
-    } // placeholder coords
+      eimg.draw(loc.x, loc.y, g);
+    }
     else {
       System.out.println("!WARNING! Could not find emotion '"+ emotion.toString() +"' in character '"+ this.id +"'.");
     }

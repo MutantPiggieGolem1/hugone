@@ -94,6 +94,7 @@ class Area implements Feature { // TODO: Allow audio overlap
 
   public void setDialogue(Dialogues dg) {
     this.dialogue = dg;
+    this.dialogue.init();
     this.renderstate = RenderState.DIALOGUE;
     App.player.stopMovement();
   }

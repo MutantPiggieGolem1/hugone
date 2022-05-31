@@ -47,7 +47,7 @@ public class Constants {
 
     public static enum RenderState {
         DEFAULT,
-        DIALOGUE
+        DIALOGUE, CARD
     }
 
     public static enum BattleState {
@@ -94,4 +94,5 @@ public class Constants {
         public static final int HITMARGIN = 150;
     }
     public static final int CHARACTERSIZE = 96;
+    public static final long DEBOUNCE = 10;
 }

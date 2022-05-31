@@ -26,30 +26,30 @@ class Battle implements Feature {
   protected static final int leftmargin = 400;
   protected static final int rightmargin = 100;
   protected static final int verticalmargin = 20;
+
   private String id;
   private Character enemy;
-
+  private Image background;
+  private Audio song;
+  private Image overlay;
+  private Image missimage;
+  private Audio misssound;
   private Audio losetrack;
-
   private BattleState state;
 
   private Cutscene introscene;
-  private Image introcard;
+  private Card introcard;
 
   private Iterator<Note> notes;
   private ArrayList<Note> renderedNotes = new ArrayList<Note>();
   private Integer notedamage;
-  private Image background;
-  private Image overlay;
-  private Image missimage;
-  private Audio misssound;
   public int notespeed;
   public int bpm;
   private int beat;
 
   private long lasttime;
   private Emotion enemem = Emotion.BOP;
-  private Audio song;
+  private Point enemyloc;  
 
   public Battle(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("battles").getJSONObject(id);
@@ -68,8 +68,7 @@ class Battle implements Feature {
       this.misssound = new Audio(data.getString("misssound"));
       this.missimage = new Image(data.getString("missimage"));
       this.missimage.scaleToWidth(App.f.getWidth());
-      this.introcard = new Image(data.getString("introcard"));
-      this.introcard.scaleToWidth(App.f.getWidth());
+      this.introcard = new Card(new Image(data.getString("introcard")));
       this.introscene = new Cutscene(new Video(Constants.RESOURCEDIR + data.getString("introscene"),App.f));
     } catch (Exception e) {
       System.out.println("!WARNING! Could not load battle data.\n"+e.toString());
@@ -114,9 +113,13 @@ class Battle implements Feature {
 
   public void init() {
     this.state = BattleState.INTRO;
+    this.enemyloc = new Point(50,App.f.getHeight()-200);
+    this.introcard.init();
+    this.introscene.init();
   }
 
   public boolean update() {
+    if (this.state.equals(BattleState.FIGHT)) this.enemyloc.setLocation(50, Math.sin(this.beat)*50+70);
     return this.state.equals(BattleState.FINISHED);
     // player is dead or song is done
   }
@@ -172,8 +175,8 @@ class Battle implements Feature {
       case INTRO:
         if (!this.introscene.update()) {
           this.introscene.render(g); // render intro scene until finished
-        } else if (!App.player.spaceDown()) {
-          this.introcard.draw(0, 0, g); // render intro card until space pressed
+        } else if (!this.introcard.update()) {
+          this.introcard.render(g); // render intro card until space pressed
         } else {
           this.state = BattleState.FIGHT;
         }
@@ -184,12 +187,12 @@ class Battle implements Feature {
         }
         this.overlay.draw(0,0,g);
 
-        this.enemy.render(this.enemem, g);
+        this.enemy.render(this.enemyloc, this.enemem, g);
         if (this.enemem.equals(Emotion.HIT)) {
           this.missimage.draw(0,0,g);
         }
 
-        for (Note n : this.renderedNotes.toArray(new Note[]{})) { // draw all the notes
+        for (Note n : this.renderedNotes) { // draw all the notes
           if (n == null) continue;
           n.render(g);
         }
@@ -233,6 +236,7 @@ class Battle implements Feature {
   }
 
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {
+    this.introcard.reccieveKeyPress(e, p);
     for (Note n : this.renderedNotes) {
       if (Utils.keydirs.get(n.direction) == e.getKeyCode() && Math.abs(n.getY()-this.getEndY()) < Constants.Battle.HITMARGIN) {
         if (n instanceof HoldNote) {

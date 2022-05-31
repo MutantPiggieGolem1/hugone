@@ -15,12 +15,14 @@ import java.awt.event.ActionEvent;
 
 import hugone.Constants.Feature;
 import hugone.Constants.KeyPress;
+import hugone.Constants.RenderState;
 import hugone.util.Image;
 
 @SuppressWarnings("unused") // TODO: Fix duplicate menu buttons
 public class Menu implements Feature {
     private JFrame parent;
     private String id;
+    private RenderState renderstate;
     private Image background;
     private JButton[] buttons;
     private int selectedbutton;
@@ -28,7 +30,9 @@ public class Menu implements Feature {
     private final Rectangle NORMALBUTTON, CENTERBUTTON;
     private final int SPACING = 400;
     private boolean animating = false;
-    private int buttonspeed = 30;
+
+    private Card card;
+    private long debounce;
 
     public Menu(String id, JFrame f) {
         this.parent = f;
@@ -51,10 +55,12 @@ public class Menu implements Feature {
                     });
                 break;
                 case 1: // settings
-
+                    
                 break;
                 case 2: // gallery
-                    
+                    button.addActionListener((ActionEvent e) -> {
+                        ((Menu)App.story.getCurrent()).setCard(App.story.getCard("gallery"));
+                    });
                 break;
             }
             button.setBorderPainted(false); 
@@ -85,25 +91,63 @@ public class Menu implements Feature {
             b.setEnabled(true);
             this.parent.add(b);
         }
+        this.debounce = 0;
+        this.renderstate = RenderState.DEFAULT;
+    }
+
+    private void setCard(Card card) {
+        this.card = card;
+        this.card.init();
+        this.renderstate = RenderState.CARD;
     }
 
     @Override
     public boolean update() {
-        this.animate();
+        switch (this.renderstate) {
+            case DEFAULT:
+                this.debounce++;
+                for (JButton b : this.buttons) {
+                    b.setVisible(true);
+                }
+                this.animate();
+            break;
+            case CARD:
+                for (JButton b : this.buttons) {
+                    b.setVisible(false);
+                }
+                if (this.card.update()) {
+                    this.renderstate = RenderState.DEFAULT;
+                    this.card.close();
+                    this.card = null;
+                }
+            break;
+            case DIALOGUE:
+            break;
+        }
         return false;
     }
 
     @Override
     public void render(Graphics2D g) {
-        this.background.draw(0,0,g);
-        for (JButton b : this.buttons) {
-            b.paint(g);
+        switch (this.renderstate) {
+            case DEFAULT:
+                this.background.draw(0,0,g);
+                for (JButton b : this.buttons) {
+                    b.paint(g);
+                }
+            break;
+            case CARD:
+                this.card.render(g);
+            break;
+            case DIALOGUE:
+            break;
         }
     }
 
     @Override
     public void reccieveKeyPress(KeyEvent e, KeyPress keydown) {
-        if (keydown.equals(KeyPress.KEYUP) || this.animating) return;
+        if (this.card != null) this.card.reccieveKeyPress(e, keydown);
+        if (!keydown.equals(KeyPress.KEYDOWN)) return;
         switch (e.getKeyCode()) {
             case KeyEvent.VK_A:
                 this.selectedbutton = hugone.util.Utils.clamp(this.selectedbutton-1,this.buttons.length-1,0);
@@ -116,7 +160,9 @@ public class Menu implements Feature {
                 this.animate();
             break;
             case KeyEvent.VK_SPACE:
+                if (this.debounce < Constants.DEBOUNCE) return;
                 this.buttons[this.selectedbutton].doClick();
+                this.debounce = 0;
             break;
         }
     }
@@ -137,19 +183,19 @@ public class Menu implements Feature {
             if (i==this.selectedbutton) {
                 if (b.getBounds().equals(this.CENTERBUTTON)) {match++;continue;}
                 b.setBounds(
-                    calculateDelta(b.getX(), this.buttonspeed, (int)this.CENTERBUTTON.getX()), 
-                    calculateDelta(b.getY(), 5, (int)this.CENTERBUTTON.getY()), 
-                    calculateDelta(b.getWidth(), 10, (int)this.CENTERBUTTON.getWidth()),
-                    calculateDelta(b.getHeight(), 10, (int)this.CENTERBUTTON.getHeight())
+                    expoDelta(b.getX(), this.CENTERBUTTON.getX()), 
+                    expoDelta(b.getY(), this.CENTERBUTTON.getY()), 
+                    linearDelta(b.getWidth(), this.CENTERBUTTON.getWidth()),
+                    linearDelta(b.getHeight(), this.CENTERBUTTON.getHeight())
                 );
             } else {
                 int goal = this.calculateX(i);
                 if (b.getX() == goal) {match++;continue;}
                 b.setBounds(
-                    calculateDelta(b.getX(), this.buttonspeed, goal), 
-                    calculateDelta(b.getY(), 5, (int)this.NORMALBUTTON.getY()), 
-                    calculateDelta(b.getWidth(), 10, (int)this.NORMALBUTTON.getWidth()),
-                    calculateDelta(b.getHeight(), 10, (int)this.NORMALBUTTON.getHeight())
+                    expoDelta(b.getX(), goal), 
+                    expoDelta(b.getY(), this.NORMALBUTTON.getY()), 
+                    linearDelta(b.getWidth(), this.NORMALBUTTON.getWidth()),
+                    linearDelta(b.getHeight(), this.NORMALBUTTON.getHeight())
                 );
             }
         }
@@ -162,8 +208,18 @@ public class Menu implements Feature {
             + this.NORMALBUTTON.getX()); 
     }
 
-    private int calculateDelta(int loc, int spd, int goal) {
-        if (loc==goal) return goal;
-        return loc > goal ? ((loc - spd > goal) ? loc-spd : goal) : ((loc + spd < goal) ? loc+spd : goal);
+    private int linearDelta(int cur, double goal) {
+        int spd = 5;
+        if (Math.abs(cur-goal) < 2*spd) return (int)goal; // snap
+        return cur > goal ? cur - spd : cur + spd;
+    }
+
+    private int expoDelta(int cur, double goal) {
+        return expoDelta(cur, (int)goal);
+    }
+    private int expoDelta(int cur, int goal) {
+        double mul = 0.11;
+        if (Math.abs(cur-goal) < mul*100) return goal; // snap
+        return (int)(cur+(goal-cur)*mul);
     }
 }

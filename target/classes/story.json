@@ -29,6 +29,9 @@
       ]
     }
   },
+  "cards": {
+    "gallery": "gallery.png"
+  },
   "scenes": {
     "intro": {
       "type": "CUTSCENE",

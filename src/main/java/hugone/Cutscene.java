@@ -8,7 +8,8 @@ import hugone.Constants.KeyPress;
 import hugone.util.Video;
 
 class Cutscene implements Feature {
-  Video video;
+  private Video video;
+  private boolean skip = false;
 
   public Cutscene(Video vid) {
     this.video = vid;
@@ -19,7 +20,7 @@ class Cutscene implements Feature {
   }
 
   public boolean update() {
-    return this.video.isPlayed();
+    return this.skip || this.video.isPlayed();
   }
 
   public void render(Graphics2D g) {
@@ -28,10 +29,13 @@ class Cutscene implements Feature {
     }
   }
 
-  public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {
+    if (p.equals(KeyPress.KEYDOWN) && e.getKeyCode() == KeyEvent.VK_SPACE) this.skip = true;
+  }
 
   @Override
   public void close() {
+    this.skip = false;
     this.video.close();
   }
 }
