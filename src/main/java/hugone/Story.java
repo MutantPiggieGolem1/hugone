@@ -8,7 +8,6 @@ import org.json.JSONObject;
 
 import hugone.Constants.Feature;
 import hugone.Constants.GameState;
-import hugone.util.Video;
 
 public class Story {
   public Player player;
@@ -21,27 +20,20 @@ public class Story {
   private HashMap<String, Dialogues> dialogues = new HashMap<String, Dialogues>();
 
   private String current; // id of current
-  private boolean menu = false;
 
   public final JSONObject data;
 
   public Story(String filename) {
     String out = "";
-    Scanner myReader = new Scanner(getClass().getClassLoader().getResourceAsStream(filename));
-    while (myReader.hasNextLine()) {
-      out = out.concat(myReader.nextLine().trim()); // removing newlines & trailing spaces
+    Scanner s = new Scanner(getClass().getClassLoader().getResourceAsStream(filename));
+    while (s.hasNextLine()) {
+      out = out.concat(s.nextLine().trim()); // removing newlines & trailing spaces
     }
-    myReader.close();
+    s.close();
     this.data = new JSONObject(out);
   }
 
   public void init() throws JSONException {
-    // load menus
-    JSONObject datamenus = this.data.getJSONObject("menus");
-    for (String id : JSONObject.getNames(datamenus)) {
-      this.menus.put(id,new Menu(id,App.f));
-    }
-
     JSONObject datacards = this.data.getJSONObject("cards");
     for (String id : JSONObject.getNames(datacards)) {
       this.cards.put(id,new Card(new hugone.util.Image(datacards.getString(id))));
@@ -68,8 +60,11 @@ public class Story {
     for (String id : JSONObject.getNames(scenes)) {
       JSONObject data = scenes.getJSONObject(id);
       switch (GameState.valueOf(data.getString("type"))) {
+        case MENU:
+          this.menus.put(id,new Menu(id,App.f));
+          break;
         case CUTSCENE:
-          this.cutscenes.put(id, new Cutscene(new Video(data.getString("video"),App.f)));
+          this.cutscenes.put(id, new Cutscene(new hugone.util.Video(data.getString("video"),App.f)));
           break;
         case EXPLORATION:
           this.areas.put(id, new Area(data.getString("id")));
@@ -83,7 +78,6 @@ public class Story {
     }
 
     this.current = "STARTMENU";
-    this.menu = true;
     this.getCurrent().init();
   }
 
@@ -99,13 +93,16 @@ public class Story {
     return this.cards.get(id);
   }
 
-  public void start() {
+  public void start() { // for startmenu
     this.getCurrent().close();
     this.current = "intro";
-    this.menu = false;
   }
 
   public void next() { // advance story
+    if (this.currentState().equals(GameState.MENU)) {
+      System.out.println("!WARNING! Attempted to advance menustate!");
+      return;
+    }
     try {
       this.getCurrent().close();
       this.current = this.data.getJSONObject("scenes").getJSONObject(this.current).getString("next");
@@ -117,7 +114,6 @@ public class Story {
 
   public GameState currentState() {
     try {
-      if (menu) return GameState.MENU;
       return GameState.valueOf(this.data.getJSONObject("scenes").getJSONObject(current).getString("type"));
     } catch (JSONException e) {
       System.out.println("!WARNING! Could not determine story state. "

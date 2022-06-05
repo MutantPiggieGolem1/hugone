@@ -3,7 +3,6 @@ package hugone;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.awt.Point;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
@@ -11,15 +10,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import hugone.Constants.BattleState;
-import hugone.Constants.Direction;
-import hugone.Constants.Emotion;
-import hugone.Constants.Feature;
-import hugone.Constants.KeyPress;
-import hugone.util.Audio;
-import hugone.util.Image;
-import hugone.util.Utils;
-import hugone.util.Video;
+import hugone.Constants.*;
+import hugone.util.*;
 
 @SuppressWarnings("unused")
 class Battle implements Feature {
@@ -47,6 +39,7 @@ class Battle implements Feature {
   public int bpm;
   private int beat;
 
+  private int debouncebeat;
   private long lasttime;
   private Emotion enemem = Emotion.BOP;
   private Point enemyloc;  
@@ -67,9 +60,9 @@ class Battle implements Feature {
       if (data.has("overlay")) {this.overlay = new Image(data.getString("overlay"));}
       this.misssound = new Audio(data.getString("misssound"));
       this.missimage = new Image(data.getString("missimage"));
-      this.missimage.scaleToWidth(App.f.getWidth());
+      this.missimage.scaleToWidth(Utils.WIDTH);
       this.introcard = new Card(new Image(data.getString("introcard")));
-      this.introscene = new Cutscene(new Video(Constants.RESOURCEDIR + data.getString("introscene"),App.f));
+      this.introscene = new Cutscene(new Video(data.getString("introscene"),App.f));
     } catch (Exception e) {
       System.out.println("!WARNING! Could not load battle data.\n"+e.toString());
       System.exit(1);
@@ -116,6 +109,7 @@ class Battle implements Feature {
     this.enemyloc = new Point(50,App.f.getHeight()-200);
     this.introcard.init();
     this.introscene.init();
+    this.debouncebeat = 0;
   }
 
   public boolean update() {
@@ -138,6 +132,7 @@ class Battle implements Feature {
     if (this.lasttime + (60 * 1000 / this.bpm) >= System.currentTimeMillis()) return; // has enough time passed since the last beat?
     
     this.beat++;
+    this.debouncebeat++;
 
     if (this.notes.hasNext()) { // throw in the next beat
       Note n = this.notes.next();
@@ -146,7 +141,7 @@ class Battle implements Feature {
         this.renderedNotes.add(n);
       }
     }
-    ArrayList<Note> dq = new ArrayList<Note>();
+    ArrayList<Note> dq = new ArrayList<Note>(); // deletion queue to prevent concurrent modification
     for (Note n : this.renderedNotes) { // stop attempting to draw notes that are gone
       if (n.update()) {
         dq.add(n);
@@ -166,8 +161,7 @@ class Battle implements Feature {
   public void miss() {
     this.enemem = Emotion.HIT;
     App.player.health -= this.notedamage;
-    if (this.misssound.isPlayed()) this.misssound.reset();
-    this.misssound.play();
+    new Audio(this.misssound).play();
   }
 
   public void render(Graphics2D g) {
@@ -197,7 +191,7 @@ class Battle implements Feature {
           n.render(g);
         }
 
-        g.drawString(""+App.player.health, 0, 0);
+        g.drawString(String.valueOf(App.player.health), 0, App.f.getHeight());
 
         this.background.draw(0, 0, g); // draw in the image bg
         break;
@@ -219,7 +213,7 @@ class Battle implements Feature {
   }
 
   public int getSpawnX(Direction direction) {
-    float columnwidth = ((float) (App.f.getWidth() - (leftmargin+rightmargin))) / 4.0f;
+    float columnwidth = ((float) (Utils.WIDTH - (leftmargin+rightmargin))) / 4.0f;
     return (int) Math.round(leftmargin + columnwidth * Utils.dirtoint.get(direction) + columnwidth / 2.0);
   }
 
@@ -231,20 +225,32 @@ class Battle implements Feature {
     return App.f.getHeight() - verticalmargin;
   }
 
+  public int getNoteSize() {
+    return (Utils.WIDTH - (Battle.leftmargin+Battle.rightmargin))/8;
+  }
+
   public int getBeat() {
     return this.beat;
   }
 
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {
-    this.introcard.reccieveKeyPress(e, p);
-    for (Note n : this.renderedNotes) {
-      if (Utils.keydirs.get(n.direction) == e.getKeyCode() && Math.abs(n.getY()-this.getEndY()) < Constants.Battle.HITMARGIN) {
-        if (n instanceof HoldNote) {
-          ((HoldNote)n).hit(p);
-        } else {
-          n.hit();
+    if (this.introscene != null) this.introscene.reccieveKeyPress(e, p);
+    if (this.introcard != null)  this.introcard.reccieveKeyPress(e, p);
+    if (!this.state.equals(BattleState.FIGHT) || this.debouncebeat < 1) return;
+    this.debouncebeat = 0;
+    for (Note n : new ArrayList<Note>(this.renderedNotes)) {
+      if (Utils.keydirs.get(n.direction) != e.getKeyCode()) continue;
+      if (n instanceof HoldNote) {
+        switch (p) {
+          case KEYDOWN:
+            if (Math.abs(n.getY()-this.getEndY()) > Constants.Battle.HITMARGIN) break;
+          case KEYUP:
+            ((HoldNote)n).hit(p);
+            return; // only one note per beat per column
         }
-        return;
+      } else {
+        if (Math.abs(n.getY()-this.getEndY()) > Constants.Battle.HITMARGIN) continue;
+        n.hit();
       }
     }
   }
@@ -268,7 +274,7 @@ class Note {
   public Note(Battle p, Direction dir) {
     this.parent = p;
     this.direction = dir;
-    this.image = Utils.arrowimages.get(dir).scaleToWidth((App.f.getWidth() - (Battle.leftmargin+Battle.rightmargin))/-8);
+    this.image = Utils.arrowimages.get(dir).scaleToWidth(p.getNoteSize());
   }
 
   public void spawn() {
@@ -318,26 +324,34 @@ class Note {
 }
 
 class HoldNote extends Note {
-  private Integer holdtime;
-  private Image tailimage = Utils.ARROWTAILIMAGE;
+  private int notelength;
+  private Image tailimage;
   private int keydownon;
 
   public HoldNote(Battle p, Direction dir, int leng) {
     super(p, dir);
-    this.holdtime = leng;
-    this.image = Utils.longarrowimages.get(dir);
+    this.notelength = leng;
+    this.tailimage = Utils.arrowtailimages.get(this.direction)
+      .scaleToWidth(this.parent.getNoteSize())
+      .stretchToLength(this.notelength*this.parent.getNoteSize());
   }
 
-  public void hit(KeyPress p) { // TODO: fix hold system
+  @Override
+  public void spawn() {
+    super.spawn();
+    this.keydownon = -1;
+  }
+
+  public void hit(KeyPress p) { // TODO: Fix hold system
     switch (p) {
       case KEYDOWN:
-        if (this.keydownon > 0) break;
+        if (this.keydownon >= 0) break;
         this.keydownon = this.parent.getBeat();
+        System.out.println("Battle Beat: ["+super.parent.getBeat()+"]");
         break;
       case KEYUP:
-        // the note was held for long enough
-        if (this.keydownon > 0 && Math.abs( (super.parent.getBeat()-this.keydownon) - this.holdtime ) <= 1) {this.hit();}
-        System.out.println("Battle Beat: ["+super.parent.getBeat()+"] | Button held for: ["+(super.parent.getBeat()-this.keydownon)+"] | Note Length: ["+this.holdtime+"] | Hold Difference: ["+((super.parent.getBeat()-this.keydownon) - this.holdtime)+"] Valid: "+(Math.abs( (super.parent.getBeat()-this.keydownon) - this.holdtime ) <= 1)+";");
+        if (this.keydownon >= 0 && super.parent.getBeat()-this.keydownon == this.notelength) {super.hit();}
+        System.out.println("Battle Beat: ["+super.parent.getBeat()+"] | Button held for: ["+(super.parent.getBeat()-this.keydownon)+"] | Note Length: ["+this.notelength+"] | Hold Difference: ["+((super.parent.getBeat()-this.keydownon) - this.notelength)+"] Valid: "+(super.parent.getBeat()-this.keydownon == this.notelength)+";");
         this.keydownon = -1;
         break;
     }
@@ -348,16 +362,13 @@ class HoldNote extends Note {
     if (this.hit) return;
     this.moveDown();
 
+    this.tailimage.draw(this.location.x, this.location.y - this.notelength*this.parent.getNoteSize(), g);
     this.image.draw(this.location.x, this.location.y, g);
-    
-    for (int i = 1; i<this.holdtime; i++) {
-      this.tailimage.draw(this.location.x, (int) (this.location.y-(Math.floor(this.parent.notespeed*i*this.image.getHeight())/(1000/this.parent.bpm))), g);
-    }
   }
 
   @Override
   protected boolean pastBound() {
-    return this.location.y > this.parent.getEndY() && this.keydownon > 0; // both past bound and not holding (allows too long notes)
+    return this.keydownon < 0 ? super.pastBound() : this.location.y-this.parent.getNoteSize()*this.notelength > this.parent.getEndY();
   }
 }
 

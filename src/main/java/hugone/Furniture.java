@@ -9,7 +9,6 @@ import org.json.JSONObject;
 
 import hugone.Constants.InteractableObject;
 import hugone.util.Image;
-import hugone.util.Utils;
 
 public class Furniture implements InteractableObject {
   public final String id;
@@ -17,9 +16,7 @@ public class Furniture implements InteractableObject {
   private Image image;
   private String item;
   private Dialogues dialogue;
-  private Integer[] location;
-  private Integer[] dimensions;
-  private Rectangle rect;
+  private Rectangle pos;
   private boolean collide;
   private boolean interacted = false;
 
@@ -36,16 +33,13 @@ public class Furniture implements InteractableObject {
 
     JSONArray location = data.getJSONArray("location"); // top left
     JSONArray dimension = data.getJSONArray("dimensions");
-    this.location = Utils.toArray(location).toArray(new Integer[location.length()]);
-    this.dimensions = Utils.toArray(dimension).toArray(new Integer[dimension.length()]);
     this.image = new Image(data.getString("image"));
-    this.image.scaleToWidth(this.dimensions[0]);
-    this.dimensions[1] = this.image.getHeight(); // auto rescale height bound
-    this.rect = new Rectangle(this.location[0], this.location[1], this.dimensions[0], this.dimensions[1]);
+    this.image.scaleToWidth(dimension.getInt(0));
+    this.pos = new Rectangle(location.getInt(0), location.getInt(1), dimension.getInt(0), this.image.getHeight());
   }
 
   public boolean collidesWith(Rectangle r) {
-    return this.collide && this.rect.intersects(r);
+    return this.collide && this.pos.intersects(r);
   }
 
   public void onInteraction() {
@@ -56,7 +50,7 @@ public class Furniture implements InteractableObject {
   }
 
   public void render(Graphics2D g) {
-    this.image.draw(this.location[0], this.location[1], g);
+    this.image.draw(this.pos.x, this.pos.y, g);
   }
 }
 

@@ -46,7 +46,7 @@ import javax.swing.JFrame;
 // }
 public class Video {
 
-    public Video(String filepath, JFrame f) {
+    public Video(String filename, JFrame f) {
 
     }
 

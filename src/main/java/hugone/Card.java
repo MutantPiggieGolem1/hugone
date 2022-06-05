@@ -13,7 +13,7 @@ class Card implements Feature {
   private boolean skip = false;
 
   public Card(Image img) {
-    this.image = img.scaleToWidth(App.f.getWidth());
+    this.image = img.scaleToWidth(hugone.util.Utils.WIDTH);
   }
 
   public void init() {

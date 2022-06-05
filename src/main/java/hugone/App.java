@@ -10,7 +10,7 @@ import hugone.Constants.Feature;
 import hugone.util.Utils;
 
 class App {
-  public static java.util.HashMap<String,Object> shit = new java.util.HashMap<String,Object>(); // stores temporary vars to be relayed to main file
+  public static java.util.HashMap<String,Object> shit = new java.util.HashMap<String,Object>(); // stores temporary vars to be relayed to main class
 
   public static Story story;
   public static Player player;
@@ -29,14 +29,14 @@ class App {
     player = story.player;
 
     DrawingCanvas dc = new DrawingCanvas(f);
-    f.setIconImage(Utils.ICONIMG);
+    f.add(dc);
+    f.addKeyListener(dc);
+    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    f.setExtendedState(JFrame.MAXIMIZED_BOTH);
     f.setFocusable(true);
+    f.setIconImage(Utils.ICONIMG);
     f.setResizable(false);
     f.setUndecorated(false);
-    f.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-    f.add(dc);
-    f.addKeyListener(player);
-    f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
     // Game Loop begins
     executor.scheduleAtFixedRate(() -> {
@@ -69,7 +69,7 @@ class App {
         System.exit(0);
       }
     }, 0, (long) (1000 / Constants.TPS), java.util.concurrent.TimeUnit.MILLISECONDS);
-
+  
     f.setVisible(true);
     f.requestFocus();
     dc.startDraw();

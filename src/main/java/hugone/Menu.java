@@ -1,6 +1,8 @@
 package hugone;
 
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
+import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
 import javax.swing.ImageIcon;
@@ -10,16 +12,13 @@ import javax.swing.JFrame;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import java.awt.Rectangle;
-import java.awt.event.ActionEvent;
-
 import hugone.Constants.Feature;
 import hugone.Constants.KeyPress;
 import hugone.Constants.RenderState;
 import hugone.util.Image;
 
-@SuppressWarnings("unused") // TODO: Fix duplicate menu buttons
-public class Menu implements Feature {
+@SuppressWarnings("unused")
+public class Menu implements Feature { // TODO: Fix duplicate menu buttons
     private JFrame parent;
     private String id;
     private RenderState renderstate;
@@ -39,7 +38,7 @@ public class Menu implements Feature {
         JSONObject data = App.story.data.getJSONObject("menus").getJSONObject(id);
 
         this.id = id;
-        this.background = new Image(data.getString("background")).scaleToWidth(App.f.getWidth());
+        this.background = new Image(data.getString("background")).scaleToWidth(hugone.util.Utils.WIDTH);
         
         JSONArray buttondim = data.getJSONArray("buttondim");
         JSONArray buttonloc = data.getJSONArray("buttonloc");
@@ -63,20 +62,22 @@ public class Menu implements Feature {
                     });
                 break;
             }
-            button.setBorderPainted(false); 
+            button.setBorder(null);
+            button.setBorderPainted(false);
             button.setContentAreaFilled(false); 
-            button.setFocusPainted(false); 
             button.setOpaque(false);
+            button.setHideActionText(true);
+            button.setMultiClickThreshhold(Constants.DEBOUNCE);
             button.setFocusable(false);
-            button.setVisible(false);     
+            button.setVisible(false);
             this.buttons[i] = button;
         }
         
         int width = buttondim.getInt(0);
         int height= buttondim.getInt(1);
         this.NORMALBUTTON = new Rectangle(buttonloc.getInt(0), buttonloc.getInt(1), width, height);
-        int cwidth = (int)Math.ceil(width*1.3);
-        int cheight= (int)Math.ceil(height*1.3);
+        int cwidth = (int)Math.ceil(width*1.4);
+        int cheight= (int)Math.ceil(height*1.4);
         this.CENTERBUTTON = new Rectangle(buttonloc.getInt(0)-(cwidth-width)/2, buttonloc.getInt(1)+(cheight-height)/2, cwidth, cheight);
     }
 
@@ -98,6 +99,7 @@ public class Menu implements Feature {
     private void setCard(Card card) {
         this.card = card;
         this.card.init();
+        this.lockPlace();
         this.renderstate = RenderState.CARD;
     }
 
@@ -175,7 +177,19 @@ public class Menu implements Feature {
         }
     }
 
-    private void animate() {
+    private void lockPlace() {
+        this.animating = false;
+        for (int i = 0; i < this.buttons.length; i++) {
+            JButton b = this.buttons[i];
+            if (i==this.selectedbutton) {
+                b.setBounds(this.CENTERBUTTON);
+            } else {
+                b.setBounds(this.calculateX(i),this.NORMALBUTTON.y,this.NORMALBUTTON.width,this.NORMALBUTTON.height);
+            }
+        }
+    }
+
+    private void animate() { // TODO: Rescale Image & Button simultaneously
         if (!this.animating) return;
         int match = 0;
         for (int i = 0; i < this.buttons.length; i++) {
@@ -200,7 +214,7 @@ public class Menu implements Feature {
             }
         }
         if (match >= this.buttons.length) this.animating = false;
-    };
+    }
 
     private int calculateX(int index) { // get x pos for a button
         return (int)((index-this.selectedbutton) // dist from selected
@@ -219,7 +233,7 @@ public class Menu implements Feature {
     }
     private int expoDelta(int cur, int goal) {
         double mul = 0.11;
-        if (Math.abs(cur-goal) < mul*100) return goal; // snap
+        if (Math.abs(cur-goal) < mul*50) return goal; // snap
         return (int)(cur+(goal-cur)*mul);
     }
 }

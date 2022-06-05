@@ -19,7 +19,7 @@ import hugone.util.Image;
 import hugone.util.Utils;
 
 @SuppressWarnings("unused")
-class Area implements Feature { // TODO: Allow audio overlap
+class Area implements Feature {
   private final String id;
   private final Image image;
   private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
@@ -140,7 +140,7 @@ class Area implements Feature { // TODO: Allow audio overlap
     return this.renderstate.equals(RenderState.DIALOGUE);
   }
 
-  public void reccieveKeyPress(KeyEvent e, KeyPress p) {}
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {App.player.reccieveKeyPress(e, p);}
 
   @Override
   public void close() {

@@ -93,7 +93,7 @@ class Dialogue {
     try {
       this.audio = new Audio(data.getString("audio"));
     } catch (Exception e) {
-      System.out.println("!WARNING! Audio file failed to load for dialogue. " + e.getMessage());
+      System.out.println("!WARNING! Audio failed to load for dialogue. " + e.getMessage());
     }
     try {
       Image img = new Image(data.getString("textbox"));

@@ -29,7 +29,15 @@
       ]
     }
   },
+  "cards": {
+    "gallery": "gallery.png"
+  },
   "scenes": {
+    "STARTMENU": {
+      "type": "MENU",
+      "id": "STARTMENU",
+      "next": null
+    },
     "intro": {
       "type": "CUTSCENE",
       "id": "intro",
@@ -93,7 +101,8 @@
         "HURT_UP": "NOMMA_HURT_UP.png",
         "HURT_DOWN": "NOMMA_HURT_DOWN.png",
         "HURT_LEFT": "NOMMA_HURT_LEFT.png",
-        "HURT_RIGHT": "NOMMA_HURT_RIGHT.png"
+        "HURT_RIGHT": "NOMMA_HURT_RIGHT.png",
+        "HIT": "NOMMA_HIT.png"
       },
       "directions": {}
     },
@@ -174,17 +183,15 @@
       "bpm": 60,
       "speed": 300,
       "notes": [
-        "LEFT",
-        "DOWN",
+        "LEFT6",
         "REST2",
+        "RIGHT",
         "UP",
+        "DOWN2",
+        "REST",
+        "RIGHT3",
         "DOWN",
-        "LEFT",
-        "UP",
-        "LEFT",
-        "RIGHT9",
-        "DOWN8",
-        "REST8",
+        "REST4",
         "DEATH4"
       ]
     }

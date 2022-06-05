@@ -5,7 +5,12 @@ import java.awt.Graphics2D;
 
 import javax.swing.JFrame;
 
-public class DrawingCanvas extends javax.swing.JComponent {
+import hugone.Constants.KeyPress;
+
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+public class DrawingCanvas extends javax.swing.JComponent implements KeyListener {
   public JFrame parent;
   public long prevtime = 0;
   private boolean draw = true;
@@ -40,5 +45,19 @@ public class DrawingCanvas extends javax.swing.JComponent {
     App.postRender(g2);
     g.dispose();
     g2.dispose();
+  }
+
+  @Override
+  public void keyTyped(KeyEvent e) {
+  };
+
+  @Override
+  public void keyPressed(KeyEvent e) {
+    App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYDOWN);
+  }
+
+  @Override
+  public void keyReleased(KeyEvent e) {
+    App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYUP);
   }
 }
