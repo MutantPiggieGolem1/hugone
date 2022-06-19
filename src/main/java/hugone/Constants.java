@@ -3,14 +3,14 @@ package hugone;
 import java.awt.GraphicsEnvironment;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
-import java.io.File;
 
 public class Constants {
     public static enum GameState {
         MENU,
         CUTSCENE,
         EXPLORATION,
-        BATTLE
+        BATTLE,
+        DEATH, CARD
     }
 
     public static enum Direction {
@@ -46,16 +46,14 @@ public class Constants {
     }
 
     public static enum RenderState {
-        DEFAULT,
-        DIALOGUE, CARD
+        DEFAULT, DIALOGUE
     }
 
     public static enum BattleState {
-        INTRO,
+        INTRO, // introduction scene is playing
         FIGHT, // player is hitting notes
         LOSE, // <play death theme>, so sad
-        WIN, // u win pog
-        FINISHED // game officially ended
+        WIN // you win!
     }
 
     public static enum KeyPress {
@@ -65,31 +63,29 @@ public class Constants {
 
     public static interface InteractableObject {
         public abstract void onInteraction();
-
-        // public void onInteraction(int count);
         public abstract boolean collidesWith(java.awt.Rectangle r);
     }
 
     public static interface Feature {
-        public boolean update(); // check for completion
+        public void init(); // initalize/begin showing this feature
 
-        public void render(Graphics2D g); // draw this feature
+        public boolean update(); // check for this feature's completion
 
-        public abstract void reccieveKeyPress(KeyEvent e, KeyPress keydown); // wasd only
+        public void render(Graphics2D g); // draw this feature on the screen
 
-        public void init();
+        public void close(); // stop/cleanup this feature's resources
 
-        public void close();
+        public String getNext(); // fetch the next feature in sequence
+
+        public abstract void reccieveKeyPress(KeyEvent e, KeyPress keydown); // pass through keypresses from a single listener
     }
 
     private static final java.awt.DisplayMode defaultdisplaymode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();
-    public static final String RESOURCEDIR = String.join(File.separator,new String[]{System.getProperty("user.dir"),"src","main","resources",""});
     public static final int REFRESHRATE = defaultdisplaymode.getRefreshRate();
     public static final double FPS = REFRESHRATE; // 60.0 usually
     public static final double TPS = 20.0;
 
     public class Battle {
-        public static final int HEALTHPERHEART = 25;
         public static final int MINNOTEMOVE = 2;
         public static final int HITMARGIN = 150;
     }

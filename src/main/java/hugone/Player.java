@@ -3,7 +3,6 @@ package hugone;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 
@@ -11,10 +10,11 @@ import org.json.JSONException;
 
 import hugone.Constants.MoveState;
 import hugone.Constants.Direction;
+import hugone.Constants.GameState;
 import hugone.Constants.KeyPress;
 import hugone.util.Utils;
 
-public class Player extends Character implements KeyListener {
+public class Player extends Character {
   private Direction direction = Direction.DOWN;
   private MoveState movestate = MoveState.STOP;
   private MoveState tomove;
@@ -25,13 +25,13 @@ public class Player extends Character implements KeyListener {
 
   public ArrayList<String> inventory = new ArrayList<String>();
   public int money;
-  private ArrayList<Character> followers = new ArrayList<Character>();
+  // private ArrayList<Character> followers = new ArrayList<Character>();
   
   public Player(String name) throws JSONException {
     super("PLAYER");
     super.setName(name);
 
-    this.followers.add(App.story.getCharacter("ENEMY_1"));
+    // this.followers.add(App.story.getCharacter("ENEMY_1"));
   }
 
   public void addItem(String itemid, int count) {
@@ -44,48 +44,44 @@ public class Player extends Character implements KeyListener {
     inventory.add(itemid);
   }
 
-  @Override
-  public void keyTyped(KeyEvent e) {
-  };
-
-  @Override
-  public void keyPressed(KeyEvent e) {
+  public void reccieveKeyPress(KeyEvent e, KeyPress p) {
     int kc = e.getKeyCode();
-    App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYDOWN);
-    switch (kc) {
-      case KeyEvent.VK_W:
-      case KeyEvent.VK_A:
-      case KeyEvent.VK_S:
-      case KeyEvent.VK_D:
-        this.todir = Utils.dirkeys.get(kc);
-        this.tomove = MoveState.MOVE1;
+    switch (p) {
+      case KEYDOWN:
+        switch (kc) {
+          case KeyEvent.VK_W:
+          case KeyEvent.VK_A:
+          case KeyEvent.VK_S:
+          case KeyEvent.VK_D:
+            this.todir = Utils.dirkeys.get(kc);
+            this.tomove = MoveState.MOVE1;
+            break;
+          case KeyEvent.VK_X:
+            this.sprinting = true;
+            break;
+          case KeyEvent.VK_SPACE:
+            this.spacedown = true;
+            break;
+        }
         break;
-      case KeyEvent.VK_X:
-        this.sprinting = true;
-        break;
-      case KeyEvent.VK_SPACE:
-        this.spacedown = true;
+      case KEYUP:
+        switch (kc) {
+          case KeyEvent.VK_W:
+          case KeyEvent.VK_A:
+          case KeyEvent.VK_S:
+          case KeyEvent.VK_D:
+            this.tomove = MoveState.STOP;
+            break;
+          case KeyEvent.VK_X:
+            this.sprinting = false;
+            break;
+          case KeyEvent.VK_SPACE:
+            this.spacedown = false;
+            break;
+        }
         break;
     }
-  }
-
-  @Override
-  public void keyReleased(KeyEvent e) {
-    App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYUP);
-    switch (e.getKeyCode()) {
-      case KeyEvent.VK_W:
-      case KeyEvent.VK_A:
-      case KeyEvent.VK_S:
-      case KeyEvent.VK_D:
-        this.tomove = MoveState.STOP;
-        break;
-      case KeyEvent.VK_X:
-        this.sprinting = false;
-        break;
-      case KeyEvent.VK_SPACE:
-        this.spacedown = false;
-        break;
-    }
+    
   }
 
   public void render(Graphics2D g) {
@@ -94,7 +90,7 @@ public class Player extends Character implements KeyListener {
     // for (Character c : this.followers.toArray(new Character[]{})) {
     //   ms = movemap.get(ms);
     //   c.render(this.direction, ms, g);
-    // } TODO: Add following logic
+    // }
   }
 
   public boolean spaceDown() {
@@ -111,6 +107,7 @@ public class Player extends Character implements KeyListener {
   }
 
   public void moveLoop() {
+    if (!App.story.currentState().equals(GameState.EXPLORATION)) return;
     Area a = (Area) App.story.getCurrent();
     if (a.renderingDialogue()) {
       this.movestate = MoveState.STOP;
@@ -125,7 +122,7 @@ public class Player extends Character implements KeyListener {
       return;
     } // dont move while stopped
 
-    if (Math.round(this.framenum % (this.sprinting ? 1.1 : 2)) == 0L)
+    if (Math.round(this.framenum % (this.sprinting ? 1.4 : 2)) == 0L)
       this.movestate = super.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
@@ -144,5 +141,11 @@ public class Player extends Character implements KeyListener {
     this.todir = null;
     this.movestate = MoveState.STOP;
     this.framenum = 0;
+  }
+
+  public void respawn() {
+    this.health = 100;
+    this.inventory = new ArrayList<String>();
+    this.money -= 10;
   }
 }

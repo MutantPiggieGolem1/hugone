@@ -4,10 +4,10 @@ import javax.sound.sampled.*;
 
 public class Audio {
   private Clip clip;
-
-  private long pausetime = -1;
   private AudioFormat format;
   private byte[] data;
+
+  private long pausetime = -1;
 
   public Audio(String filename) {
     try {
@@ -18,13 +18,27 @@ public class Audio {
       this.clip = AudioSystem.getClip();
       this.clip.open(this.format, this.data, 0, data.length);
     } catch (Exception e) {
-      System.out.println("!WARNING! Audio file failed to load @" + filename);
+      System.out.println("!WARNING! Audio failed to load @" + filename);
       e.printStackTrace();
       System.exit(1); // can't use null replacement because of stream complications
     }
   }
 
-  public void changeVolume(float db) {
+  public Audio(Audio a) {
+    try {
+      this.data = a.data;
+      this.format = a.format;
+
+      this.clip = AudioSystem.getClip();
+      this.clip.open(this.format, this.data, 0, data.length);
+    } catch (Exception e) {
+      System.out.println("!WARNING! Audio failed to copy!");
+      e.printStackTrace();
+      System.exit(1);
+    }
+  }
+
+public void changeVolume(float db) {
     FloatControl gainControl = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
     gainControl.setValue(db);
   }
@@ -36,7 +50,7 @@ public class Audio {
       this.clip.open(this.format, this.data, 0, this.data.length);
       this.clip.setMicrosecondPosition(0);
     } catch (Exception e) {
-      System.out.println("!WARNING! Audio file failed to reset!");
+      System.out.println("!WARNING! Audio failed to reset!");
     }
   }
 

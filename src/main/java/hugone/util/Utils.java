@@ -3,7 +3,6 @@ package hugone.util;
 import java.awt.event.KeyEvent;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 
 import org.json.JSONArray;
@@ -12,17 +11,9 @@ import org.json.JSONException;
 import hugone.Constants.Direction;
 
 public class Utils {
-  public static final Image ARROWTAILIMAGE = new Image("ARROW_TAIL.png");
   public static final java.awt.Image ICONIMG = new Image("icon.png").getImage();
+  public static final int WIDTH = java.awt.Toolkit.getDefaultToolkit().getScreenSize().width;
   private static long prevns;
-
-  public static <T> String toString(T[] arr) {
-    String o = arr[0].toString();
-    for (T i : Arrays.copyOfRange(arr, 1, arr.length)) {
-      o += "," + i.toString();
-    }
-    return o;
-  }
 
   @SuppressWarnings("unchecked")
   public static <T> T[] toArray(ArrayList<T> arr) {
@@ -61,13 +52,13 @@ public class Utils {
       arrowimages.put(Direction.DOWN , new Image("ARROW_DOWN.png" ));
       arrowimages.put(Direction.NONE , new Image("ARROW_NONE.png" ));
   }
-  public static HashMap<Direction, Image> longarrowimages = new HashMap<Direction, Image>();
+  public static HashMap<Direction, Image> arrowtailimages = new HashMap<Direction, Image>();
   static {
-      longarrowimages.put(Direction.LEFT , new Image("ARROW_LEFT_HOLD.png" ));
-      longarrowimages.put(Direction.RIGHT, new Image("ARROW_RIGHT_HOLD.png"));
-      longarrowimages.put(Direction.UP   , new Image("ARROW_UP_HOLD.png"   ));
-      longarrowimages.put(Direction.DOWN , new Image("ARROW_DOWN_HOLD.png" ));
-      longarrowimages.put(Direction.NONE , new Image("ARROW_NONE_HOLD.png" ));
+      arrowtailimages.put(Direction.LEFT , new Image("ARROW_LEFT_TAIL.png" ));
+      arrowtailimages.put(Direction.RIGHT, new Image("ARROW_RIGHT_TAIL.png"));
+      arrowtailimages.put(Direction.UP   , new Image("ARROW_UP_TAIL.png"   ));
+      arrowtailimages.put(Direction.DOWN , new Image("ARROW_DOWN_TAIL.png" ));
+      arrowtailimages.put(Direction.NONE , new Image("ARROW_TAIL.png" ));
   }
   public static final HashMap<Direction,Integer> dirtoint = new HashMap<Direction,Integer>();
   static {

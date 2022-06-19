@@ -8,10 +8,17 @@ import hugone.Constants.KeyPress;
 import hugone.util.Video;
 
 class Cutscene implements Feature {
+  private String id;
   private Video video;
   private boolean skip = false;
 
+  public Cutscene(String id) {
+    this.id = id;
+    this.video = new Video(App.story.data.getJSONObject("scenes").getJSONObject(this.id).getString("video"),App.f);
+  }
+
   public Cutscene(Video vid) {
+    this.id = null;
     this.video = vid;
   }
 
@@ -37,5 +44,10 @@ class Cutscene implements Feature {
   public void close() {
     this.skip = false;
     this.video.close();
+  }
+
+  @Override
+  public String getNext() {
+    return App.story.data.getJSONObject("scenes").getJSONObject(this.id).getString("next");
   }
 }
