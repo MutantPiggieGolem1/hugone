@@ -9,7 +9,8 @@ public class Constants {
         MENU,
         CUTSCENE,
         EXPLORATION,
-        BATTLE
+        BATTLE,
+        DEATH, CARD
     }
 
     public static enum Direction {
@@ -45,15 +46,14 @@ public class Constants {
     }
 
     public static enum RenderState {
-        DEFAULT, DIALOGUE, CARD
+        DEFAULT, DIALOGUE
     }
 
     public static enum BattleState {
         INTRO, // introduction scene is playing
         FIGHT, // player is hitting notes
         LOSE, // <play death theme>, so sad
-        WIN, // you win!
-        FINISHED // game officially ended
+        WIN // you win!
     }
 
     public static enum KeyPress {
@@ -67,15 +67,17 @@ public class Constants {
     }
 
     public static interface Feature {
+        public void init(); // initalize/begin showing this feature
+
         public boolean update(); // check for this feature's completion
 
         public void render(Graphics2D g); // draw this feature on the screen
 
-        public abstract void reccieveKeyPress(KeyEvent e, KeyPress keydown); // pass through keypresses from a single listener
-
-        public void init(); // initalize/begin showing this feature
-
         public void close(); // stop/cleanup this feature's resources
+
+        public String getNext(); // fetch the next feature in sequence
+
+        public abstract void reccieveKeyPress(KeyEvent e, KeyPress keydown); // pass through keypresses from a single listener
     }
 
     private static final java.awt.DisplayMode defaultdisplaymode = GraphicsEnvironment.getLocalGraphicsEnvironment().getDefaultScreenDevice().getDisplayMode();

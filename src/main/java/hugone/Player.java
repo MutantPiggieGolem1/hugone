@@ -142,4 +142,10 @@ public class Player extends Character {
     this.movestate = MoveState.STOP;
     this.framenum = 0;
   }
+
+  public void respawn() {
+    this.health = 100;
+    this.inventory = new ArrayList<String>();
+    this.money -= 10;
+  }
 }

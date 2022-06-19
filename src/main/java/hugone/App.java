@@ -24,7 +24,8 @@ class App {
       story = new Story("story.json");
       story.init();
     } catch (Exception e) {
-      throw new RuntimeException("Couldn't initalize story.\nDetais: " + e.toString());
+      e.printStackTrace();
+      throw new RuntimeException("Couldn't initalize story.");
     }
     player = story.player;
 
@@ -50,6 +51,9 @@ class App {
             Menu m = (Menu) cur;
             m.update();
             break;
+          case CARD:
+            cur.update();
+            break;
           case CUTSCENE:
             break;
           case EXPLORATION:
@@ -62,6 +66,8 @@ class App {
           case BATTLE:
             Battle b = (Battle) cur;
             b.beat();
+            break;
+          case DEATH:
             break;
         }
       } catch (Exception e) {

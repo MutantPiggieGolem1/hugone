@@ -33,6 +33,8 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
     private Card card;
     private long debounce;
 
+    private String next;
+
     public Menu(String id, JFrame f) {
         this.parent = f;
         JSONObject data = App.story.data.getJSONObject("menus").getJSONObject(id);
@@ -50,15 +52,17 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
             switch (buttondata.getInt("func")) {
                 case 0: // return to menu
                     button.addActionListener((ActionEvent e) -> {
-                        App.story.start();
+                        this.next = "intro";
                     });
                 break;
                 case 1: // settings
-                    
+                    button.addActionListener((ActionEvent e) -> {
+                        // this.next = "settings";
+                    });
                 break;
                 case 2: // gallery
                     button.addActionListener((ActionEvent e) -> {
-                        ((Menu)App.story.getCurrent()).setCard(App.story.getCard("gallery"));
+                        this.next = "gallery";
                     });
                 break;
             }
@@ -70,6 +74,7 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
             button.setMultiClickThreshhold(Constants.DEBOUNCE);
             button.setFocusable(false);
             button.setVisible(false);
+            this.parent.add(button);
             this.buttons[i] = button;
         }
         
@@ -90,59 +95,25 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
             b.setBounds(this.calculateX(i),y,(int)this.NORMALBUTTON.getWidth(),(int)this.NORMALBUTTON.getHeight());
             b.setVisible(true);
             b.setEnabled(true);
-            this.parent.add(b);
         }
         this.debounce = 0;
-        this.renderstate = RenderState.DEFAULT;
-    }
-
-    private void setCard(Card card) {
-        this.card = card;
-        this.card.init();
-        this.lockPlace();
-        this.renderstate = RenderState.CARD;
     }
 
     @Override
     public boolean update() {
-        switch (this.renderstate) {
-            case DEFAULT:
-                this.debounce++;
-                for (JButton b : this.buttons) {
-                    b.setVisible(true);
-                }
-                this.animate();
-            break;
-            case CARD:
-                for (JButton b : this.buttons) {
-                    b.setVisible(false);
-                }
-                if (this.card.update()) {
-                    this.renderstate = RenderState.DEFAULT;
-                    this.card.close();
-                    this.card = null;
-                }
-            break;
-            case DIALOGUE:
-            break;
+        this.debounce++;
+        for (JButton b : this.buttons) {
+            b.setVisible(true); // neither does this line ;-;
         }
-        return false;
+        this.animate();
+        return this.next != null;
     }
 
     @Override
     public void render(Graphics2D g) {
-        switch (this.renderstate) {
-            case DEFAULT:
-                this.background.draw(0,0,g);
-                for (JButton b : this.buttons) {
-                    b.paint(g);
-                }
-            break;
-            case CARD:
-                this.card.render(g);
-            break;
-            case DIALOGUE:
-            break;
+        this.background.draw(0,0,g);
+        for (JButton b : this.buttons) {
+            b.paint(g);
         }
     }
 
@@ -175,6 +146,7 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
             b.setVisible(false);
             b.setEnabled(false);
         }
+        this.next = null;
     }
 
     private void lockPlace() {
@@ -197,8 +169,8 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
             if (i==this.selectedbutton) {
                 if (b.getBounds().equals(this.CENTERBUTTON)) {match++;continue;}
                 b.setBounds(
-                    expoDelta(b.getX(), this.CENTERBUTTON.getX()), 
-                    expoDelta(b.getY(), this.CENTERBUTTON.getY()), 
+                    expoDelta(b.getX(), this.CENTERBUTTON.x), 
+                    expoDelta(b.getY(), this.CENTERBUTTON.y), 
                     linearDelta(b.getWidth(), this.CENTERBUTTON.getWidth()),
                     linearDelta(b.getHeight(), this.CENTERBUTTON.getHeight())
                 );
@@ -207,7 +179,7 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
                 if (b.getX() == goal) {match++;continue;}
                 b.setBounds(
                     expoDelta(b.getX(), goal), 
-                    expoDelta(b.getY(), this.NORMALBUTTON.getY()), 
+                    expoDelta(b.getY(), this.NORMALBUTTON.y), 
                     linearDelta(b.getWidth(), this.NORMALBUTTON.getWidth()),
                     linearDelta(b.getHeight(), this.NORMALBUTTON.getHeight())
                 );
@@ -228,12 +200,14 @@ public class Menu implements Feature { // TODO: Fix duplicate menu buttons
         return cur > goal ? cur - spd : cur + spd;
     }
 
-    private int expoDelta(int cur, double goal) {
-        return expoDelta(cur, (int)goal);
-    }
     private int expoDelta(int cur, int goal) {
         double mul = 0.11;
         if (Math.abs(cur-goal) < mul*50) return goal; // snap
         return (int)(cur+(goal-cur)*mul);
+    }
+
+    @Override
+    public String getNext() {
+        return this.next;
     }
 }

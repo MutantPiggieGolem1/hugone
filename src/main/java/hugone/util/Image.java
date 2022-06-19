@@ -26,9 +26,9 @@ public class Image extends javax.swing.JPanel {
     return this;
   }
 
-  public Image stretchToLength(int length) {
-    if (length > 0) {
-      this.image = this.image.getScaledInstance(this.image.getWidth(null), length, BufferedImage.SCALE_SMOOTH);
+  public Image stretchToHeight(int height) {
+    if (height > 0) {
+      this.image = this.image.getScaledInstance(this.image.getWidth(null), height, BufferedImage.SCALE_SMOOTH);
     } else {
       System.out.println("!WARNING! Attempted to stretch image to length <0! @"+this.filename);
     }

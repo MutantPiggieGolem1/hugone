@@ -1,6 +1,7 @@
 package hugone;
 
 import java.awt.Graphics2D;
+import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -77,6 +78,11 @@ class Dialogues implements Feature {
   public void close() {
     this.reset();
   }
+
+  @Override
+  public String getNext() {
+    return App.story.data.getJSONObject("scenes").getJSONObject(this.id).getString("next");
+  }
 }
 
 class Dialogue {
@@ -95,13 +101,7 @@ class Dialogue {
     } catch (Exception e) {
       System.out.println("!WARNING! Audio failed to load for dialogue. " + e.getMessage());
     }
-    try {
-      Image img = new Image(data.getString("textbox"));
-      //img.scaleToWidth(App.f.getWidth()-50);
-      this.textbox = img;
-    } catch (Exception e) {
-      System.out.println("!WARNING! Textbox image failed to load for dialogue. " + e.getMessage());
-    }
+    this.textbox = new Image(data.getString("textbox")).scaleToWidth(hugone.util.Utils.WIDTH-50).stretchToHeight(200);
   }
 
   public boolean update() {
@@ -114,7 +114,7 @@ class Dialogue {
     }
 
     this.character.render(this.emotion, g);
-    this.textbox.draw(20, App.f.getHeight() - 150, g);
-    g.drawString(line, 30, App.f.getHeight() - 100);
+    this.textbox.draw(20, App.f.getHeight() - 300, g);
+    g.drawString(line, 50, App.f.getHeight() - 200);
   }
 }

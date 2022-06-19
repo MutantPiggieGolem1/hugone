@@ -94,7 +94,7 @@ public class Character {
   }
 
   public void render(Emotion e, Graphics2D g) {
-    this.render(new java.awt.Point(50,App.f.getHeight()-200),e,g);
+    this.render(new java.awt.Point(50,App.f.getHeight()-600),e,g);
   }
   public void render(java.awt.Point loc, Emotion emotion, Graphics2D g) {
     Image eimg = this.emotions.get(emotion);

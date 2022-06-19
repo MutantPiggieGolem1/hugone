@@ -12,14 +12,14 @@
       ],
       "buttons": [
         {
-          "title": "Play",
-          "image": "STARTMENU_play.png",
-          "func": 0
-        },
-        {
           "title": "Settings",
           "image": "STARTMENU_settings.png",
           "func": 1
+        },
+        {
+          "title": "Play",
+          "image": "STARTMENU_play.png",
+          "func": 0
         },
         {
           "title": "Gallery",
@@ -29,32 +29,43 @@
       ]
     }
   },
-  "cards": {
-    "gallery": "gallery.png"
-  },
   "scenes": {
     "STARTMENU": {
       "type": "MENU",
-      "id": "STARTMENU",
-      "next": null
+      "id": "STARTMENU"
+    },
+    "gallery": {
+      "type": "CARD",
+      "id": "gallery",
+      "image": "gallery.png",
+      "next": "STARTMENU"
     },
     "intro": {
       "type": "CUTSCENE",
       "id": "intro",
-      "video": "intro.mov",
+      "video": "your mother is homosexual",
       "next": "bottomfloor"
     },
     "bottomfloor": {
       "type": "EXPLORATION",
-      "id": "BOTTOM_FLOOR",
+      "id": "bottomfloor",
       "next": "nommabattle"
     },
     "nommabattle": {
       "type": "BATTLE",
-      "id": "NOMMA_BATTLE",
-      "maxdeaths": 7,
-      "savior": "KYLE",
-      "next": ""
+      "id": "nommabattle",
+      "next": "STARTMENU"
+    },
+    "nommabattlesave": {
+      "type": "CUTSCENE",
+      "id": "nommabattlesave",
+      "video": "I hate your guts",
+      "next": "STARTMENU"
+    },
+    "death": {
+      "type": "CARD",
+      "id": "death",
+      "image": "death.png"
     }
   },
   "characters": {
@@ -119,7 +130,7 @@
     }
   },
   "areas": {
-    "BOTTOM_FLOOR": {
+    "bottomfloor": {
       "image": "BOTTOM_FLOOR.png",
       "find": [
         "wallet"
@@ -170,11 +181,11 @@
     }
   },
   "battles": {
-    "NOMMA_BATTLE": {
+    "nommabattle": {
       "enemy": "ENEMY_1",
       "damage": 25,
       "introcard": "NOMMA_BATTLE_INTROCARD.png",
-      "introscene": "NOMMA_BATTLE_INTRO.mov",
+      "introscene": "i hate java",
       "background": "NOMMA_BATTLE_BG.png",
       "overlay": "NOMMA_BATTLE_OV.png",
       "song": "NOMMA_BATTLE_SONG.wav",
@@ -193,7 +204,9 @@
         "DOWN",
         "REST4",
         "DEATH4"
-      ]
+      ],
+      "maxdeaths": 3,
+      "save": "nommabattlesave"
     }
   },
   "dialogue": {
