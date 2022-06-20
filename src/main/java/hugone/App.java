@@ -30,14 +30,14 @@ class App {
     player = story.player;
 
     DrawingCanvas dc = new DrawingCanvas(f);
+    f.setVisible(true);
     f.add(dc);
     f.addKeyListener(dc);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setExtendedState(JFrame.MAXIMIZED_BOTH);
     f.setFocusable(true);
     f.setIconImage(Utils.ICONIMG);
-    f.setResizable(false);
-    f.setUndecorated(false);
+    f.setResizable(false);    
 
     // Game Loop begins
     executor.scheduleAtFixedRate(() -> {
