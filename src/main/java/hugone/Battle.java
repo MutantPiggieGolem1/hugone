@@ -360,7 +360,7 @@ class HoldNote extends Note {
     this.keydownon = -1;
   }
 
-  public void hit(KeyPress p) { // TODO: Fix hold system
+  public void hit(KeyPress p) {
     switch (p) {
       case KEYDOWN:
         if (this.keydownon >= 0) break;

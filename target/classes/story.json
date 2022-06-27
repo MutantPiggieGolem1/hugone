@@ -43,7 +43,7 @@
     "intro": {
       "type": "CUTSCENE",
       "id": "intro",
-      "video": "your mother is homosexual",
+      "video": "intro.mp4",
       "next": "bottomfloor"
     },
     "bottomfloor": {

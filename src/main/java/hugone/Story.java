@@ -57,7 +57,7 @@ public class Story {
       JSONObject data = scenes.getJSONObject(id);
       switch (GameState.valueOf(data.getString("type"))) {
         case MENU:
-          this.menus.put(id, new Menu(id,App.f));
+          this.menus.put(id, new Menu(id));
           break;
         case CARD:
           this.cards.put(id, new Card(id));

@@ -30,11 +30,7 @@ class Cutscene implements Feature {
     return this.skip || this.video.isPlayed();
   }
 
-  public void render(Graphics2D g) {
-    if (!this.video.isPlaying()) {
-      this.video.play();
-    }
-  }
+  public void render(Graphics2D g) {}
 
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {
     if (p.equals(KeyPress.KEYDOWN) && e.getKeyCode() == KeyEvent.VK_SPACE) this.skip = true;
