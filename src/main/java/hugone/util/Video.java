@@ -2,7 +2,7 @@ package hugone.util;
 
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 
-public class Video {
+public class Video { // TODO: No idea why this doesn't render
     private EmbeddedMediaPlayerComponent component;
 
     public Video(String filepath, javax.swing.JFrame f) {

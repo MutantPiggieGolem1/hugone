@@ -47,6 +47,10 @@ public class Image extends javax.swing.JPanel {
     return this.image.getHeight(null);
   };
 
+  public void draw(java.awt.Rectangle r, java.awt.Graphics2D g) {
+    g.drawImage(this.image, r.x, r.y, r.width, r.height, null);
+  }
+
   public void draw(int x, int y, java.awt.Graphics2D g) {
     g.drawImage(this.image, x, y, this.image.getWidth(null), this.image.getHeight(null), null);
   }
