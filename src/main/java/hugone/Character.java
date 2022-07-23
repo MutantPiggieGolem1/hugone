@@ -26,7 +26,15 @@ public class Character {
 
   protected int health = -1;
   protected Rectangle pos = new Rectangle();
-  public final HashMap<MoveState, MoveState> movemap = new HashMap<MoveState, MoveState>();
+  public static final HashMap<MoveState, MoveState> movemap = new HashMap<MoveState, MoveState>();
+  static {
+    movemap.put(MoveState.STOP, MoveState.STOP);
+    movemap.put(MoveState.MOVE0, MoveState.MOVE1);
+    movemap.put(MoveState.MOVE1, MoveState.MOVE2);
+    movemap.put(MoveState.MOVE2, MoveState.MOVE0);
+    movemap.put(MoveState.RUN1, MoveState.RUN2);
+    movemap.put(MoveState.RUN2, MoveState.RUN1);
+  }
 
   private MoveState lastmovestate = MoveState.STOP;
 
@@ -67,22 +75,15 @@ public class Character {
           }
         }
       }
+      Image eximg = this.directions.get(Direction.UP).get(MoveState.STOP);
+      int h = Constants.CHARACTERSIZE;
+      if (eximg != null) h = eximg.getHeight();
+      this.pos = new Rectangle(0,0,Constants.CHARACTERSIZE,h);
     }
-    Image eximg = this.directions.get(Direction.UP).get(MoveState.STOP);
-    int h = Constants.CHARACTERSIZE;
-    if (eximg != null) h = eximg.getHeight();
-    this.pos = new Rectangle(0,0,Constants.CHARACTERSIZE,h);
 
     if (data.has("health")) {
       this.health = data.getInt("health");
     }
-
-    movemap.put(MoveState.STOP, MoveState.STOP);
-    movemap.put(MoveState.MOVE0, MoveState.MOVE1);
-    movemap.put(MoveState.MOVE1, MoveState.MOVE2);
-    movemap.put(MoveState.MOVE2, MoveState.MOVE0);
-    movemap.put(MoveState.RUN1, MoveState.RUN2);
-    movemap.put(MoveState.RUN2, MoveState.RUN1);
   }
 
   protected void setName(String name) {

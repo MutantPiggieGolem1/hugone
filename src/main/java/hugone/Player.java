@@ -24,7 +24,6 @@ public class Player extends Character {
   private boolean spacedown = false;
 
   public ArrayList<String> inventory = new ArrayList<String>();
-  public int money;
   // private ArrayList<Character> followers = new ArrayList<Character>();
   
   public Player(String name) throws JSONException {
@@ -86,11 +85,6 @@ public class Player extends Character {
 
   public void render(Graphics2D g) {
     super.render(this.direction, this.movestate, g);
-    // MoveState ms = this.movestate;
-    // for (Character c : this.followers.toArray(new Character[]{})) {
-    //   ms = movemap.get(ms);
-    //   c.render(this.direction, ms, g);
-    // }
   }
 
   public boolean spaceDown() {
@@ -123,7 +117,7 @@ public class Player extends Character {
     } // dont move while stopped
 
     if (Math.round(this.framenum % (this.sprinting ? 1.4 : 2)) == 0L)
-      this.movestate = super.movemap.get(this.movestate); // update the move state
+      this.movestate = Character.movemap.get(this.movestate); // update the move state
     this.framenum++;
 
     Rectangle goal = this.facingTowards(true);
@@ -146,6 +140,5 @@ public class Player extends Character {
   public void respawn() {
     this.health = 100;
     this.inventory = new ArrayList<String>();
-    this.money -= 10;
   }
 }

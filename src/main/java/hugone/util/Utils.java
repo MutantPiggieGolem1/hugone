@@ -1,6 +1,10 @@
 package hugone.util;
 
 import java.awt.event.KeyEvent;
+import java.io.FileInputStream;
+import java.io.FileWriter;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -124,5 +128,23 @@ public class Utils {
     if (Math.abs(cur - goal) < mul * 50)
       return goal; // snap
     return (int) (cur + (goal - cur) * mul);
+  }
+
+  public static String readFile(String filepath) {
+    try (InputStream s = new FileInputStream(filepath)) {
+      return new String(s.readAllBytes(), StandardCharsets.UTF_8);
+    } catch (Exception e) {
+      return null;
+    }
+  }
+
+  public static boolean writeFile(String filepath, String toWrite) {
+    try (FileWriter writer = new FileWriter(filepath)) {
+      writer.write(toWrite);
+      writer.close();
+      return true;
+    } catch (Exception e) {
+      return false;
+    }
   }
 }

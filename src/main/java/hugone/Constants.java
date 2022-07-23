@@ -4,6 +4,8 @@ import java.awt.GraphicsEnvironment;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 
+import hugone.util.Image;
+
 public class Constants {
     public static enum GameState {
         MENU,
@@ -85,6 +87,8 @@ public class Constants {
     public static final double FPS = REFRESHRATE; // 60.0 usually
     public static final double TPS = 20.0;
 
+    public static final Image SAVEICON = new Image("save.png");
+    public static final Dialogues SAVEDIALOGUE = new Dialogues("save");
     public class Battle {
         public static final int MINNOTEMOVE = 2;
         public static final int HITMARGIN = 150;

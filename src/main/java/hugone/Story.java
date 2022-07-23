@@ -1,13 +1,16 @@
 package hugone;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.Scanner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import hugone.Constants.Feature;
 import hugone.Constants.GameState;
+import hugone.util.Utils;
 
 public class Story {
   public Player player;
@@ -21,6 +24,7 @@ public class Story {
 
   private String current; // id of current
   public String checkpoint; // id of last died
+  public final int version;
 
   public final JSONObject data;
 
@@ -32,6 +36,7 @@ public class Story {
     }
     s.close();
     this.data = new JSONObject(out);
+    this.version = this.data.getInt("version");
   }
 
   public void init() throws JSONException {
@@ -124,5 +129,20 @@ public class Story {
         System.out.println("!WARNING! Unrecognized CurrentState.");
         return null;
     }
+  }
+
+  private static final String savedir = "saves.json";
+  public void save() throws IOException {
+    JSONObject out = new JSONObject()
+      .put("health",this.player.health)
+      .put("inventory",this.player.inventory)
+      .put("state",this.current)
+      .put("checkpoint",this.checkpoint)
+      .put("version",this.version);
+    String filecontent = Utils.readFile(savedir);
+    JSONObject savedata = filecontent == null ? new JSONObject() : new JSONObject(new JSONTokener(filecontent));
+    savedata.put(""+System.currentTimeMillis(), out);
+    if (Utils.writeFile(savedir, savedata.toString())) return;
+    throw new IOException("Could not save game data.");
   }
 }

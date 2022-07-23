@@ -69,6 +69,12 @@
     }
   },
   "characters": {
+    "SYSTEM": {
+      "name": "System",
+      "emotions": {
+        "HAPPY": "SYSTEM_HAPPY.png"
+      }
+    },
     "PLAYER": {
       "name": "mc",
       "health": 100,
@@ -165,19 +171,26 @@
           "collide": true,
           "dialogue": "explore_closet_1",
           "item": "wallet"
+        },
+        {
+          "objectid": "exit",
+          "image": "door_1.png",
+          "location": [
+            200,
+            300
+          ],
+          "dimensions": [
+            50,
+            100
+          ]
+        },
+        {
+          "objectid": "save",
+          "location": [
+            400, 400
+          ]
         }
-      ],
-      "exit": {
-        "location": [
-          200,
-          300
-        ],
-        "dimensions": [
-          50,
-          100
-        ],
-        "image": "door_1.png"
-      }
+      ]
     }
   },
   "battles": {
@@ -231,6 +244,16 @@
           "textbox": "textbox.png"
         }
       ]
+    },
+    "save": {
+      "lines": [{
+        "character": "SYSTEM",
+        "emotion": "HAPPY",
+        "line": "Game Saved!",
+        "audio": "saved.wav",
+        "textbox": "saved.png"
+      }]
     }
-  }
+  },
+  "version": 1
 }

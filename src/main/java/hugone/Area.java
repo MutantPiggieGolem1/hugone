@@ -4,6 +4,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import org.json.JSONArray;
@@ -54,12 +55,17 @@ class Area implements Feature {
     JSONArray furnituredata = data.getJSONArray("furniture");
     for (int i = 0; i < furnituredata.length(); i++) {
       JSONObject furn = furnituredata.getJSONObject(i);
-      Furniture furni = new Furniture(furn, this);
-      this.furniture.add(furni);
+      switch (furn.getString("objectid")) {
+        case "exit":
+          this.furniture.add(new Exit(furn, this));
+        break;
+        case "save":
+          this.furniture.add(new Savepoint(furn, this));
+        break;
+        default:
+          this.furniture.add(new Furniture(furn, this));
+      }
     }
-
-    JSONObject exitdata = data.getJSONObject("exit");
-    this.furniture.add(new Exit(exitdata, this));
   }
 
   public void init() {
@@ -150,10 +156,10 @@ class Area implements Feature {
 
 class Furniture implements InteractableObject {
   public final String id;
-  protected Area area;
+  protected final Area area;
   private Image image;
   private String item;
-  private Dialogues dialogue;
+  protected Dialogues dialogue;
   private Rectangle pos;
   private boolean collide;
   private boolean interacted = false;
@@ -161,7 +167,7 @@ class Furniture implements InteractableObject {
   public Furniture(JSONObject data, Area area) throws JSONException {
     this.area = area;
 
-    this.id = data.has("objectid") ? data.getString("objectid") : null;
+    this.id = data.getString("objectid");
     this.item = data.has("item") ? data.getString("item") : null;
     this.collide = data.has("collide") ? data.getBoolean("collide") : true;
     if (data.has("dialogue")) {
@@ -174,6 +180,14 @@ class Furniture implements InteractableObject {
     this.image = new Image(data.getString("image"));
     this.image.scaleToWidth(dimension.getInt(0));
     this.pos = new Rectangle(location.getInt(0), location.getInt(1), dimension.getInt(0), this.image.getHeight());
+  }
+
+  protected Furniture(String id, Rectangle pos, Image image, boolean collide, Area area) {
+    this.id = id;
+    this.pos = pos;
+    this.image = image;
+    this.collide = collide;
+    this.area = area;
   }
 
   public boolean collidesWith(Rectangle r) {
@@ -203,6 +217,28 @@ class Exit extends Furniture {
       this.area.exit();
     } else {
       this.area.setDialogue(App.story.getDialogue("cant_exit"));
+    }
+  }
+}
+
+class Savepoint extends Furniture {
+  public Savepoint(JSONObject data, Area area) {
+    super(data.getString("objectid"), new Rectangle(
+      data.getJSONArray("location").getInt(0),
+      data.getJSONArray("location").getInt(1),
+      10, 10
+    ), Constants.SAVEICON, true, area);
+    this.dialogue = Constants.SAVEDIALOGUE;
+  }
+
+  @Override
+  public void onInteraction() {
+    try {
+      App.story.save();
+      this.area.setDialogue(this.dialogue);
+    } catch (IOException e) {
+      e.printStackTrace();
+      System.exit(0);
     }
   }
 }
