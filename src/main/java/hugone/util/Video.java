@@ -2,23 +2,30 @@ package hugone.util;
 
 import uk.co.caprica.vlcj.player.component.EmbeddedMediaPlayerComponent;
 
-public class Video { // TODO: No idea why this doesn't render
+public class Video {
     private EmbeddedMediaPlayerComponent component;
+    private javax.swing.JFrame f;
+    private String filepath;
 
     public Video(String filepath, javax.swing.JFrame f) {
+        this.f = f;
+        this.filepath = filepath;
         this.component = new EmbeddedMediaPlayerComponent();
         this.component.setFocusable(false);
-        f.setVisible(true);
-        f.add(this.component);
-        this.component.mediaPlayer().media().startPaused(filepath);
-        this.component.mediaPlayer().controls().setRepeat(false);
+        this.component.setVisible(false);
     }
 
     public void play() {
-        this.component.mediaPlayer().controls().play();
+        this.f.add(this.component);
+        this.component.setVisible(true);
+        this.f.setVisible(true);
+        this.component.mediaPlayer().controls().setRepeat(false);
+        if (!this.component.mediaPlayer().media().play(this.filepath)) System.out.println("!WARNING! Video failed to play!");
     }
 
     public void stop() {
+        this.f.remove(this.component);
+        this.component.setVisible(false);
         this.component.mediaPlayer().controls().stop();
     }
 
@@ -31,6 +38,7 @@ public class Video { // TODO: No idea why this doesn't render
     }
 
     public void close() {
+        this.stop();
         this.component.release();
     }
 }

@@ -12,8 +12,8 @@ import hugone.Constants.KeyPress;
 import hugone.util.Image;
 import hugone.util.Utils;
 
-@SuppressWarnings("unused")
 public class Menu implements Feature {
+    @SuppressWarnings("unused")
     private String id;
     private Image background;
     private Button[] buttons;

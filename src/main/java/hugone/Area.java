@@ -172,7 +172,6 @@ class Furniture implements InteractableObject {
     this.collide = data.has("collide") ? data.getBoolean("collide") : true;
     if (data.has("dialogue")) {
       this.dialogue = App.story.getDialogue(data.getString("dialogue"));
-      this.dialogue.setParent(area);
     }
 
     JSONArray location = data.getJSONArray("location"); // top left

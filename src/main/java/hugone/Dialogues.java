@@ -1,7 +1,6 @@
 package hugone;
 
 import java.awt.Graphics2D;
-import java.awt.RenderingHints;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 
@@ -15,12 +14,10 @@ import hugone.Constants.KeyPress;
 import hugone.util.Audio;
 import hugone.util.Image;
 
-@SuppressWarnings("unused")
 class Dialogues implements Feature {
   public String id;
   private ArrayList<Dialogue> dialogues = new ArrayList<Dialogue>();
   private int index;
-  private Area area;
 
   public Dialogues(String id) throws JSONException {
     JSONObject data = App.story.data.getJSONObject("dialogue").getJSONObject(id);
@@ -39,13 +36,7 @@ class Dialogues implements Feature {
     this.index = 0;
   }
 
-  public void init() {
-    
-  }
-
-  public void setParent(Area p) {
-    this.area = p;
-  }
+  public void init() {}
 
   public void reset() {
     this.index = 0;

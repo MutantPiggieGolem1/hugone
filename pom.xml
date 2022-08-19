@@ -71,6 +71,7 @@
                 <mainClass>hugone.App</mainClass>
               </manifest>
             </archive>
+            <appendAssemblyId>false</appendAssemblyId>
             <descriptorRefs>
               <descriptorRef>jar-with-dependencies</descriptorRef>
             </descriptorRefs>

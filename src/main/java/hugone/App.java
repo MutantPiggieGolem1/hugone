@@ -10,8 +10,6 @@ import hugone.Constants.Feature;
 import hugone.util.Utils;
 
 class App {
-  public static java.util.HashMap<String,Object> shit = new java.util.HashMap<String,Object>(); // stores temporary vars to be relayed to main class
-
   public static Story story;
   public static Player player;
 

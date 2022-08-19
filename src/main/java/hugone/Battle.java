@@ -34,8 +34,8 @@ class Battle implements Feature {
   private Iterator<Note> notes;
   private ArrayList<Note> renderedNotes;
   private Integer notedamage;
-  public int notespeed;
-  public int bpm;
+  private int notespeed;
+  private int bpm;
   private int beat;
 
   private BattleState state = BattleState.INTRO;;
@@ -245,17 +245,17 @@ class Battle implements Feature {
 
   public void reccieveKeyPress(KeyEvent e, KeyPress p) {
     if (this.introscene != null) this.introscene.reccieveKeyPress(e, p);
-    if (this.introcard != null)  this.introcard.reccieveKeyPress(e, p);
+    if (this.introcard  != null) this.introcard.reccieveKeyPress(e, p);
     if (!this.state.equals(BattleState.FIGHT)) return;
     for (Note n : new ArrayList<Note>(this.renderedNotes)) {
       if (Utils.keydirs.get(n.direction) != e.getKeyCode()) continue;
-      if (n instanceof HoldNote) {
+      if (n instanceof HoldNote h) {
         switch (p) {
           case KEYDOWN:
             if (Math.abs(n.getY()-this.getEndY()) > Constants.Battle.HITMARGIN && this.debouncebeat < 1) break;
             this.debouncebeat = 0;
           case KEYUP:
-            ((HoldNote)n).hit(p);
+            h.hit(p);
             return; // only one note per beat per column
         }
       } else {
@@ -279,124 +279,123 @@ class Battle implements Feature {
   public String getNext() {
     return this.next;
   }
-}
 
-class Note {
-  public final Direction direction;
-  protected Battle parent;
-  protected Image image;
-  protected Point location;
-  protected boolean hit;
-  private long lasttime;
+  class Note {
+    protected final Direction direction;
+    protected Battle parent;
+    protected Image image;
+    protected Point location;
+    protected boolean hit;
+    private long lasttime;
 
-  public Note(Battle p, Direction dir) {
-    this.parent = p;
-    this.direction = dir;
-    this.image = Utils.arrowimages.get(dir).scaleToWidth(p.getNoteSize());
-  }
-
-  public void spawn() {
-    this.hit = false;
-    this.location = new Point( this.parent.getSpawnX(this.direction), this.parent.getSpawnY() );
-    this.lasttime = System.currentTimeMillis();
-  }
-
-  public void beat() {
-    if (!this.hit && this.pastBound()) {
-      this.parent.miss();
-      this.hit = true;
+    public Note(Battle p, Direction dir) {
+      this.parent = p;
+      this.direction = dir;
+      this.image = Utils.arrowimages.get(dir).scaleToWidth(p.getNoteSize());
     }
-  }
 
-  protected void moveDown() {
-    int dist = Math.round((System.currentTimeMillis()-this.lasttime)*this.parent.notespeed)/(60*1000/this.parent.bpm);
-    if (dist > Constants.Battle.MINNOTEMOVE) {
-      this.location.translate(0, dist);
+    public void spawn() {
+      this.hit = false;
+      this.location = new Point( this.parent.getSpawnX(this.direction), this.parent.getSpawnY() );
       this.lasttime = System.currentTimeMillis();
     }
-  }
 
-  public void render(Graphics2D g) {
-    if (this.hit) return;
-    this.moveDown();
+    public void beat() {
+      if (!this.hit && this.pastBound()) {
+        this.parent.miss();
+        this.hit = true;
+      }
+    }
 
-    this.image.draw(this.location.x, this.location.y, g);
-  }
+    protected void moveDown() {
+      int dist = Math.round((System.currentTimeMillis()-this.lasttime)*this.parent.notespeed)/(60*1000/this.parent.bpm);
+      if (dist > Constants.Battle.MINNOTEMOVE) {
+        this.location.translate(0, dist);
+        this.lasttime = System.currentTimeMillis();
+      }
+    }
 
-  public boolean update() { // when should i stop attempting to render this note?
-    return this.hit;
-  }
+    public void render(Graphics2D g) {
+      if (this.hit) return;
+      this.moveDown();
 
-  public void hit() {
-    this.parent.hit(this.direction);
-    this.hit = true;
-  }
+      this.image.draw(this.location.x, this.location.y, g);
+    }
 
-  public int getY() {
-    return this.location.y;
-  }
+    public boolean update() { // when should i stop attempting to render this note?
+      return this.hit;
+    }
 
-  protected boolean pastBound() {
-    return this.location.y > this.parent.getEndY();
-  }
-}
+    public void hit() {
+      this.parent.hit(this.direction);
+      this.hit = true;
+    }
 
-class HoldNote extends Note {
-  private int notelength;
-  private Image tailimage;
-  private int keydownon;
+    public int getY() {
+      return this.location.y;
+    }
 
-  public HoldNote(Battle p, Direction dir, int leng) {
-    super(p, dir);
-    this.notelength = leng;
-    this.tailimage = Utils.arrowtailimages.get(this.direction)
-      .scaleToWidth(this.parent.getNoteSize())
-      .stretchToHeight((int)(this.notelength*this.parent.getNoteSize()*1.2d));
-  }
-
-  @Override
-  public void spawn() {
-    super.spawn();
-    this.keydownon = -1;
-  }
-
-  public void hit(KeyPress p) {
-    switch (p) {
-      case KEYDOWN:
-        if (this.keydownon >= 0) break;
-        this.keydownon = this.parent.getBeat();
-        System.out.println("Battle Beat: ["+super.parent.getBeat()+"]");
-        break;
-      case KEYUP:
-        if (this.keydownon >= 0 && super.parent.getBeat()-this.keydownon == this.notelength) {super.hit();}
-        System.out.println("Battle Beat: ["+super.parent.getBeat()+"] | Button held for: ["+(super.parent.getBeat()-this.keydownon)+"] | Note Length: ["+this.notelength+"] | Hold Difference: ["+((super.parent.getBeat()-this.keydownon) - this.notelength)+"] Valid: "+(super.parent.getBeat()-this.keydownon == this.notelength)+";");
-        this.keydownon = -1;
-        break;
+    protected boolean pastBound() {
+      return this.location.y > this.parent.getEndY();
     }
   }
 
-  @Override
-  public void render(Graphics2D g) {
-    if (this.hit) return;
-    this.moveDown();
+  class HoldNote extends Note {
+    private int notelength;
+    private Image tailimage;
+    private int keydownon;
 
-    this.tailimage.draw(this.location.x, this.location.y - this.notelength*this.parent.getNoteSize(), g);
-    this.image.draw(this.location.x, this.location.y, g);
+    public HoldNote(Battle p, Direction dir, int leng) {
+      super(p, dir);
+      this.notelength = leng;
+      this.tailimage = Utils.arrowtailimages.get(this.direction)
+        .scaleToWidth(this.parent.getNoteSize())
+        .stretchToHeight((int)(this.notelength*this.parent.getNoteSize()*1.2d));
+    }
+
+    @Override
+    public void spawn() {
+      super.spawn();
+      this.keydownon = -1;
+    }
+
+    public void hit(KeyPress p) {
+      switch (p) {
+        case KEYDOWN:
+          if (this.keydownon >= 0) break;
+          this.keydownon = this.parent.getBeat();
+          System.out.println("Battle Beat: ["+super.parent.getBeat()+"]");
+          break;
+        case KEYUP:
+          if (this.keydownon >= 0 && super.parent.getBeat()-this.keydownon == this.notelength) {super.hit();}
+          System.out.println("Battle Beat: ["+super.parent.getBeat()+"] | Button held for: ["+(super.parent.getBeat()-this.keydownon)+"] | Note Length: ["+this.notelength+"] | Hold Difference: ["+((super.parent.getBeat()-this.keydownon) - this.notelength)+"] Valid: "+(super.parent.getBeat()-this.keydownon == this.notelength)+";");
+          this.keydownon = -1;
+          break;
+      }
+    }
+
+    @Override
+    public void render(Graphics2D g) {
+      if (this.hit) return;
+
+      super.render(g);
+      this.tailimage.draw(this.location.x, this.location.y - this.notelength*this.parent.getNoteSize(), g);
+    }
+
+    @Override
+    protected boolean pastBound() {
+      return this.keydownon < 0 ? super.pastBound() : this.location.y-this.parent.getNoteSize()*this.notelength > this.parent.getEndY();
+    }
   }
 
-  @Override
-  protected boolean pastBound() {
-    return this.keydownon < 0 ? super.pastBound() : this.location.y-this.parent.getNoteSize()*this.notelength > this.parent.getEndY();
-  }
-}
+  class DeathNote extends Note {
+    public DeathNote(Battle p) {
+      super(p, Direction.NONE);
+    }
 
-class DeathNote extends Note {
-  public DeathNote(Battle p) {
-    super(p, Direction.NONE);
-  }
-
-  @Override
-  public void hit() {
-    // L cant hit this bozo
+    @Override
+    public void hit() {
+      // L cant hit this bozo
+    }
   }
 }
