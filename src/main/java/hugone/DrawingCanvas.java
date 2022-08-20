@@ -1,16 +1,16 @@
 package hugone;
 
 import java.awt.Graphics2D;
-//import java.awt.RenderingHints;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 
 import javax.swing.JFrame;
 
 import hugone.Constants.KeyPress;
 
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
-
-public class DrawingCanvas extends javax.swing.JComponent implements KeyListener {
+public class DrawingCanvas extends javax.swing.JComponent implements KeyListener, MouseListener {
   public JFrame parent;
   public long prevtime = 0;
   private boolean draw = true;
@@ -60,4 +60,23 @@ public class DrawingCanvas extends javax.swing.JComponent implements KeyListener
   public void keyReleased(KeyEvent e) {
     App.story.getCurrent().reccieveKeyPress(e,KeyPress.KEYUP);
   }
+
+  @Override
+  public void mouseClicked(MouseEvent e) {
+    if (App.story.getCurrent() instanceof Menu m) {
+      m.reccieveMousePress(e);
+    }
+  }
+
+  @Override
+  public void mousePressed(MouseEvent e) {}
+
+  @Override
+  public void mouseReleased(MouseEvent e) {}
+
+  @Override
+  public void mouseEntered(MouseEvent e) {}
+
+  @Override
+  public void mouseExited(MouseEvent e) {}
 }

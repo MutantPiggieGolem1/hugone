@@ -30,6 +30,7 @@ class App {
     DrawingCanvas dc = new DrawingCanvas(f);
     f.setVisible(true);
     f.add(dc);
+    f.addMouseListener(dc);
     f.addKeyListener(dc);
     f.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     f.setExtendedState(JFrame.MAXIMIZED_BOTH);

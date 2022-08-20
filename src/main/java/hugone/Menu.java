@@ -20,7 +20,7 @@ public class Menu implements Feature {
     private int selectedbutton;
 
     private final Rectangle NORMALBUTTON, CENTERBUTTON;
-    public final int SPACING = 400;
+    private final int SPACING = 400;
     private boolean animating = false;
 
     private Card card;
@@ -103,13 +103,20 @@ public class Menu implements Feature {
         }
     }
 
+    public void reccieveMousePress(java.awt.event.MouseEvent e) {
+        java.awt.Point p = e.getPoint();
+        for (Button button : this.buttons) {
+            if (button.bounds.contains(p)) {
+                button.run();
+                e.consume();
+                break;
+            };
+        }
+    }
+
     @Override
     public void close() {
         this.next = null;
-    }
-
-    public void setNext(String n) {
-        this.next = n; // BUTTONS ONLY YOU LITTLE POOP
     }
 
     @Override
@@ -137,40 +144,40 @@ public class Menu implements Feature {
             (int)this.NORMALBUTTON.getY(), (int)this.NORMALBUTTON.getWidth(), (int)this.NORMALBUTTON.getHeight()
         );
     }
-}
 
-class Button {
-    private Menu parent;
-    private Image img;
-    private Rectangle bounds;
-    private String func;
+    class Button {
+        private Menu parent;
+        private Image img;
+        private Rectangle bounds;
+        private String func;
 
-    public Button(Menu p, Image img, Rectangle bounds, String func) {
-        this.parent = p;
-        this.img = img; // ignoring scale because of rectangle image rendering
-        this.bounds = new Rectangle(bounds);
-        this.func = func;
-    }
+        public Button(Menu p, Image img, Rectangle bounds, String func) {
+            this.parent = p;
+            this.img = img; // ignoring scale because of rectangle image rendering
+            this.bounds = new Rectangle(bounds);
+            this.func = func;
+        }
 
-    public boolean interp(Rectangle b) {
-        this.bounds.setBounds(
-            (int)Utils.expoDelta(this.bounds.getX(), b.getX()), 
-            (int)Utils.expoDelta(this.bounds.getY(), b.getY()), 
-            (int)Utils.linearDelta(this.bounds.getWidth(), b.getWidth()),
-            (int)Utils.linearDelta(this.bounds.getHeight(), b.getHeight())
-        );
-        return this.bounds.equals(b);
-    }
+        public boolean interp(Rectangle b) {
+            this.bounds.setBounds(
+                (int)Utils.expoDelta(this.bounds.getX(), b.getX()), 
+                (int)Utils.expoDelta(this.bounds.getY(), b.getY()), 
+                (int)Utils.linearDelta(this.bounds.getWidth(), b.getWidth()),
+                (int)Utils.linearDelta(this.bounds.getHeight(), b.getHeight())
+            );
+            return this.bounds.equals(b);
+        }
 
-    public void lock(Rectangle b) {
-        this.bounds.setBounds(b);
-    }
+        public void lock(Rectangle b) {
+            this.bounds.setBounds(b);
+        }
 
-    public void run() {
-        this.parent.setNext(this.func);
-    }
+        public void run() {
+            this.parent.next = this.func;
+        }
 
-    public void draw(Graphics2D g) {
-        this.img.draw(this.bounds, g);
+        public void draw(Graphics2D g) {
+            this.img.draw(this.bounds, g);
+        }
     }
 }
