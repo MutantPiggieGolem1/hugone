@@ -1,8 +1,11 @@
 package hugone;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.Scanner;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,15 +15,15 @@ import hugone.Constants.Feature;
 import hugone.Constants.GameState;
 import hugone.util.Utils;
 
-public class Story {
+class Story {
   public Player player;
-  private HashMap<String, Menu> menus = new HashMap<String,Menu>();
-  private HashMap<String, Card> cards = new HashMap<String,Card>();
-  private HashMap<String, Character> characters = new HashMap<String, Character>();
-  private HashMap<String, Cutscene> cutscenes = new HashMap<String, Cutscene>();
-  private HashMap<String, Area> areas = new HashMap<String, Area>();
-  private HashMap<String, Battle> battles = new HashMap<String, Battle>();
-  private HashMap<String, Dialogues> dialogues = new HashMap<String, Dialogues>();
+  private Map<String, Menu> menus;
+  private Map<String, Card> cards;
+  private Map<String, Character> characters;
+  private Map<String, Cutscene> cutscenes;
+  private Map<String, Area> areas;
+  private Map<String, Battle> battles;
+  private Map<String, Dialogues> dialogues;
 
   private String current; // id of current
   public String checkpoint; // id of last died
@@ -29,17 +32,20 @@ public class Story {
   public final JSONObject data;
 
   public Story(String filename) {
-    String out = "";
-    Scanner s = new Scanner(getClass().getClassLoader().getResourceAsStream(filename));
-    while (s.hasNextLine()) {
-      out = out.concat(s.nextLine().trim()); // removing newlines & trailing spaces
-    }
-    s.close();
+    String out = new BufferedReader(new InputStreamReader(getClass().getClassLoader().getResourceAsStream(filename))).lines().collect(Collectors.joining("\n"));
     this.data = new JSONObject(out);
     this.version = this.data.getInt("version");
   }
 
   public void init() throws JSONException {
+    menus = new HashMap<String,Menu>();
+    cards = new HashMap<String,Card>();
+    characters = new HashMap<String, Character>();
+    cutscenes = new HashMap<String, Cutscene>();
+    areas = new HashMap<String, Area>();
+    battles = new HashMap<String, Battle>();
+    dialogues = new HashMap<String, Dialogues>();
+    
     // load characters
     JSONObject datacharacters = this.data.getJSONObject("characters");
     for (String id : JSONObject.getNames(datacharacters)) {
@@ -126,7 +132,7 @@ public class Story {
       case BATTLE:
         return this.battles.get(current);
       default:
-        System.out.println("!WARNING! Unrecognized CurrentState.");
+        System.out.println("!WARNING! Invalid CurrentState.");
         return null;
     }
   }
@@ -144,5 +150,20 @@ public class Story {
     savedata.put(""+System.currentTimeMillis(), out);
     if (Utils.writeFile(savedir, savedata.toString())) return;
     throw new IOException("Could not save game data.");
+  }
+
+  public void load(String saveid) throws IOException, JSONException {
+    String filecontent = Utils.readFile(savedir);
+    if (filecontent == null) throw new IOException("Could not load game data.");
+    JSONObject savedata = new JSONObject(new JSONTokener(filecontent)).getJSONObject(saveid);
+    if (savedata.getInt("version") != this.version) {
+      System.out.println("!WARNING! Attempted to load save with mismatched version! ("+this.version+" / "+savedata.getInt("version")+")");
+      return;
+    }
+
+    App.player.init(savedata.getInt("health"), Utils.<String>toSet(savedata.getJSONArray("inventory")));
+    this.current = savedata.getString("state");
+    this.checkpoint = savedata.getString("checkpoint");
+    this.getCurrent().init();
   }
 }

@@ -5,6 +5,7 @@ import java.awt.event.KeyEvent;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -13,7 +14,7 @@ import org.json.JSONObject;
 import hugone.Constants.*;
 import hugone.util.*;
 
-class Battle implements Feature {
+public class Battle implements Feature {
   protected static final int leftmargin = 400;
   protected static final int rightmargin = 100;
   protected static final int verticalmargin = 20;
@@ -30,9 +31,9 @@ class Battle implements Feature {
   private Audio misssound;
   private Audio losetrack;
 
-  private ArrayList<Note> notedb = new ArrayList<Note>();
+  private List<Note> notedb = new ArrayList<Note>();
   private Iterator<Note> notes;
-  private ArrayList<Note> renderedNotes;
+  private List<Note> renderedNotes;
   private Integer notedamage;
   private int notespeed;
   private int bpm;
@@ -235,7 +236,7 @@ class Battle implements Feature {
     return App.f.getHeight() - verticalmargin;
   }
 
-  public int getNoteSize() {
+  public static int getNoteSize() {
     return (Utils.WIDTH - (Battle.leftmargin+Battle.rightmargin))/8;
   }
 
@@ -247,7 +248,7 @@ class Battle implements Feature {
     if (this.introscene != null) this.introscene.reccieveKeyPress(e, p);
     if (this.introcard  != null) this.introcard.reccieveKeyPress(e, p);
     if (!this.state.equals(BattleState.FIGHT)) return;
-    for (Note n : new ArrayList<Note>(this.renderedNotes)) {
+    for (Note n : new ArrayList<Note>(this.renderedNotes)) { // create a copy to avoid concurrent modification
       if (Utils.keydirs.get(n.direction) != e.getKeyCode()) continue;
       if (n instanceof HoldNote h) {
         switch (p) {
@@ -256,7 +257,7 @@ class Battle implements Feature {
             this.debouncebeat = 0;
           case KEYUP:
             h.hit(p);
-            return; // only one note per beat per column
+            continue;
         }
       } else {
         if (Math.abs(n.getY()-this.getEndY()) > Constants.Battle.HITMARGIN && this.debouncebeat < 1) continue;
@@ -291,7 +292,7 @@ class Battle implements Feature {
     public Note(Battle p, Direction dir) {
       this.parent = p;
       this.direction = dir;
-      this.image = Utils.arrowimages.get(dir).scaleToWidth(p.getNoteSize());
+      this.image = Utils.arrowimages.get(dir).scaleToWidth(Battle.getNoteSize());
     }
 
     public void spawn() {
@@ -348,9 +349,8 @@ class Battle implements Feature {
     public HoldNote(Battle p, Direction dir, int leng) {
       super(p, dir);
       this.notelength = leng;
-      this.tailimage = Utils.arrowtailimages.get(this.direction)
-        .scaleToWidth(this.parent.getNoteSize())
-        .stretchToHeight((int)(this.notelength*this.parent.getNoteSize()*1.2d));
+      this.tailimage = Utils.arrowtailimage
+        .stretchToHeight((this.notelength-1)*Battle.getNoteSize());
     }
 
     @Override
@@ -377,14 +377,19 @@ class Battle implements Feature {
     @Override
     public void render(Graphics2D g) {
       if (this.hit) return;
+      this.moveDown();
 
-      super.render(g);
-      this.tailimage.draw(this.location.x, this.location.y - this.notelength*this.parent.getNoteSize(), g);
+      this.tailimage.draw(
+        this.location.x + this.tailimage.getWidth()/2,
+        this.location.y - this.notelength*Battle.getNoteSize() + Battle.getNoteSize()/2,
+      g);
+      this.image.draw(this.location.x, this.location.y, g);
+      this.image.draw(this.location.x, this.location.y - this.notelength*Battle.getNoteSize(), g);
     }
 
     @Override
     protected boolean pastBound() {
-      return this.keydownon < 0 ? super.pastBound() : this.location.y-this.parent.getNoteSize()*this.notelength > this.parent.getEndY();
+      return this.keydownon < 0 ? super.pastBound() : this.location.y-Battle.getNoteSize()*this.notelength > this.parent.getEndY();
     }
   }
 

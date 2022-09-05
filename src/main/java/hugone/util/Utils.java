@@ -6,11 +6,11 @@ import java.io.FileWriter;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.awt.Rectangle;
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.JSONArray;
-import org.json.JSONException;
 
 import hugone.Constants.Direction;
 
@@ -20,16 +20,9 @@ public class Utils {
   private static long prevns;
 
   @SuppressWarnings("unchecked")
-  public static <T> T[] toArray(ArrayList<T> arr) {
-    return (T[]) arr.toArray();
-  }
-
-  @SuppressWarnings("unchecked")
-  public static <T> ArrayList<T> toArray(JSONArray jsonarr) throws JSONException {
-    ArrayList<T> out = new ArrayList<T>();
-    for (int i = 0; i < jsonarr.length(); i++) {
-      out.add((T) jsonarr.get(i));
-    }
+  public static <T> Set<T> toSet(JSONArray jsonarr) {
+    Set<T> out = new HashSet<>(jsonarr.length());
+    for (Object item : jsonarr) out.add((T) item);
     return out;
   }
 
@@ -56,18 +49,11 @@ public class Utils {
     arrowimages.put(Direction.DOWN, new Image("ARROW_DOWN.png"));
     arrowimages.put(Direction.NONE, new Image("ARROW_NONE.png"));
   }
-  public static HashMap<Direction, Image> arrowtailimages = new HashMap<Direction, Image>();
-  static {
-    arrowtailimages.put(Direction.LEFT, new Image("ARROW_LEFT_TAIL.png"));
-    arrowtailimages.put(Direction.RIGHT, new Image("ARROW_RIGHT_TAIL.png"));
-    arrowtailimages.put(Direction.UP, new Image("ARROW_UP_TAIL.png"));
-    arrowtailimages.put(Direction.DOWN, new Image("ARROW_DOWN_TAIL.png"));
-    arrowtailimages.put(Direction.NONE, new Image("ARROW_TAIL.png"));
-  }
+  public static Image arrowtailimage = new Image("ARROW_TAIL.png").scaleToWidth(hugone.Battle.getNoteSize()/2);
   public static final HashMap<Direction, Integer> dirtoint = new HashMap<Direction, Integer>();
   static {
     dirtoint.put(Direction.NONE, 0);
-    dirtoint.put(Direction.LEFT, 0);
+    dirtoint.put(Direction.LEFT, 0); 
     dirtoint.put(Direction.UP, 1);
     dirtoint.put(Direction.DOWN, 2);
     dirtoint.put(Direction.RIGHT, 3);
@@ -134,6 +120,7 @@ public class Utils {
     try (InputStream s = new FileInputStream(filepath)) {
       return new String(s.readAllBytes(), StandardCharsets.UTF_8);
     } catch (Exception e) {
+      System.out.println("!WARNING! File reading failed! "+filepath);
       return null;
     }
   }

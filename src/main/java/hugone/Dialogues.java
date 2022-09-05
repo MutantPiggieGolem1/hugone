@@ -3,6 +3,7 @@ package hugone;
 import java.awt.Graphics2D;
 import java.awt.event.KeyEvent;
 import java.util.ArrayList;
+import java.util.List;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -16,7 +17,7 @@ import hugone.util.Image;
 
 class Dialogues implements Feature {
   public String id;
-  private ArrayList<Dialogue> dialogues = new ArrayList<Dialogue>();
+  private List<Dialogue> dialogues;
   private int index;
 
   public Dialogues(String id) throws JSONException {
@@ -26,6 +27,7 @@ class Dialogues implements Feature {
 
     // load individual lines
     JSONArray lines = data.getJSONArray("lines");
+    dialogues = new ArrayList<Dialogue>();
     for (int i = 0; i < lines.length(); i++) {
       try {
         this.dialogues.add(new Dialogue(lines.getJSONObject(i)));

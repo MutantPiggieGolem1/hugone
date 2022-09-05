@@ -3,6 +3,7 @@ package hugone;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,13 +19,15 @@ import hugone.util.Image;
  *  - Area, but other view
 */
 
-public class Character {
+class Character {
   private String name;
   private String id;
-  private HashMap<Emotion, Image> emotions = new HashMap<Emotion, Image>();
-  private HashMap<Direction, HashMap<MoveState, Image>> directions = new HashMap<Direction, HashMap<MoveState, Image>>();
+  private Map<Emotion, Image> emotions = new HashMap<Emotion, Image>();
+  private Map<Direction, Map<MoveState, Image>> directions = new HashMap<Direction, Map<MoveState, Image>>();
 
   protected int health = -1;
+  protected int maxhealth = -1;
+
   protected Rectangle pos = new Rectangle();
   public static final HashMap<MoveState, MoveState> movemap = new HashMap<MoveState, MoveState>();
   static {
@@ -82,7 +85,7 @@ public class Character {
     }
 
     if (data.has("health")) {
-      this.health = data.getInt("health");
+      this.maxhealth = this.health = data.getInt("health");
     }
   }
 

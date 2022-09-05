@@ -53,7 +53,7 @@ class Card implements Feature {
 
   @Override
   public String getNext() {
-    if (this.id.equals("death")) {App.player.respawn();return App.story.checkpoint;}
+    if (this.id.equals("death")) {App.player.init(); return App.story.checkpoint;}
     return this.next;
   }
 }

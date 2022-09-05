@@ -3,10 +3,9 @@ package hugone;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.Arrays;
-
-import org.json.JSONException;
+import java.util.HashSet;
+import java.util.Set;
 
 import hugone.Constants.MoveState;
 import hugone.Constants.Direction;
@@ -14,7 +13,7 @@ import hugone.Constants.GameState;
 import hugone.Constants.KeyPress;
 import hugone.util.Utils;
 
-public class Player extends Character {
+class Player extends Character {
   private Direction direction = Direction.DOWN;
   private MoveState movestate = MoveState.STOP;
   private MoveState tomove;
@@ -23,13 +22,14 @@ public class Player extends Character {
   private boolean sprinting = false;
   private boolean spacedown = false;
 
-  public ArrayList<String> inventory = new ArrayList<String>();
+  public Set<String> inventory;
   // private ArrayList<Character> followers = new ArrayList<Character>();
   
-  public Player(String name) throws JSONException {
+  public Player(String name) throws org.json.JSONException {
     super("PLAYER");
     super.setName(name);
 
+    this.init();
     // this.followers.add(App.story.getCharacter("ENEMY_1"));
   }
 
@@ -137,8 +137,13 @@ public class Player extends Character {
     this.framenum = 0;
   }
 
-  public void respawn() {
-    this.health = 100;
-    this.inventory = new ArrayList<String>();
+  public void init() {
+    if (this.maxhealth < 0) System.out.println("!WARNING! Attempted to initialize a healthless player!");
+    this.init(this.maxhealth, new HashSet<>());
+  }
+
+  public void init(int health, Set<String> hashSet) {
+    this.health = health;
+    this.inventory = hashSet;
   }
 }

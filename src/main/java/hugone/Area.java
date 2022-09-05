@@ -5,7 +5,8 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -22,9 +23,9 @@ import hugone.util.Utils;
 class Area implements Feature {
   private final String id;
   private final Image image;
-  private ArrayList<Furniture> furniture = new ArrayList<Furniture>();
+  private Set<Furniture> furniture;
   private RenderState renderstate;
-  private ArrayList<String> find;
+  private Set<String> find;
   private Dialogues dialogue;
   private Audio music;
   private Rectangle dimensions;
@@ -42,7 +43,7 @@ class Area implements Feature {
     this.startloc = new Point(start.getInt(0), start.getInt(1));;
     this.image.scaleToWidth(this.dimensions.width);
     // misc vars
-    this.find = Utils.toArray(data.getJSONArray("find"));
+    this.find = Utils.<String>toSet(data.getJSONArray("find"));
 
     try {
       this.music = new Audio(data.getString("music"));
@@ -53,6 +54,7 @@ class Area implements Feature {
 
     // setup furniture
     JSONArray furnituredata = data.getJSONArray("furniture");
+    furniture = new HashSet<>();
     for (int i = 0; i < furnituredata.length(); i++) {
       JSONObject furn = furnituredata.getJSONObject(i);
       switch (furn.getString("objectid")) {
@@ -74,7 +76,7 @@ class Area implements Feature {
     if (this.music!=null) this.music.play();
   }
 
-  public ArrayList<String> getFind() {
+  public Set<String> getFind() {
     return this.find;
   }
 

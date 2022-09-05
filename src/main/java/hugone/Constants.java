@@ -89,7 +89,7 @@ public class Constants {
 
     public static final Image SAVEICON = new Image("save.png");
     public static final Dialogues SAVEDIALOGUE = new Dialogues("save");
-    public class Battle {
+    public static class Battle {
         public static final int MINNOTEMOVE = 2;
         public static final int HITMARGIN = 150;
     }

@@ -12,7 +12,7 @@ import hugone.Constants.KeyPress;
 import hugone.util.Image;
 import hugone.util.Utils;
 
-public class Menu implements Feature {
+class Menu implements Feature {
     @SuppressWarnings("unused")
     private String id;
     private Image background;
