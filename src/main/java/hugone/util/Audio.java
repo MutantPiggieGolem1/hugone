@@ -38,7 +38,7 @@ public class Audio {
     }
   }
 
-public void changeVolume(float db) {
+  public void changeVolume(float db) {
     FloatControl gainControl = (FloatControl) this.clip.getControl(FloatControl.Type.MASTER_GAIN);
     gainControl.setValue(db);
   }
@@ -58,7 +58,7 @@ public void changeVolume(float db) {
     if (this.pausetime > 0) this.clip.setMicrosecondPosition(this.pausetime);
     this.pausetime = -1;
     this.clip.start();
-  };
+  }
 
   public void pause() {
     this.pausetime = this.clip.getMicrosecondPosition();

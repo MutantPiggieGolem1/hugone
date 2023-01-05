@@ -1,0 +1,193 @@
+{
+    "version": "1.4.0",
+    "project": {
+        "name": "hugone-test",
+        "directory": "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone",
+        "workspaceDir": "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone",
+        "sources": [
+            
+        ],
+        "dependencies": [
+            "hugone"
+        ],
+        "classpath": [
+            "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone\\target\\test-classes",
+            "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone\\target\\classes",
+            "C:\\Users\\Ed\\.m2\\repository\\org\\json\\json\\20220320\\json-20220320.jar",
+            "C:\\Users\\Ed\\.m2\\repository\\uk\\co\\caprica\\vlcj\\4.7.1\\vlcj-4.7.1.jar",
+            "C:\\Users\\Ed\\.m2\\repository\\uk\\co\\caprica\\vlcj-natives\\4.1.0\\vlcj-natives-4.1.0.jar",
+            "C:\\Users\\Ed\\.m2\\repository\\net\\java\\dev\\jna\\jna\\5.2.0\\jna-5.2.0.jar",
+            "C:\\Users\\Ed\\.m2\\repository\\net\\java\\dev\\jna\\jna-platform\\5.2.0\\jna-platform-5.2.0.jar"
+        ],
+        "out": "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone\\target",
+        "classesDir": "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone\\target\\test-classes",
+        "resources": [
+            "C:\\Users\\Ed\\Documents\\Programming\\Java\\hugone\\src\\test\\resources"
+        ],
+        "java": {
+            "options": [
+                "-g",
+                "-target",
+                "17",
+                "-source",
+                "17",
+                "-encoding",
+                "UTF-8"
+            ]
+        },
+        "test": {
+            "frameworks": [
+                {
+                    "names": [
+                        "com.novocode.junit.JUnitFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.scalatest.tools.Framework",
+                        "org.scalatest.tools.ScalaTestFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.scalacheck.ScalaCheckFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "org.specs.runner.SpecsFramework",
+                        "org.specs2.runner.Specs2Framework",
+                        "org.specs2.runner.SpecsFramework"
+                    ]
+                },
+                {
+                    "names": [
+                        "utest.runner.Framework"
+                    ]
+                },
+                {
+                    "names": [
+                        "munit.Framework"
+                    ]
+                }
+            ],
+            "options": {
+                "excludes": [
+                    
+                ],
+                "arguments": [
+                    {
+                        "args": [
+                            "-v",
+                            "-a"
+                        ],
+                        "framework": {
+                            "names": [
+                                "com.novocode.junit.JUnitFramework"
+                            ]
+                        }
+                    }
+                ]
+            }
+        },
+        "platform": {
+            "name": "jvm",
+            "config": {
+                "home": "C:\\Program Files\\Java\\jdk-17.0.4.1",
+                "options": [
+                    
+                ]
+            },
+            "mainClass": [
+                
+            ]
+        },
+        "resolution": {
+            "modules": [
+                {
+                    "organization": "uk.co.caprica",
+                    "name": "vlcj-natives",
+                    "version": "4.1.0",
+                    "artifacts": [
+                        {
+                            "name": "vlcj-natives",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\uk\\co\\caprica\\vlcj-natives\\4.1.0\\vlcj-natives-4.1.0.jar"
+                        },
+                        {
+                            "name": "vlcj-natives",
+                            "classifier": "sources",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\uk\\co\\caprica\\vlcj-natives\\4.1.0\\vlcj-natives-4.1.0-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "uk.co.caprica",
+                    "name": "vlcj",
+                    "version": "4.7.1",
+                    "artifacts": [
+                        {
+                            "name": "vlcj",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\uk\\co\\caprica\\vlcj\\4.7.1\\vlcj-4.7.1.jar"
+                        },
+                        {
+                            "name": "vlcj",
+                            "classifier": "sources",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\uk\\co\\caprica\\vlcj\\4.7.1\\vlcj-4.7.1-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "net.java.dev.jna",
+                    "name": "jna-platform",
+                    "version": "5.2.0",
+                    "artifacts": [
+                        {
+                            "name": "jna-platform",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\net\\java\\dev\\jna\\jna-platform\\5.2.0\\jna-platform-5.2.0.jar"
+                        },
+                        {
+                            "name": "jna-platform",
+                            "classifier": "sources",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\net\\java\\dev\\jna\\jna-platform\\5.2.0\\jna-platform-5.2.0-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "net.java.dev.jna",
+                    "name": "jna",
+                    "version": "5.2.0",
+                    "artifacts": [
+                        {
+                            "name": "jna",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\net\\java\\dev\\jna\\jna\\5.2.0\\jna-5.2.0.jar"
+                        },
+                        {
+                            "name": "jna",
+                            "classifier": "sources",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\net\\java\\dev\\jna\\jna\\5.2.0\\jna-5.2.0-sources.jar"
+                        }
+                    ]
+                },
+                {
+                    "organization": "org.json",
+                    "name": "json",
+                    "version": "20220320",
+                    "artifacts": [
+                        {
+                            "name": "json",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\org\\json\\json\\20220320\\json-20220320.jar"
+                        },
+                        {
+                            "name": "json",
+                            "classifier": "sources",
+                            "path": "C:\\Users\\Ed\\.m2\\repository\\org\\json\\json\\20220320\\json-20220320-sources.jar"
+                        }
+                    ]
+                }
+            ]
+        },
+        "tags": [
+            "test"
+        ]
+    }
+}
